@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleInventory.Wpf", "SimpleInventory.Wpf\SimpleInventory.Wpf.csproj", "{A2D62984-C107-4F03-92E6-7EF89F0BBA69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleInventory.Core", "SimpleInventory.Core\SimpleInventory.Core.csproj", "{F214D273-A24A-4B04-B5D1-DF67033B7C27}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2D62984-C107-4F03-92E6-7EF89F0BBA69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D62984-C107-4F03-92E6-7EF89F0BBA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D62984-C107-4F03-92E6-7EF89F0BBA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D62984-C107-4F03-92E6-7EF89F0BBA69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F214D273-A24A-4B04-B5D1-DF67033B7C27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F214D273-A24A-4B04-B5D1-DF67033B7C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F214D273-A24A-4B04-B5D1-DF67033B7C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F214D273-A24A-4B04-B5D1-DF67033B7C27}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1B4E95E-B5BA-4188-AE21-72F4E5ECBFB8}
+	EndGlobalSection
+EndGlobal

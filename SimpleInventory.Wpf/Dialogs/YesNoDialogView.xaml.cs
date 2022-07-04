@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace SimpleInventory.Wpf.Dialogs
+{
+    /// <summary>
+    /// Interaction logic for YesNoDialogView.xaml
+    /// </summary>
+    public partial class YesNoDialogView : UserControl
+    {
+        public YesNoDialogView()
+        {
+            InitializeComponent();
+        }
+
+        private void buttonYes_Click(object sender, RoutedEventArgs e)
+        {
+            var window = this.Parent as Window;
+            window.DialogResult = true;
+            window.Close();
+        }
+
+        private void buttonNo_Click_1(object sender, RoutedEventArgs e)
+        {
+            var window = this.Parent as Window;
+            window.DialogResult = false;
+            window.Close();
+        }
+    }
+}

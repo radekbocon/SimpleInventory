@@ -1,0 +1,80 @@
+﻿<Window x:Class="SimpleInventory.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleInventory.Wpf"
+        xmlns:components="clr-namespace:SimpleInventory.Wpf.Components" 
+        xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
+        xmlns:views="clr-namespace:SimpleInventory.Wpf.Views"
+        xmlns:viewmodels="clr-namespace:SimpleInventory.Wpf.ViewModels.PageViewModes" 
+        mc:Ignorable="d"
+        WindowStyle="SingleBorderWindow"
+        BorderThickness="1"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        MinHeight="300"
+        MinWidth="400"
+        Title="MainWindow" Height="450" Width="950">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0" UseAeroCaptionButtons="False" ResizeBorderThickness="7"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVissibility"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="1"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <components:TitleBar Grid.Column="0"
+                             Grid.Row="0"
+                             Grid.ColumnSpan="3"/>
+
+        <components:NavigationBar Grid.Column="0"
+                                  Grid.Row="1"
+                                  Grid.RowSpan="2"/>
+        
+        <Rectangle Grid.Column="1"
+                   Grid.Row="1"
+                   Grid.RowSpan="3"
+                   Fill="#2c3e50"/>
+
+        <Rectangle Grid.Column="1"
+                   Grid.Row="1"
+                   Grid.ColumnSpan="2"
+                   Fill="#2c3e50"/>
+
+        <ContentControl Content="{Binding CurrentPageViewModel}" Grid.Column="2" Grid.Row="2">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type viewmodels:HomePageViewModel}">
+                    <views:HomePageView/>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type viewmodels:InventoryPageViewModel}">
+                    <views:InventoryPageView/>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type viewmodels:OrdersPageViewModel}">
+                    <views:OrdersPageView/>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type viewmodels:CustomersPageViewModel}">
+                    <views:CustomersPageView/>
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type viewmodels:SettingsPageViewModel}">
+                    <views:SettingsPageView/>
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
+
+    </Grid>
+</Window>
