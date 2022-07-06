@@ -12,6 +12,12 @@
              mc:Ignorable="d" 
              Background="#bdc3c7"
              d:DesignHeight="450" d:DesignWidth="800">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadItemsCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
     <UserControl.Resources>
         <converters:DraftItemsToBoolConverter x:Key="DraftItemsToBool"/>
         <converters:SelectedToVisibilityConverter x:Key="SelectedItemToVis"/>
@@ -263,7 +269,7 @@
             <Button 
                 Margin="5 0 5 0"
                 Content="Discard Changes"
-                Command="{Binding DiscardChangesCommand}"
+                Command="{Binding LoadItemsCommand}"
                 IsEnabled="{Binding ElementName=ItemsDataGridView, Path=ItemsSource, Mode=OneWay, Converter={StaticResource DraftItemsToBool}}"/>
         </StackPanel>
         

@@ -27,7 +27,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private ICommand _addToDraftCommand;
         private ICommand _deleteItemCommand;
         private ICommand _saveChangesCommand;
-        private ICommand _discardChangesCommand;
+        private ICommand _loadItemsCommand;
 
         public string Name { get; set; } = "Inventory";
 
@@ -35,7 +35,6 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             _inventyoryService = inventyoryService;
             _dialogService = dialogService;
-            GetItems().Await();
         }
 
         public string SearchText
@@ -114,18 +113,18 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ICommand DiscardChangesCommand
+        public ICommand LoadItemsCommand
         {
             get
             {
-                if (_discardChangesCommand == null)
+                if (_loadItemsCommand == null)
                 {
-                    _discardChangesCommand = new RelayCommand(
+                    _loadItemsCommand = new RelayCommand(
                         async p => await GetItems(),
                         p => p is ItemModel);
                 }
 
-                return _discardChangesCommand;
+                return _loadItemsCommand;
             }
         }
 
@@ -179,6 +178,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private async Task GetItems()
         {
+            await Task.Delay(4000);
             var list = await _inventyoryService.GetInventyoryItems();
             Inventory = new ObservableCollection<ItemModel>(list);
         }
