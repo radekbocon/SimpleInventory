@@ -9,7 +9,7 @@ namespace SimpleInventory.Core.Services
 {
     public class MongoDbConnection
     {
-        private const string _connectionString = "mongodb+srv://simple-inventory-client:knBh2ETaGWVDrNIR@cluster0.ltt09c9.mongodb.net/?retryWrites=true&w=majority";
+        private const string _connectionString = "mongodb+srv://simple-inventory-client:pnp81TyNe3H1YNsa@cluster0.ltt09c9.mongodb.net/?retryWrites=true&w=majority";
         private const string _databaseName = "SimpleInventoryDB";
 
         public IMongoCollection<T> ConnectToMongo<T>(in string collection)

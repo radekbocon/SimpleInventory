@@ -20,14 +20,13 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private readonly IInventoryService _inventyoryService;
         private readonly IDialogService _dialogService;
 
-        private bool _isFilteredResult = false;
         private string _searchText;
         private ObservableCollection<ItemModel> _filteredInventory;
         private ObservableCollection<ItemModel> _inventory;
-        private ICommand _addToDraftCommand;
         private ICommand _deleteItemCommand;
-        private ICommand _saveChangesCommand;
+        private ICommand _addNewItemCommand;
         private ICommand _loadItemsCommand;
+        private ICommand _editItemCommand;
 
         public string Name { get; set; } = "Inventory";
 
@@ -53,33 +52,16 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             {
                 if (SearchText == null || SearchText == string.Empty)
                 {
-                    _isFilteredResult = false;
                     return _inventory;
                 }
 
                 IEnumerable<ItemModel> list = FilterInventory();
                 _filteredInventory = new ObservableCollection<ItemModel>(list);
-                _isFilteredResult = true;
                 return _filteredInventory;
             }
             set 
             {
                 SetProperty(ref _inventory, value); 
-            }
-        }
-
-        public ICommand AddToDraftCommand
-        {
-            get
-            {
-                if (_addToDraftCommand == null)
-                {
-                    _addToDraftCommand = new RelayCommand(
-                        p => SetItemAsDraft((ItemModel)p), 
-                        p => p is ItemModel);
-                }
-
-                return _addToDraftCommand;
             }
         }
 
@@ -98,18 +80,18 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ICommand SaveChangesCommand
+        public ICommand AddNewItemCommand
         {
             get 
             {
-                if (_saveChangesCommand == null)
+                if (_addNewItemCommand == null)
                 {
-                    _saveChangesCommand = new RelayCommand(
-                        async p => await UpsertItems(),
+                    _addNewItemCommand = new RelayCommand(
+                        async p => await AddNewItem(),
                         p => p is ItemModel);
                 }
 
-                return _saveChangesCommand;
+                return _addNewItemCommand;
             }
         }
 
@@ -128,6 +110,21 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
+        public ICommand EditItemCommand
+        {
+            get
+            {
+                if (_editItemCommand == null)
+                {
+                    _editItemCommand = new RelayCommand(
+                        async p => await EditItem((ItemModel)p),
+                        p => p is ItemModel);
+                }
+
+                return _editItemCommand;
+            }
+        }
+
         private IEnumerable<ItemModel> FilterInventory()
         {
             return from i in _inventory
@@ -138,24 +135,46 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                    select i;
         }
 
-        private void SetItemAsDraft(ItemModel item)
+        private async Task AddNewItem()
         {
-            item.IsDraft = true;
-            if (item.Id != null)
+            bool save = false;
+            var vm = new EditItemViewModel(new ItemModel(), _inventyoryService);
+            _dialogService.ShowDialog(vm, result =>
             {
-                _inventory.Where(x => x.Id == item.Id).Single().IsDraft = true;
-            }
-            if (_isFilteredResult)
+                save = result;
+            });
+
+            if (save)
             {
-                _filteredInventory.Remove(item);
-                _inventory.Add(item);
+                await GetItems();
             }
-            _inventory = new ObservableCollection<ItemModel>(_inventory);
-            RaisePropertyChanged(nameof(Inventory));
+        }
+
+        private async Task EditItem(ItemModel item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+            bool save = false;
+            var vm = new EditItemViewModel(item, _inventyoryService);
+            _dialogService.ShowDialog(vm, result =>
+            {
+                save = result;
+            });
+
+            if (!save)
+            {
+                await GetItems();
+            }
         }
 
         private async Task DeleteItem(ItemModel item)
         {
+            if (item == null)
+            {
+                return;
+            }
             bool delete = false;
             _dialogService.ShowDialog("YesNoDialogView", result => 
             {
@@ -169,16 +188,8 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private async Task UpsertItems()
-        {
-            var list = new List<ItemModel>(Inventory.Where(x => x.IsDraft == true));
-            await _inventyoryService.UpsertInventoryItems(list)
-                .ContinueWith(async t => await GetItems());
-        }
-
         private async Task GetItems()
         {
-            await Task.Delay(4000);
             var list = await _inventyoryService.GetInventyoryItems();
             Inventory = new ObservableCollection<ItemModel>(list);
         }

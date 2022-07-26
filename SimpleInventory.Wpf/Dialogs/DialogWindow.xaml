@@ -9,5 +9,6 @@
         AllowsTransparency="True"
         Background="Transparent"
         WindowStartupLocation="CenterOwner"
-        Height="100" Width="300">
+        SizeToContent="Height"
+        Height="auto" Width="300">
 </Window>

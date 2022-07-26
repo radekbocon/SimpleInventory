@@ -17,9 +17,8 @@
             <i:InvokeCommandAction Command="{Binding LoadItemsCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    
+
     <UserControl.Resources>
-        <converters:DraftItemsToBoolConverter x:Key="DraftItemsToBool"/>
         <converters:SelectedToVisibilityConverter x:Key="SelectedItemToVis"/>
         <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibility"/>
         <converters:BooleanToCollapsedConverter x:Key="BoolToCollapsed"/>
@@ -90,6 +89,7 @@
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#34495e"/>
+                    <Setter Property="Foreground" Value="White"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Background" Value="#f39c12"/>
@@ -145,6 +145,30 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="Red"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" x:Key="EditButton">
+            <Setter Property="Background" Value="#95a5a6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border 
+                            Background="{TemplateBinding Background}" 
+                            Padding="3"
+                            BorderThickness="0"
+                            Margin="2"
+                            CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#7f8c8d"/>
                     <Setter Property="Foreground" Value="White"/>
                 </Trigger>
             </Style.Triggers>
@@ -263,16 +287,10 @@
             </Grid>
             <Button 
                 Margin="0 0 5 0"
-                Content="Save Changes"
-                Command="{Binding SaveChangesCommand}"
-                IsEnabled="{Binding ElementName=ItemsDataGridView, Path=ItemsSource, Mode=OneWay, Converter={StaticResource DraftItemsToBool}}"/>
-            <Button 
-                Margin="5 0 5 0"
-                Content="Discard Changes"
-                Command="{Binding LoadItemsCommand}"
-                IsEnabled="{Binding ElementName=ItemsDataGridView, Path=ItemsSource, Mode=OneWay, Converter={StaticResource DraftItemsToBool}}"/>
-        </StackPanel>
-        
+                Content="Add New Item"
+                Command="{Binding AddNewItemCommand}"/>
+            </StackPanel>
+
         <DataGrid 
             Name="ItemsDataGridView" 
             ItemsSource="{Binding Inventory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
@@ -281,6 +299,8 @@
             AlternatingRowBackground="#ecf0f1"
             AutoGenerateColumns="False"
             CanUserDeleteRows="False"
+            CanUserAddRows="False"
+            IsReadOnly="True"
             BorderThickness="0"
             Padding="0 10 0 0"
             Margin="1 0 1 10"
@@ -290,23 +310,9 @@
             ColumnWidth="*"
             SelectionMode="Single"
             SelectionUnit="FullRow"
-            CanUserAddRows="True"
             FontSize="14"
             Grid.Column="1"
             Grid.Row="3">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsDraft, NotifyOnSourceUpdated=True}" Value="True">
-                            <Setter Property="Foreground" Value="Red"></Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsDraft, NotifyOnSourceUpdated=True}" Value="False">
-                            <Setter Property="Foreground" Value="Black"></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -318,9 +324,9 @@
                 </Style>
             </DataGrid.CellStyle>
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="RowEditEnding">
+                <i:EventTrigger EventName="MouseDoubleClick">
                     <i:InvokeCommandAction 
-                        Command="{Binding AddToDraftCommand}"
+                        Command="{Binding EditItemCommand}"
                         CommandParameter="{Binding ElementName=ItemsDataGridView, Path=SelectedItem}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
@@ -336,6 +342,15 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Style="{StaticResource EditButton}"
+                                    Command="{Binding DataContext.EditItemCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:ItemModel}}"
+                                    CommandParameter="{Binding}"
+                                    FontFamily="Wingdings 2"
+                                    FontSize="12"
+                                    Content="!"/>
+
                                 <Button
                                     Style="{StaticResource DeleteButton}"
                                     Command="{Binding DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"

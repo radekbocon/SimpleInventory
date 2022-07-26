@@ -13,6 +13,7 @@ namespace SimpleInventory.Core.Services
         public Task<ItemModel> GetInventyoryItemById(string id);
         public Task<List<ItemModel>> GetInventyoryItemByName(string name);
         public Task UpsertInventoryItems(List<ItemModel> item);
+        public Task UpsertInventoryItem(ItemModel item);
         public Task DeleteInventoryItem(ItemModel item);
     }
 }

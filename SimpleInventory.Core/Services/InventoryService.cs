@@ -51,5 +51,12 @@ namespace SimpleInventory.Core.Services
                 await collection.ReplaceOneAsync(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
             }
         }
+
+        public async Task UpsertInventoryItem(ItemModel item)
+        {
+            item.Id ??= ObjectId.GenerateNewId().ToString();
+            var collection = _db.ConnectToMongo<ItemModel>("Items");
+            await collection.ReplaceOneAsync(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
+        }
     }
 }
