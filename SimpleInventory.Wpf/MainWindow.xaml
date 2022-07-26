@@ -8,6 +8,7 @@
         xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
         xmlns:views="clr-namespace:SimpleInventory.Wpf.Views"
         xmlns:viewmodels="clr-namespace:SimpleInventory.Wpf.ViewModels.PageViewModes" 
+        xmlns:dialogs="clr-namespace:SimpleInventory.Wpf.Dialogs"
         mc:Ignorable="d"
         WindowStyle="SingleBorderWindow"
         BorderThickness="1"
@@ -73,6 +74,7 @@
                 <DataTemplate DataType="{x:Type viewmodels:SettingsPageViewModel}">
                     <views:SettingsPageView/>
                 </DataTemplate>
+
             </ContentControl.Resources>
         </ContentControl>
 

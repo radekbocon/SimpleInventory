@@ -27,4 +27,8 @@
     <ProjectReference Include="..\SimpleInventory.Core\SimpleInventory.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\Modals\" />
+  </ItemGroup>
+
 </Project>

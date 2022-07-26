@@ -20,8 +20,5 @@ namespace SimpleInventory.Core.Models
         public string Type { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
-
-        [BsonIgnore]
-        public bool IsDraft { get; set; }
     }
 }

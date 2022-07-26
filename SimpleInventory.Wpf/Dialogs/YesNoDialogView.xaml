@@ -29,7 +29,7 @@
     </UserControl.Resources>
     
     <Border CornerRadius="8" Background="White" BorderThickness="1" BorderBrush="Black">
-        <Grid>
+        <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="35"/>
@@ -52,14 +52,14 @@
                     Click="buttonYes_Click"
                     Content="Yes" 
                     Width="50"
-                    Margin="5"/>
+                    Margin="5 5 5 0"/>
 
                 <Button 
                     x:Name="buttonNo"
                     Click="buttonNo_Click_1"
                     Content="No"
                     Width="50"
-                    Margin="5"/>
+                    Margin="5 5 5 0"/>
 
             </StackPanel>
         </Grid>

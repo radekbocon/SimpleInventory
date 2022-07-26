@@ -33,5 +33,29 @@ namespace SimpleInventory.Wpf.Dialogs
             dialog.Content = Activator.CreateInstance(type);
             dialog.ShowDialog();
         }
+
+        
+        public void ShowDialog(ViewModelBase type, Action<bool> callback)
+        {
+            var dialog = new DialogWindow();
+            var parent = App.Current.MainWindow;
+            dialog.Height = 120;
+            dialog.Width = parent.Width / 1.5;
+
+            EventHandler closeEventHandler = null;
+            closeEventHandler = (s, e) =>
+            {
+                callback(dialog.DialogResult.Value);
+                dialog.Closed -= closeEventHandler;
+                parent.Opacity = 1;
+            };
+            dialog.Closed += closeEventHandler;
+
+            parent.Opacity = 0.8;
+            dialog.ShowInTaskbar = false;
+            dialog.Content = type;
+            dialog.Owner = parent;
+            dialog.ShowDialog();
+        }
     }
 }
