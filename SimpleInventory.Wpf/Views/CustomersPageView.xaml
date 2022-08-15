@@ -3,11 +3,190 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
              xmlns:local="clr-namespace:SimpleInventory.Wpf.Views"
              mc:Ignorable="d"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              Background="#bdc3c7"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibility"/>
+        <converters:BooleanToCollapsedConverter x:Key="BoolToCollapsed"/>
+        <sys:Boolean x:Key="InvertConverter">true</sys:Boolean>
+        
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#7f8c8d"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border 
+                            Background="{TemplateBinding Background}" 
+                            Padding="10 5 10 5"
+                            BorderThickness="0"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#95a5a6"/>
+                    <Setter Property="Foreground" Value="#ecf0f1"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#34495e"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#f39c12"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" x:Key="ClearButton">
+            <Setter Property="Background" Value="#7f8c8d"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border 
+                            Background="{TemplateBinding Background}" 
+                            Padding="2"
+                            BorderThickness="0"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#95a5a6"/>
+                    <Setter Property="Foreground" Value="#ecf0f1"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#34495e"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#f39c12"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <ControlTemplate x:Key="TextBoxBaseControlTemplate" TargetType="{x:Type TextBoxBase}">
+            <Border Background="{TemplateBinding Background}" 
+                x:Name="Bd" BorderBrush="#7f8c8d"
+                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="5">
+                <ScrollViewer x:Name="PART_ContentHost"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" TargetName="Bd"/>
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="Width" Value="Auto">
+                    <Setter Property="MinWidth" Value="100"/>
+                </Trigger>
+                <Trigger Property="Height" Value="Auto">
+                    <Setter Property="MinHeight" Value="20"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
     <Grid>
-        <Label Content="{Binding Name}" FontSize="20"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <Border
+            Grid.Row="2"
+            Grid.Column="1"
+            Grid.ColumnSpan="1"
+            Grid.RowSpan="2"
+            CornerRadius="5"
+            BorderBrush="#7f8c8d"
+            BorderThickness="1"
+            Panel.ZIndex="-1"
+            Background="White"/>
+
+        <StackPanel
+            Orientation="Horizontal"
+            Grid.Column="1"
+            Grid.Row="1">
+            <Image 
+                Source="{StaticResource CustomersIcon}"
+                Margin="5"
+                Width="25"
+                Height="25"/>
+            <Label 
+                Content="{Binding Name}"
+                FontSize="20"/>
+        </StackPanel>
+
+        <StackPanel 
+            Margin="10 10 0 10"
+            Orientation="Horizontal"
+            Grid.Column="1"
+            Grid.Row="2">
+            <Grid>
+                <Border Visibility="{Binding ElementName=SearchBox, Path=IsFocused, Converter={StaticResource BoolToCollapsed}}">
+                    <Label 
+                        Content="Type to search"
+                        FontSize="14"
+                        Foreground="#7f8c8d"
+                        Margin="2 0 0 0"
+                        Visibility="{Binding ElementName=SearchBox, Path=Text, Converter={StaticResource StringToVisibility}}">
+                    </Label>
+                </Border>
+                <Button 
+                    Style="{StaticResource ClearButton}"
+                    Visibility="{Binding ElementName=SearchBox, Path=Text, Converter={StaticResource StringToVisibility}, ConverterParameter={StaticResource InvertConverter}}"
+                    Click="Button_Click"
+                    Content="r"
+                    Height="24"
+                    Width="24"
+                    FontFamily="Marlett"
+                    FontSize="12"
+                    Margin="115 0 0 0"
+                    Panel.ZIndex="10"/>
+                <TextBox 
+                    x:Name="SearchBox"
+                    BorderBrush="#7f8c8d"
+                    Template="{StaticResource TextBoxBaseControlTemplate}"
+                    FontSize="14"
+                    AcceptsReturn="False"
+                    Text="{Binding SearchText, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
+                    Padding="5 4 0 0"
+                    Margin="0 0 5 0"
+                    Height="auto"
+                    Width="150">
+                    <TextBox.Background>
+                        <ImageBrush ImageSource="{StaticResource SearchIcon}" Stretch="Uniform" AlignmentX="Right">
+                            <ImageBrush.Transform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform X="40" Y="4"/>
+                                </TransformGroup>
+                            </ImageBrush.Transform>
+                        </ImageBrush>
+                    </TextBox.Background>
+                </TextBox>
+            </Grid>
+            <Button 
+                Margin="0 0 5 0"
+                Content="Add New Customer"
+                Command="{Binding AddNewItemCommand}"/>
+        </StackPanel>
     </Grid>
 </UserControl>

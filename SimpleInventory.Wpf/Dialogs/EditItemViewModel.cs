@@ -13,11 +13,9 @@ namespace SimpleInventory.Wpf.Dialogs
 {
     public class EditItemViewModel : ViewModelBase
     {
-        public int Width { get; set; } = 400;
-        public int Height { get; set; } = 100;
         private ItemModel _item;
         private ICommand _saveCommand;
-        private IInventoryService _inventoryService;
+        private readonly IInventoryService _inventoryService;
 
         public EditItemViewModel(ItemModel item, IInventoryService inventoryService)
         {
