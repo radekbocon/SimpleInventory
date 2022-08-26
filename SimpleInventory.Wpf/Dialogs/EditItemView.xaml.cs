@@ -24,20 +24,5 @@ namespace SimpleInventory.Wpf.Dialogs
         {
             InitializeComponent();
         }
-
-        private void Button_Click_Save(object sender, RoutedEventArgs e)
-        {
-            var window = Window.GetWindow(this);
-            window.DialogResult = true;
-            window.Close();
-            
-        }
-
-        private void Button_Click_Cancel(object sender, RoutedEventArgs e)
-        {
-            var window = Window.GetWindow(this);
-            window.DialogResult = false;
-            window.Close();
-        }
     }
 }

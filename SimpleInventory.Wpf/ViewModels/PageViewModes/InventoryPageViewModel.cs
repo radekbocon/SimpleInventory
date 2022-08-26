@@ -138,7 +138,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewItem()
         {
             bool save = false;
-            var vm = new EditItemViewModel(new ItemModel(), _inventyoryService);
+            var vm = new EditItemViewModel(new ItemModel(), _inventyoryService, _dialogService);
             _dialogService.ShowDialog(vm, result =>
             {
                 save = result;
@@ -152,12 +152,10 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private async Task EditItem(ItemModel item)
         {
-            if (item == null)
-            {
-                return;
-            }
+            if (item == null) return;
+
             bool save = false;
-            var vm = new EditItemViewModel(item, _inventyoryService);
+            var vm = new EditItemViewModel(item, _inventyoryService, _dialogService);
             _dialogService.ShowDialog(vm, result =>
             {
                 save = result;
@@ -171,12 +169,11 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private async Task DeleteItem(ItemModel item)
         {
-            if (item == null)
-            {
-                return;
-            }
+            if (item == null) return;
+
             bool delete = false;
-            _dialogService.ShowDialog("YesNoDialogView", result => 
+            var vm = new YesNoDialogViewModel(_dialogService, "Delete this record?");
+            _dialogService.ShowDialog(viewModel: vm, dialogWidth: 250, callback: result => 
             {
                 delete = result;
             });

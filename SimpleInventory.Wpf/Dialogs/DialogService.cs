@@ -1,21 +1,16 @@
 ﻿using SimpleInventory.Wpf.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Effects;
 
 namespace SimpleInventory.Wpf.Dialogs
 {
     public class DialogService : IDialogService
     {
-        public void ShowDialog(string name, Action<bool> callback)
+        public void ShowDialog(ViewModelBase viewModel, Action<bool> callback, double dialogWidth = 0)
         {
             var dialog = new DialogWindow();
             var parent = App.Current.MainWindow;
+            dialog.Width = dialogWidth == 0 ? (parent.Width / 1.5) : dialogWidth;
 
             EventHandler closeEventHandler = null;
             closeEventHandler = (s, e) =>
@@ -27,35 +22,26 @@ namespace SimpleInventory.Wpf.Dialogs
             dialog.Closed += closeEventHandler;
 
             parent.Opacity = 0.8;
-            dialog.Owner = parent;
             dialog.ShowInTaskbar = false;
-            var type = Type.GetType($"SimpleInventory.Wpf.Dialogs.{name}");
-            dialog.Content = Activator.CreateInstance(type);
+            dialog.Content = viewModel;
+            dialog.Owner = parent;
             dialog.ShowDialog();
         }
 
-        
-        public void ShowDialog(ViewModelBase type, Action<bool> callback)
+        public void DialogResult(bool dialogResult)
         {
-            var dialog = new DialogWindow();
-            var parent = App.Current.MainWindow;
-            dialog.Height = 120;
-            dialog.Width = parent.Width / 1.5;
+            var window = App.Current.Windows.OfType<DialogWindow>().FirstOrDefault();
+            if (window == null) return;
 
-            EventHandler closeEventHandler = null;
-            closeEventHandler = (s, e) =>
+            if (dialogResult)
             {
-                callback(dialog.DialogResult.Value);
-                dialog.Closed -= closeEventHandler;
-                parent.Opacity = 1;
-            };
-            dialog.Closed += closeEventHandler;
-
-            parent.Opacity = 0.8;
-            dialog.ShowInTaskbar = false;
-            dialog.Content = type;
-            dialog.Owner = parent;
-            dialog.ShowDialog();
+                window.DialogResult = true;
+            }
+            else
+            {
+                window.DialogResult = false;
+            }
+            window.Close();
         }
     }
 }

@@ -9,8 +9,8 @@ namespace SimpleInventory.Wpf.Dialogs
 {
     public interface IDialogService
     {
-        void ShowDialog(string name, Action<bool> callback);
-        void ShowDialog(ViewModelBase type, Action<bool> callback);
+        void DialogResult(bool resultPositive);
+        void ShowDialog(ViewModelBase viewModel, Action<bool> callback, double dialogWidth = 0);
 
     }
 }

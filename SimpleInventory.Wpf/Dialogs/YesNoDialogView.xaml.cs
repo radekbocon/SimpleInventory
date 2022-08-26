@@ -25,18 +25,18 @@ namespace SimpleInventory.Wpf.Dialogs
             InitializeComponent();
         }
 
-        private void buttonYes_Click(object sender, RoutedEventArgs e)
-        {
-            var window = this.Parent as Window;
-            window.DialogResult = true;
-            window.Close();
-        }
+        //private void buttonYes_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var window = Window.GetWindow(this);
+        //    window.DialogResult = true;
+        //    window.Close();
+        //}
 
-        private void buttonNo_Click_1(object sender, RoutedEventArgs e)
-        {
-            var window = this.Parent as Window;
-            window.DialogResult = false;
-            window.Close();
-        }
+        //private void buttonNo_Click_1(object sender, RoutedEventArgs e)
+        //{
+        //    var window = Window.GetWindow(this);
+        //    window.DialogResult = false;
+        //    window.Close();
+        //}
     }
 }

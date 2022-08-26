@@ -11,6 +11,9 @@
             <DataTemplate DataType="{x:Type dialogs:EditItemViewModel}">
                 <dialogs:EditItemView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type dialogs:YesNoDialogViewModel}">
+                <dialogs:YesNoDialogView/>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

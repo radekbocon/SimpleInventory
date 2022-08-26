@@ -133,14 +133,13 @@
                     Margin="10 10 10 0"
                     Height="30"
                     Width="100"
-                    Click="Button_Click_Save"
                     Command="{Binding SaveCommand, UpdateSourceTrigger=PropertyChanged}"
                     Content="Save"/>
                 <Button
                     Margin="10 10 10 0"
                     Height="30"
                     Width="100"
-                    Click="Button_Click_Cancel"
+                    Command="{Binding CancelCommand}"
                     Content="Cancel"/>
             </StackPanel>
         </Grid>
