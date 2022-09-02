@@ -32,15 +32,7 @@ namespace SimpleInventory.Wpf.Dialogs
         {
             var window = App.Current.Windows.OfType<DialogWindow>().FirstOrDefault();
             if (window == null) return;
-
-            if (dialogResult)
-            {
-                window.DialogResult = true;
-            }
-            else
-            {
-                window.DialogResult = false;
-            }
+            window.DialogResult = dialogResult;
             window.Close();
         }
     }

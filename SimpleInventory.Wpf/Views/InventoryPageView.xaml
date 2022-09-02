@@ -21,6 +21,7 @@
     <UserControl.Resources>
         <converters:SelectedToVisibilityConverter x:Key="SelectedItemToVis"/>
         <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibility"/>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <converters:BooleanToCollapsedConverter x:Key="BoolToCollapsed"/>
         <sys:Boolean x:Key="InvertConverter">true</sys:Boolean>
 
@@ -291,6 +292,21 @@
                 Command="{Binding AddNewItemCommand}"/>
             </StackPanel>
 
+        <StackPanel
+            Panel.ZIndex="10"
+            Grid.Column="1"
+            Grid.Row="3"
+            Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}">
+            <Rectangle Fill="White" Height="23" Margin="1 43 1 0"/>
+            <Rectangle Fill="#ecf0f1" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="White" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="#ecf0f1" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="White" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="#f5f9fa" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="White" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="#fafeff" Height="23" Margin="1 0 1 0"/>
+        </StackPanel>
+        
         <DataGrid 
             Name="ItemsDataGridView" 
             ItemsSource="{Binding Inventory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
