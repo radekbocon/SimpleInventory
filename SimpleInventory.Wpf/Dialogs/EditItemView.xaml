@@ -121,7 +121,7 @@
                 MinWidth="100"
                 MinHeight="30"
                 TextWrapping="Wrap"
-                Text="{Binding Item.Price, UpdateSourceTrigger=PropertyChanged}"/>
+                Text="{Binding Item.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
 
             <StackPanel
                 Grid.Row="3"

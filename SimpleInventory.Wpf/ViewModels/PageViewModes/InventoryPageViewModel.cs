@@ -36,6 +36,15 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             _dialogService = dialogService;
         }
 
+        private bool _isBusy;
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set { SetProperty(ref _isBusy, value); }
+        }
+
+
         public string SearchText
         {
             get => _searchText; 
@@ -50,7 +59,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             get
             {
-                if (SearchText == null || SearchText == string.Empty)
+                if (string.IsNullOrWhiteSpace(SearchText) || SearchText == string.Empty)
                 {
                     return _inventory;
                 }
@@ -187,8 +196,18 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private async Task GetItems()
         {
+            ShowBusyIndicator();
             var list = await _inventyoryService.GetInventyoryItems();
             Inventory = new ObservableCollection<ItemModel>(list);
+            IsBusy = false;
+        }
+
+        private void ShowBusyIndicator()
+        {
+            if (Inventory == null)
+            {
+                IsBusy = true;
+            }
         }
 
     }
