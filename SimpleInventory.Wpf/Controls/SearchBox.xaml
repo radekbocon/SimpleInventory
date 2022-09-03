@@ -6,8 +6,11 @@
              xmlns:local="clr-namespace:SimpleInventory.Wpf.Controls" 
              xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             x:Name="root"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="300">
+             Width="auto"
+             Height="auto"
+             d:DesignHeight="30" d:DesignWidth="150">
     <UserControl.Resources>
         <converters:StringEmptyToVisibilityConverter x:Key="StringToVisibility"/>
         <converters:BooleanToCollapsedConverter x:Key="BoolToCollapsed"/>
@@ -35,6 +38,7 @@
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#34495e"/>
+                    <Setter Property="Foreground" Value="#ecf0f1"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
                     <Setter Property="Background" Value="#f39c12"/>
@@ -64,49 +68,39 @@
 
     </UserControl.Resources>
     <Grid>
-        <Border Visibility="{Binding ElementName=SearchBox, Path=IsFocused, Converter={StaticResource BoolToCollapsed}}">
+        <Border Visibility="{Binding ElementName=TextBox, Path=IsFocused, Converter={StaticResource BoolToCollapsed}}">
             <Label 
-                        Content="Type to search"
-                        FontSize="14"
-                        Foreground="#7f8c8d"
-                        Margin="2 0 0 0"
-                        Visibility="{Binding ElementName=SearchBox, Path=Text, Converter={StaticResource StringToVisibility}}">
+                Content="{Binding PlaceholderText, ElementName=root}"
+                FontSize="{Binding FontSize, ElementName=root}"
+                Foreground="#7f8c8d"
+                Margin="2 0 0 0"
+                Visibility="{Binding ElementName=TextBox, Path=Text, Converter={StaticResource StringToVisibility}}">
             </Label>
         </Border>
         <Button 
-                    Style="{StaticResource ClearButton}"
-                    Visibility="{Binding ElementName=SearchBox, Path=Text, Converter={StaticResource StringToVisibility}, ConverterParameter={StaticResource InvertConverter}}"
-                    Click="Button_Click"
-                    Content="r"
-                    Height="24"
-                    Width="24"
-                    FontFamily="Marlett"
-                    FontSize="12"
-                    Margin="115 0 0 0"
-                    Panel.ZIndex="10"/>
+            Style="{StaticResource ClearButton}"
+            x:Name="ClearButton"
+            Visibility="{Binding ElementName=TextBox, Path=Text, Converter={StaticResource StringToVisibility}, ConverterParameter={StaticResource InvertConverter}}"
+            Click="Button_Click"
+            Content="r"
+            FontFamily="Marlett"
+            HorizontalAlignment="Right"
+            Width="{Binding ActualHeight, ElementName=ClearButton}"
+            FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Margin="3"
+            Panel.ZIndex="10"/>
         <TextBox 
-                    x:Name="SearchTextBox"
-                    BorderBrush="#7f8c8d"
-                    Template="{StaticResource TextBoxBaseControlTemplate}"
-                    FontSize="14"
-                    AcceptsReturn="False"
-                    Text="{Binding SearchText, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                    Padding="5 4 0 0"
-                    Margin="0 0 5 0"
-                    Height="auto"
-                    Width="150">
-            <TextBox.Background>
-                <ImageBrush ImageSource="{StaticResource SearchIcon}" Stretch="Uniform" AlignmentX="Right">
-                    <ImageBrush.Transform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
-                            <SkewTransform/>
-                            <RotateTransform/>
-                            <TranslateTransform X="40" Y="4"/>
-                        </TransformGroup>
-                    </ImageBrush.Transform>
-                </ImageBrush>
-            </TextBox.Background>
+            x:Name="TextBox"
+            BorderBrush="#7f8c8d"
+            Background="Transparent"
+            Width="{Binding ActualWidth, ElementName=root}"
+            Height="{Binding ActualHeight, ElementName=root}"
+            FontSize="{Binding FontSize, ElementName=root}"
+            Template="{StaticResource TextBoxBaseControlTemplate}"
+            Padding="5"
+            AcceptsReturn="False"
+            VerticalAlignment="Center"
+            Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=UserControl}}">
         </TextBox>
     </Grid>
 </UserControl>

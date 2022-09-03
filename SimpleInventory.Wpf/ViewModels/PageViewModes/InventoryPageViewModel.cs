@@ -197,7 +197,6 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task GetItems()
         {
             ShowBusyIndicator();
-            await Task.Delay(TimeSpan.FromSeconds(1));
             var list = await _inventyoryService.GetInventyoryItems();
             Inventory = new ObservableCollection<ItemModel>(list);
             IsBusy = false;

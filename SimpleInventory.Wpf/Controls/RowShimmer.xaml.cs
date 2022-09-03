@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SimpleInventory.Wpf.Views
+namespace SimpleInventory.Wpf.Controls
 {
     /// <summary>
-    /// Interaction logic for CustomersPageView.xaml
+    /// Interaction logic for RowShimmer.xaml
     /// </summary>
-    public partial class CustomersPageView : UserControl
+    public partial class RowShimmer : UserControl
     {
-        public CustomersPageView()
+        public RowShimmer()
         {
             InitializeComponent();
         }

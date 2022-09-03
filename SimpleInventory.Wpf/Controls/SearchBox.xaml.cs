@@ -20,6 +20,26 @@ namespace SimpleInventory.Wpf.Controls
     /// </summary>
     public partial class SearchBox : UserControl
     {
+        public string SearchText
+        {
+            get { return (string)GetValue(SearchTextProperty); }
+            set { SetValue(SearchTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty SearchTextProperty =
+            DependencyProperty.Register("SearchText", typeof(string), typeof(SearchBox), new PropertyMetadata(string.Empty));
+
+
+        public string PlaceholderText
+        {
+            get { return (string)GetValue(PlaceholderTextProperty); }
+            set { SetValue(PlaceholderTextProperty, value); }
+        }
+
+        public static readonly DependencyProperty PlaceholderTextProperty =
+            DependencyProperty.Register("PlaceholderText", typeof(string), typeof(SearchBox), new PropertyMetadata("Type to search..."));
+
+
         public SearchBox()
         {
             InitializeComponent();
@@ -27,7 +47,7 @@ namespace SimpleInventory.Wpf.Controls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            SearchTextBox.Text = "";
+            TextBox.Text = "";
         }
     }
 }
