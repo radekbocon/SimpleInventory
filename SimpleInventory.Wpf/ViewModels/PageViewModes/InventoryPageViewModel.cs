@@ -1,4 +1,4 @@
-﻿using SimpleInventory.Core.Extentions;
+﻿using Bogus;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
@@ -6,11 +6,8 @@ using SimpleInventory.Wpf.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace SimpleInventory.Wpf.ViewModels.PageViewModes
@@ -27,6 +24,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private ICommand _addNewItemCommand;
         private ICommand _loadItemsCommand;
         private ICommand _editItemCommand;
+        private bool _isBusy;
 
         public string Name { get; set; } = "Inventory";
 
@@ -35,8 +33,6 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             _inventyoryService = inventyoryService;
             _dialogService = dialogService;
         }
-
-        private bool _isBusy;
 
         public bool IsBusy
         {
@@ -51,7 +47,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             set 
             { 
                 SetProperty(ref _searchText, value);
-                RaisePropertyChanged(nameof(Inventory));
+                NotifyPropertyChanged(nameof(Inventory));
             }
         }
 
@@ -147,7 +143,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewItem()
         {
             bool save = false;
-            var vm = new EditItemViewModel(new ItemModel(), _inventyoryService, _dialogService);
+            var vm = new EditItemViewModel(_inventyoryService, _dialogService);
             _dialogService.ShowDialog(vm, result =>
             {
                 save = result;
@@ -161,16 +157,16 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private async Task EditItem(ItemModel item)
         {
-            if (item == null) return;
+            if (item.Id == null) return;
 
             bool save = false;
-            var vm = new EditItemViewModel(item, _inventyoryService, _dialogService);
+            var vm = new EditItemViewModel(item.Id, _inventyoryService, _dialogService);
             _dialogService.ShowDialog(vm, result =>
             {
                 save = result;
             });
 
-            if (!save)
+            if (save)
             {
                 await GetItems();
             }
@@ -189,7 +185,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
             if (delete)
             {
-                await _inventyoryService.DeleteInventoryItem(item)
+                await _inventyoryService.DeleteOne(item)
                     .ContinueWith(async t => await GetItems());
             }
         }
@@ -197,7 +193,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task GetItems()
         {
             ShowBusyIndicator();
-            var list = await _inventyoryService.GetInventyoryItems();
+            var list = await _inventyoryService.GetAll();
             Inventory = new ObservableCollection<ItemModel>(list);
             IsBusy = false;
         }
@@ -208,6 +204,22 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             {
                 IsBusy = true;
             }
+        }
+
+        private void GenerateFakeItems()
+        {
+            var item = new Faker<ItemModel>()
+                .RuleFor(x => x.ProductId, f => f.Random.AlphaNumeric(5).ToUpper())
+                .RuleFor(x => x.Name, f => f.Commerce.ProductName())
+                .RuleFor(x => x.Type, f => f.Commerce.Product())
+                .RuleFor(x => x.Description, f => f.Commerce.ProductDescription())
+                .RuleFor(x => x.Price, f => double.Parse(f.Commerce.Price()))
+                .RuleFor(x => x.Quantity, f => f.Random.Int(0, 450));
+
+            var list = item.Generate(550);
+
+            _inventyoryService.UpsertMany(list);
+
         }
 
     }

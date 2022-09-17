@@ -9,10 +9,11 @@ namespace SimpleInventory.Core.Services
 {
     public interface ICustomerService
     {
-        public Task<List<CustomerModel>> GetCustomers();
-        public Task<CustomerModel> GetCustomer(string id);
-        public Task UpsertCustomer(CustomerModel customer); 
-        public Task DeleteCustomer(CustomerModel customer);
+        public Task<List<CustomerModel>> GetAll();
+        public Task<CustomerModel> GetById(string id);
+        public Task UpsertOne(CustomerModel customer); 
+        public Task UpsertMany(List<CustomerModel> customers);
+        public Task DeleteOne(CustomerModel customer);
 
     }
 }

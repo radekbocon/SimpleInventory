@@ -13,7 +13,7 @@ namespace SimpleInventory.Wpf.ViewModels
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void RaisePropertyChanged(string property)
+        public void NotifyPropertyChanged(string property)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }

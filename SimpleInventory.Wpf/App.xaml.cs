@@ -36,6 +36,7 @@ namespace SimpleInventory.Wpf
             services.AddSingleton<MainWindow>();
             services.AddSingleton<IInventoryService, InventoryService>();
             services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<ICustomerService, CustomerService>();
 
             services.AddScoped<ViewModelBase>();
             services.AddScoped<MainViewModel>();

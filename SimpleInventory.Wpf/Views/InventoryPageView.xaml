@@ -250,10 +250,10 @@
             </i:Interaction.Triggers>
             <DataGrid.Columns>
                 <DataGridTextColumn Header=" " Width="5" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Product ID" Binding="{Binding ProductId, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Product ID" Binding="{Binding ProductId, UpdateSourceTrigger=PropertyChanged}" MaxWidth="100"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"/>
                 <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding Type, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type, UpdateSourceTrigger=PropertyChanged}" MaxWidth="100"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" MaxWidth="85"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}" MaxWidth="85"/>
                 <DataGridTemplateColumn Width="auto" Header=" ">

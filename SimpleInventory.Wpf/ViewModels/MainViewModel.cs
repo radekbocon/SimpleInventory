@@ -71,7 +71,7 @@ namespace SimpleInventory.Wpf.ViewModels
                     SetActive(false);
                     _currentPageViewModel = value;
                     SetActive(true);
-                    RaisePropertyChanged(nameof(CurrentPageViewModel));
+                    NotifyPropertyChanged(nameof(CurrentPageViewModel));
                 }
             }
         }

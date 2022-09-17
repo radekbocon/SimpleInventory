@@ -1,4 +1,5 @@
-﻿using SimpleInventory.Core.Models;
+﻿using SimpleInventory.Core.Extentions;
+using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.ViewModels;
@@ -13,15 +14,22 @@ namespace SimpleInventory.Wpf.Dialogs
 {
     public class EditItemViewModel : ViewModelBase
     {
-        private ItemModel _item;
-        private ICommand _saveCommand;
-        private ICommand _cancelCommand;
-        private readonly IInventoryService _inventoryService;
-        private readonly IDialogService _dialogService;
+        private ItemModel? _item;
+        private ICommand? _saveCommand;
+        private ICommand? _cancelCommand;
+        private readonly IInventoryService? _inventoryService;
+        private readonly IDialogService? _dialogService;
 
-        public EditItemViewModel(ItemModel item, IInventoryService inventoryService, IDialogService dialogService)
+        public EditItemViewModel(string itemId, IInventoryService inventoryService, IDialogService dialogService)
         {
-            Item = item;
+            _inventoryService = inventoryService;
+            _dialogService = dialogService;
+            SetItem(itemId).Await();
+        }
+
+
+        public EditItemViewModel(IInventoryService inventoryService, IDialogService dialogService)
+        {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
         }
@@ -69,8 +77,13 @@ namespace SimpleInventory.Wpf.Dialogs
 
         private async Task Save()
         {
-            await _inventoryService.UpsertInventoryItem(Item);
+            await _inventoryService.UpsertOne(Item);
             _dialogService.DialogResult(true);
+        }
+
+        private async Task SetItem(string id)
+        {
+            Item = await _inventoryService.GetById(id);
         }
     }
 }

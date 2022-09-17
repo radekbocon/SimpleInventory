@@ -9,11 +9,11 @@ namespace SimpleInventory.Core.Services
 {
     public interface IInventoryService
     {
-        public Task<List<ItemModel>> GetInventyoryItems();
-        public Task<ItemModel> GetInventyoryItemById(string id);
-        public Task<List<ItemModel>> GetInventyoryItemByName(string name);
-        public Task UpsertInventoryItems(List<ItemModel> item);
-        public Task UpsertInventoryItem(ItemModel item);
-        public Task DeleteInventoryItem(ItemModel item);
+        public Task<List<ItemModel>> GetAll();
+        public Task<ItemModel> GetById(string id);
+        public Task<List<ItemModel>> SearchByName(string name);
+        public Task UpsertMany(List<ItemModel> item);
+        public Task UpsertOne(ItemModel item);
+        public Task DeleteOne(ItemModel item);
     }
 }
