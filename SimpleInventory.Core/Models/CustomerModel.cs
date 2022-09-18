@@ -21,14 +21,14 @@ namespace SimpleInventory.Core.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
-        public string? Status { get; set; }
+        public string? PhoneNumber { get; set; }
         public List<AddressModel> Addresses
         {
             get => _addresses; 
             set
             {
                 _addresses = value;
-                RaisePropertyChanged();
+                //RaisePropertyChanged();
             }
         }
         [BsonIgnore]
@@ -53,7 +53,7 @@ namespace SimpleInventory.Core.Models
             FirstName = customer.FirstName;
             LastName = customer.LastName;
             Email = customer.Email;
-            Status = customer.Status;
+            PhoneNumber = customer.PhoneNumber;
             Addresses = customer.Addresses;
         }
 

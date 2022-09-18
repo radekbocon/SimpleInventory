@@ -32,6 +32,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             _customerService = customerService;
             _dialogService = dialogService;
+            //GenerateFakeCustomers();
         }
 
         private bool _isBusy;
@@ -176,7 +177,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewCustomer()
         {
             bool save = false;
-            var vm = new EditCustomerViewModel(_customerService, _dialogService);
+            var vm = new CustomerDetailsViewModel(_customerService, _dialogService);
             _dialogService.ShowDialog(vm, result =>
             {
                 save = result;
@@ -193,7 +194,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (customer.Id == null) return;
 
             bool save = false;
-            var vm = new EditCustomerViewModel(customer.Id, _customerService, _dialogService);
+            var vm = new CustomerDetailsViewModel(customer.Id, _customerService, _dialogService);
             _dialogService.ShowDialog(vm, result =>
             {
                 save = result;
@@ -218,6 +219,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             var address = new Faker<AddressModel>()
                 .RuleFor(x => x.Line1, f => f.Address.StreetAddress())
                 .RuleFor(x => x.Line2, f => f.Address.SecondaryAddress())
+                .RuleFor(x => x.PhoneNumber, f => f.Person.Phone)
                 .RuleFor(x => x.City, f => f.Address.City())
                 .RuleFor(x => x.Country, f => f.Address.CountryCode())
                 .RuleFor(x => x.PostCode, f => f.Address.ZipCode());
@@ -227,6 +229,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 .RuleFor(x => x.LastName, f => f.Person.LastName)
                 .RuleFor(x => x.CompanyName, f => f.Company.CompanyName() + " " + f.Company.CompanySuffix())
                 .RuleFor(x => x.Email, f => f.Person.Email)
+                .RuleFor(x => x.PhoneNumber, f => f.Person.Phone)
                 .RuleFor(x => x.Addresses, f => address.Generate(2));
 
             var list = customer.Generate(1150);

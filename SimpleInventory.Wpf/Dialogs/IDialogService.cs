@@ -11,6 +11,5 @@ namespace SimpleInventory.Wpf.Dialogs
     {
         void DialogResult(bool resultPositive);
         void ShowDialog(ViewModelBase viewModel, Action<bool> callback, double dialogWidth = 0);
-
     }
 }

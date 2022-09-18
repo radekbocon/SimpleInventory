@@ -2,7 +2,7 @@
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
-using SimpleInventory.Wpf.ViewModels;
+using SimpleInventory.Wpf.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace SimpleInventory.Wpf.Dialogs
+namespace SimpleInventory.Wpf.ViewModels
 {
-    public class EditItemViewModel : ViewModelBase
+    public class ItemDetailsViewModel : ViewModelBase
     {
         private ItemModel? _item;
         private ICommand? _saveCommand;
@@ -20,7 +20,7 @@ namespace SimpleInventory.Wpf.Dialogs
         private readonly IInventoryService? _inventoryService;
         private readonly IDialogService? _dialogService;
 
-        public EditItemViewModel(string itemId, IInventoryService inventoryService, IDialogService dialogService)
+        public ItemDetailsViewModel(string itemId, IInventoryService inventoryService, IDialogService dialogService)
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
@@ -28,7 +28,7 @@ namespace SimpleInventory.Wpf.Dialogs
         }
 
 
-        public EditItemViewModel(IInventoryService inventoryService, IDialogService dialogService)
+        public ItemDetailsViewModel(IInventoryService inventoryService, IDialogService dialogService)
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
@@ -55,7 +55,7 @@ namespace SimpleInventory.Wpf.Dialogs
             }
         }
 
-        public ICommand SaveCommand 
+        public ICommand SaveCommand
         {
             get
             {

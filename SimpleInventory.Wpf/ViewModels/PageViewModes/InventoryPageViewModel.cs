@@ -143,7 +143,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewItem()
         {
             bool save = false;
-            var vm = new EditItemViewModel(_inventyoryService, _dialogService);
+            var vm = new ItemDetailsViewModel(_inventyoryService, _dialogService);
             _dialogService.ShowDialog(vm, result =>
             {
                 save = result;
@@ -160,7 +160,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (item.Id == null) return;
 
             bool save = false;
-            var vm = new EditItemViewModel(item.Id, _inventyoryService, _dialogService);
+            var vm = new ItemDetailsViewModel(item.Id, _inventyoryService, _dialogService);
             _dialogService.ShowDialog(vm, result =>
             {
                 save = result;

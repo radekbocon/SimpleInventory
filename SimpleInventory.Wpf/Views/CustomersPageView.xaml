@@ -252,7 +252,6 @@
                 <DataGridTextColumn Header="Contact" Binding="{Binding FullName, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Email" Binding="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged}" MaxWidth="80"/>
                 <DataGridTemplateColumn Width="auto" Header=" ">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

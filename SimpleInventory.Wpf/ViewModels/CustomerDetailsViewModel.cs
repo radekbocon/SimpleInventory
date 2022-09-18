@@ -3,7 +3,7 @@ using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
-using SimpleInventory.Wpf.ViewModels;
+using SimpleInventory.Wpf.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,9 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace SimpleInventory.Wpf.Dialogs
+namespace SimpleInventory.Wpf.ViewModels
 {
-    public class EditCustomerViewModel : ViewModelBase
+    public class CustomerDetailsViewModel : ViewModelBase
     {
         private readonly ICustomerService _customerService;
         private readonly IDialogService _dialogService;
@@ -25,14 +25,14 @@ namespace SimpleInventory.Wpf.Dialogs
         private ICommand _addNewAddress;
         private ICommand _deleteAddress;
 
-        public EditCustomerViewModel(string customerId, ICustomerService customerService, IDialogService dialogService)
+        public CustomerDetailsViewModel(string customerId, ICustomerService customerService, IDialogService dialogService)
         {
             _customerService = customerService;
             _dialogService = dialogService;
             SetCustomer(customerId).Await();
         }
 
-        public EditCustomerViewModel(ICustomerService customerService, IDialogService dialogService)
+        public CustomerDetailsViewModel(ICustomerService customerService, IDialogService dialogService)
         {
             _customerService = customerService;
             _dialogService = dialogService;
@@ -63,10 +63,10 @@ namespace SimpleInventory.Wpf.Dialogs
         public CustomerModel Customer
         {
             get => _customer;
-            set 
-            { 
-                SetProperty(ref _customer, value); 
-                NotifyPropertyChanged(nameof(SelectedAddress)); 
+            set
+            {
+                SetProperty(ref _customer, value);
+                NotifyPropertyChanged(nameof(SelectedAddress));
             }
         }
 
@@ -132,7 +132,7 @@ namespace SimpleInventory.Wpf.Dialogs
 
         private void DeleteSelectedAddress()
         {
-            if (SelectedAddress == null) return;    
+            if (SelectedAddress == null) return;
             Customer?.Addresses.Remove(SelectedAddress);
             SelectedAddress = Customer?.Addresses?.FirstOrDefault();
             NotifyPropertyChanged(nameof(Customer.Addresses));

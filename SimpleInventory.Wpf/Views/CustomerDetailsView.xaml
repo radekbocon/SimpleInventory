@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SimpleInventory.Wpf.Dialogs.EditCustomerView"
+﻿<UserControl x:Class="SimpleInventory.Wpf.Views.CustomerDetailsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -47,51 +47,57 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Margin="0 30 0 0">
-                <Label Content="Company Name" Height="{Binding ActualHeight, ElementName=CompanyNameTextBox}"/>
-                <Label Content="First Name" Height="{Binding ActualHeight, ElementName=FirstNameTextBox}"/>
-                <Label Content="Last Name" Height="{Binding ActualHeight, ElementName=LastNameTextBox}"/>
-                <Label Content="Email" Height="{Binding ActualHeight, ElementName=EmailTextBox}"/>
-                <Label Content="Status" Height="{Binding ActualHeight, ElementName=StatusTextBox}"/>
+                <Label Content="Company Name" Height="{Binding ActualHeight, ElementName=CompanyNameTextBox}" Margin="0 0 0 -1"/>
+                <Label Content="First Name" Height="{Binding ActualHeight, ElementName=FirstNameTextBox}" Margin="0 0 0 -1"/>
+                <Label Content="Last Name" Height="{Binding ActualHeight, ElementName=LastNameTextBox}" Margin="0 0 0 -1"/>
+                <Label Content="Email" Height="{Binding ActualHeight, ElementName=EmailTextBox}" Margin="0 0 0 -1"/>
+                <Label Content="Phone Number" Height="{Binding ActualHeight, ElementName=PhoneTextBox}"/>
             </StackPanel>
 
             <StackPanel 
                 Orientation="Vertical"
                 Grid.Row="0"
                 Grid.Column="1"
-                Margin="0 30 0 0">
+                Margin="0 30 10 0">
                 <TextBox
                     x:Name="CompanyNameTextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.CompanyName, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="FirstNameTextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.FirstName, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="LastNameTextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.LastName, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="EmailTextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.Email, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
-                    x:Name="StatusTextBox"
+                    x:Name="PhoneTextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
-                    Text="{Binding Customer.Status, UpdateSourceTrigger=PropertyChanged}"/>
+                    Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
             <StackPanel 
+                Margin="10 0 0 0"
                 Orientation="Vertical"
                 Grid.Row="0"
                 Grid.Column="2">
@@ -109,11 +115,12 @@
                     Margin="0 0 5 0"
                     Command="{Binding DeleteAddress}"/>
                 </StackPanel>
-                <Label Content="Address Line 1" Height="{Binding ActualHeight, ElementName=CompanyNameTextBox}"/>
-                <Label Content="Address Line 2" Height="{Binding ActualHeight, ElementName=FirstNameTextBox}"/>
-                <Label Content="City" Height="{Binding ActualHeight, ElementName=LastNameTextBox}"/>
-                <Label Content="Post Code" Height="{Binding ActualHeight, ElementName=EmailTextBox}"/>
-                <Label Content="Country" Height="{Binding ActualHeight, ElementName=StatusTextBox}"/>
+                <Label Content="Address Line 1" Height="{Binding ActualHeight, ElementName=Address1TextBox}" Margin="0 0 0 -1"/>
+                <Label Content="Address Line 2" Height="{Binding ActualHeight, ElementName=Address2TextBox}" Margin="0 0 0 -1"/>
+                <Label Content="Phone Number" Height="{Binding ActualHeight, ElementName=AddresPhoneTextBox}" Margin="0 0 0 -1"/>
+                <Label Content="City" Height="{Binding ActualHeight, ElementName=CityTextBox}" Margin="0 0 0 -1"/>
+                <Label Content="Post Code" Height="{Binding ActualHeight, ElementName=PostCodeTextBox}" Margin="0 0 0 -1"/>
+                <Label Content="Country" Height="{Binding ActualHeight, ElementName=CountryTextBox}"/>
             </StackPanel>
 
             <StackPanel 
@@ -130,24 +137,35 @@
                     x:Name="Address1TextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.Line1, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="Address2TextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.Line2, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox
+                    x:Name="AddresPhoneTextBox"
+                    MinWidth="100"
+                    MinHeight="30"
+                    Margin="0 0 0 -1"
+                    TextWrapping="Wrap"
+                    Text="{Binding SelectedAddress.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="CityTextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.City, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="PostCodeTextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="0 0 0 -1"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.PostCode, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox

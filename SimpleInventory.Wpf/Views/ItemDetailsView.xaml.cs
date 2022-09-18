@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SimpleInventory.Wpf.Dialogs
+namespace SimpleInventory.Wpf.Views
 {
     /// <summary>
-    /// Interaction logic for EditCustomerView.xaml
+    /// Interaction logic for EditItemView.xaml
     /// </summary>
-    public partial class EditCustomerView : UserControl
+    public partial class ItemDetailsView : UserControl
     {
-        public EditCustomerView()
+        public ItemDetailsView()
         {
             InitializeComponent();
         }
