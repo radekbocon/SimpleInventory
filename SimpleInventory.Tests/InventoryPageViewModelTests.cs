@@ -11,12 +11,12 @@ namespace SimpleInventory.Tests
     public class InventoryPageViewModelTests
     {
         private readonly IInventoryService _inventoryService;
-        private readonly IDialogService _dialogService;
+        private readonly INavigationService _dialogService;
 
         public InventoryPageViewModelTests()
         {
             _inventoryService = A.Fake<IInventoryService>();
-            _dialogService = A.Fake<IDialogService>();
+            _dialogService = A.Fake<INavigationService>();
         }
 
         [Theory]

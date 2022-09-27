@@ -28,7 +28,6 @@ namespace SimpleInventory.Core.Models
             set
             {
                 _addresses = value;
-                //RaisePropertyChanged();
             }
         }
         [BsonIgnore]
@@ -54,7 +53,10 @@ namespace SimpleInventory.Core.Models
             LastName = customer.LastName;
             Email = customer.Email;
             PhoneNumber = customer.PhoneNumber;
-            Addresses = customer.Addresses;
+            foreach (var address in customer.Addresses)
+            {
+                Addresses.Add(new AddressModel(address));
+            }
         }
 
         public CustomerModel()

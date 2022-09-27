@@ -3,8 +3,9 @@ using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
-using SimpleInventory.Wpf.Dialogs;
+using SimpleInventory.Wpf.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,27 +18,30 @@ namespace SimpleInventory.Wpf.ViewModels
     public class CustomerDetailsViewModel : ViewModelBase
     {
         private readonly ICustomerService _customerService;
-        private readonly IDialogService _dialogService;
+        private readonly INavigationService _navigationService;
 
         private CustomerModel _customer;
-        private ICommand _saveCommand;
+        private CustomerModel _customerBackup;
         private ICommand _cancelCommand;
+        private ICommand _saveCommand;
         private ICommand _addNewAddress;
         private ICommand _deleteAddress;
 
-        public CustomerDetailsViewModel(string customerId, ICustomerService customerService, IDialogService dialogService)
+        public CustomerDetailsViewModel(string customerId, ICustomerService customerService, INavigationService navigationService)
         {
             _customerService = customerService;
-            _dialogService = dialogService;
+            _navigationService = navigationService;
             SetCustomer(customerId).Await();
         }
 
-        public CustomerDetailsViewModel(ICustomerService customerService, IDialogService dialogService)
+        public CustomerDetailsViewModel(ICustomerService customerService, INavigationService dialogService)
         {
             _customerService = customerService;
-            _dialogService = dialogService;
+            _navigationService = dialogService;
             Customer = new CustomerModel();
         }
+
+        public string Name { get; set; } = "Customer Details";
 
         private AddressModel _selectedAddress;
 
@@ -70,21 +74,6 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public ICommand CancelCommand
-        {
-            get
-            {
-                if (_cancelCommand == null)
-                {
-                    _cancelCommand = new RelayCommand(
-                        p => Cancel(),
-                        p => true);
-                }
-
-                return _cancelCommand;
-            }
-        }
-
         public ICommand SaveCommand
         {
             get
@@ -93,10 +82,25 @@ namespace SimpleInventory.Wpf.ViewModels
                 {
                     _saveCommand = new RelayCommand(
                         async p => await Save(),
-                        p => p is CustomerModel);
+                        p => HasCustomerChanged());
                 }
 
                 return _saveCommand;
+            }
+        }
+
+        public ICommand CancelCommand
+        {
+            get
+            {
+                if (_cancelCommand == null)
+                {
+                    _cancelCommand = new RelayCommand(
+                        p => CancelChanges(),
+                        p => HasCustomerChanged());
+                }
+
+                return _cancelCommand;
             }
         }
 
@@ -146,20 +150,31 @@ namespace SimpleInventory.Wpf.ViewModels
             NotifyPropertyChanged(nameof(Customer.Addresses));
         }
 
-        private void Cancel()
-        {
-            _dialogService.DialogResult(false);
-        }
-
         private async Task Save()
         {
             await _customerService.UpsertOne(Customer);
-            _dialogService.DialogResult(true);
+            await SetCustomer(Customer.Id);
+            _navigationService.ModalResult(true);
+        }
+
+        private void CancelChanges()
+        {
+            Customer = new CustomerModel(_customerBackup);
         }
 
         private async Task SetCustomer(string id)
         {
             Customer = await _customerService.GetById(id);
+            _customerBackup = new CustomerModel(_customer);
+        }
+
+        private bool HasCustomerChanged()
+        {
+            if (_customer == null || _customerBackup == null)
+            {
+                return false;
+            }
+            return !_customer.IsEqualTo(_customerBackup);
         }
     }
 }

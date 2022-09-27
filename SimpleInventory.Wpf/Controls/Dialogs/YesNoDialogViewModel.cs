@@ -1,4 +1,5 @@
 ﻿using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Services;
 using SimpleInventory.Wpf.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace SimpleInventory.Wpf.Dialogs
+namespace SimpleInventory.Wpf.Controls.Dialogs
 {
     public class YesNoDialogViewModel : ViewModelBase
     {
@@ -17,7 +18,7 @@ namespace SimpleInventory.Wpf.Dialogs
 
         private ICommand _dialogRelustPositiveCommand;
         private ICommand _dialogRelustNegativeCommand;
-        private readonly IDialogService _dialogService; 
+        private readonly INavigationService _dialogService;
 
         public ICommand DialogResultPositiveCommand
         {
@@ -49,7 +50,7 @@ namespace SimpleInventory.Wpf.Dialogs
             }
         }
 
-        public YesNoDialogViewModel(IDialogService dialogService, string? message, string? positiveButtonText = "Yes", string? negativeButtonText = "No")
+        public YesNoDialogViewModel(INavigationService dialogService, string? message, string? positiveButtonText = "Yes", string? negativeButtonText = "No")
         {
             Message = message;
             PositiveButtonText = positiveButtonText;

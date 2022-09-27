@@ -2,7 +2,7 @@
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
-using SimpleInventory.Wpf.Dialogs;
+using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,25 +14,27 @@ namespace SimpleInventory.Wpf.ViewModels
 {
     public class ItemDetailsViewModel : ViewModelBase
     {
-        private ItemModel? _item;
+        private ItemModel _item;
+        private ItemModel _itemBackup;
         private ICommand? _saveCommand;
         private ICommand? _cancelCommand;
-        private readonly IInventoryService? _inventoryService;
-        private readonly IDialogService? _dialogService;
+        private readonly IInventoryService _inventoryService;
+        private readonly INavigationService _dialogService;
 
-        public ItemDetailsViewModel(string itemId, IInventoryService inventoryService, IDialogService dialogService)
+        public ItemDetailsViewModel(string itemId, IInventoryService inventoryService, INavigationService dialogService)
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
             SetItem(itemId).Await();
         }
 
-
-        public ItemDetailsViewModel(IInventoryService inventoryService, IDialogService dialogService)
+        public ItemDetailsViewModel(IInventoryService inventoryService, INavigationService dialogService)
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
         }
+
+        public string Name { get; set; } = "Item Details";
 
         public ItemModel Item
         {
@@ -48,7 +50,7 @@ namespace SimpleInventory.Wpf.ViewModels
                 {
                     _cancelCommand = new RelayCommand(
                         p => Cancel(),
-                        p => true);
+                        p => HasItemChanged());
                 }
 
                 return _cancelCommand;
@@ -63,7 +65,7 @@ namespace SimpleInventory.Wpf.ViewModels
                 {
                     _saveCommand = new RelayCommand(
                         async p => await Save(),
-                        p => p is ItemModel);
+                        p => HasItemChanged());
                 }
 
                 return _saveCommand;
@@ -72,18 +74,29 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private void Cancel()
         {
-            _dialogService.DialogResult(false);
+            Item = new ItemModel(_itemBackup);
         }
 
         private async Task Save()
         {
             await _inventoryService.UpsertOne(Item);
-            _dialogService.DialogResult(true);
+            await SetItem(Item.Id);
+            _dialogService.ModalResult(true);
         }
 
         private async Task SetItem(string id)
         {
             Item = await _inventoryService.GetById(id);
+            _itemBackup = new ItemModel(Item);
+        }
+
+        private bool HasItemChanged()
+        {
+            if (_item == null || _itemBackup == null)
+            {
+                return false;
+            }
+            return !_item.IsEqualTo(_itemBackup);
         }
     }
 }

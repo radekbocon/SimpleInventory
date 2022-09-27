@@ -21,128 +21,6 @@
         <converters:SelectedToVisibilityConverter x:Key="SelectedItemToVis"/>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <sys:Boolean x:Key="InvertConverter">true</sys:Boolean>
-
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#7f8c8d"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border 
-                            Background="{TemplateBinding Background}" 
-                            Padding="10 5 10 5"
-                            BorderThickness="0"
-                            CornerRadius="5">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#95a5a6"/>
-                    <Setter Property="Foreground" Value="#ecf0f1"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#34495e"/>
-                    <Setter Property="Foreground" Value="White"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#f39c12"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style TargetType="{x:Type Button}" x:Key="DeleteButton">
-            <Setter Property="Background" Value="LightPink"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border 
-                            Background="{TemplateBinding Background}" 
-                            Padding="3"
-                            BorderThickness="0"
-                            Margin="2"
-                            CornerRadius="2">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="Red"/>
-                    <Setter Property="Foreground" Value="White"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style TargetType="{x:Type Button}" x:Key="EditButton">
-            <Setter Property="Background" Value="#95a5a6"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border 
-                            Background="{TemplateBinding Background}" 
-                            Padding="3"
-                            BorderThickness="0"
-                            Margin="2"
-                            CornerRadius="2">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#7f8c8d"/>
-                    <Setter Property="Foreground" Value="White"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style TargetType="{x:Type DataGridColumnHeader}" x:Key="Header">
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="FontWeight" Value="DemiBold"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                        <StackPanel>
-                            <Rectangle Fill="#7f8c8d" Height="2"/>
-                            <Border Background="White" x:Name="BackgroundBorder" >
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <ContentControl 
-                                        HorizontalAlignment="Center" 
-                                        Content="{TemplateBinding Content}" 
-                                        SnapsToDevicePixels="True" 
-                                        Margin="5 5 0 5"/>
-                                    <Path x:Name="SortArrow" Visibility="Hidden" Data="M 0,0 L 1,0 0.5,1 z" Stretch="Fill"
-                                        Width="8" Height="6" Fill="#7f8c8d" Margin="3,3,2,0"
-                                        VerticalAlignment="Center" RenderTransformOrigin="0.5, 0.4"/>
-                                </StackPanel>
-                            </Border>
-                            <Rectangle Fill="#7f8c8d" Height="2"/>
-                        </StackPanel>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="BackgroundBorder" Property="Background" Value="#ecf0f1"/>
-                            </Trigger>
-                            <Trigger Property="SortDirection" Value="Ascending">
-                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
-                                <Setter TargetName="SortArrow" Property="RenderTransform">
-                                    <Setter.Value>
-                                        <RotateTransform Angle="180"/>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="SortDirection" Value="Descending">
-                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -197,6 +75,7 @@
             <Button 
                 Margin="0 0 5 0"
                 Content="Add New Customer"
+                Style="{StaticResource DarkButton}"
                 Command="{Binding AddNewCustomerCommand}"/>
         </StackPanel>
 
@@ -242,7 +121,7 @@
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <i:InvokeCommandAction 
-                        Command="{Binding EditCustomerCommand}"
+                        Command="{Binding OpenCustomerCommand}"
                         CommandParameter="{Binding ElementName=CustomersDataGridView, Path=SelectedItem}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
@@ -258,7 +137,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button
                                     Style="{StaticResource EditButton}"
-                                    Command="{Binding DataContext.EditCustomerCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                    Command="{Binding DataContext.OpenCustomerCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                     Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:CustomerModel}}"
                                     CommandParameter="{Binding}"
                                     FontFamily="Wingdings 2"

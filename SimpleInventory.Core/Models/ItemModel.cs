@@ -20,5 +20,21 @@ namespace SimpleInventory.Core.Models
         public string? Type { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
+
+        public ItemModel()
+        {
+
+        }
+
+        public ItemModel(ItemModel item)
+        {
+            Id = item.Id;
+            ProductId = item.ProductId;
+            Name = item.Name;
+            Description = item.Description;
+            Type = item.Type;
+            Quantity = item.Quantity;
+            Price = item.Price;
+        }
     }
 }

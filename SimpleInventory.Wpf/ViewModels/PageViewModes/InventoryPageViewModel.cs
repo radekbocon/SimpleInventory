@@ -2,7 +2,8 @@
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
-using SimpleInventory.Wpf.Dialogs;
+using SimpleInventory.Wpf.Controls.Dialogs;
+using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +16,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
     public class InventoryPageViewModel : PageViewModel
     {
         private readonly IInventoryService _inventyoryService;
-        private readonly IDialogService _dialogService;
+        private readonly Services.INavigationService _dialogService;
 
         private string _searchText;
         private ObservableCollection<ItemModel> _filteredInventory;
@@ -28,10 +29,11 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         public string Name { get; set; } = "Inventory";
 
-        public InventoryPageViewModel(IInventoryService inventyoryService, IDialogService dialogService)
+        public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService)
         {
             _inventyoryService = inventyoryService;
             _dialogService = dialogService;
+            //GenerateFakeItems();
         }
 
         public bool IsBusy
@@ -93,7 +95,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 {
                     _addNewItemCommand = new RelayCommand(
                         async p => await AddNewItem(),
-                        p => p is ItemModel);
+                        p => true);
                 }
 
                 return _addNewItemCommand;
@@ -108,7 +110,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 {
                     _loadItemsCommand = new RelayCommand(
                         async p => await GetItems(),
-                        p => p is ItemModel);
+                        p => true);
                 }
 
                 return _loadItemsCommand;
@@ -144,7 +146,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             bool save = false;
             var vm = new ItemDetailsViewModel(_inventyoryService, _dialogService);
-            _dialogService.ShowDialog(vm, result =>
+            _dialogService.ShowModal(vm, result =>
             {
                 save = result;
             });
@@ -161,7 +163,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
             bool save = false;
             var vm = new ItemDetailsViewModel(item.Id, _inventyoryService, _dialogService);
-            _dialogService.ShowDialog(vm, result =>
+            _dialogService.ShowModal(vm, result =>
             {
                 save = result;
             });

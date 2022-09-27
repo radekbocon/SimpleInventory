@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace SimpleInventory.Wpf.Commands
 {
-    public class RelayCommand : CommandBase
+    public class RelayCommand : ICommand
     {
         private Action<object> _execute;
         private Func<object, bool> _canExecute;
@@ -19,18 +19,18 @@ namespace SimpleInventory.Wpf.Commands
             _canExecute = canExecute;
         }
 
-        public new bool CanExecute(object parameters)
+        public bool CanExecute(object parameters)
         {
             return _canExecute == null ? true : _canExecute(parameters);
         }
 
-        public new event EventHandler CanExecuteChanged
+        public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public override void Execute(object parameters)
+        public void Execute(object parameters)
         {
             _execute(parameters);
         }

@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SimpleInventory.Wpf.Dialogs
+namespace SimpleInventory.Wpf.Controls.Dialogs
 {
     /// <summary>
-    /// Interaction logic for DialogWindow.xaml
+    /// Interaction logic for YesNoDialogView.xaml
     /// </summary>
-    public partial class DialogWindow : Window
+    public partial class YesNoDialogView : UserControl
     {
-        public DialogWindow()
+        public YesNoDialogView()
         {
             InitializeComponent();
         }

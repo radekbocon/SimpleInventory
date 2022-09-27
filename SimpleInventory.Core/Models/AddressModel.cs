@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,5 +17,20 @@ namespace SimpleInventory.Core.Models
         public string? PostCode { get; set; }
         public string? City { get; set; }
         public string? Country { get; set; }
+
+        public AddressModel()
+        {
+
+        }
+
+        public AddressModel(AddressModel address)
+        {
+            Line1 = address.Line1;
+            Line2 = address.Line2;
+            PhoneNumber = address.PhoneNumber;
+            PostCode = address.PostCode;
+            City = address.City;
+            Country = address.Country;
+        }
     }
 }

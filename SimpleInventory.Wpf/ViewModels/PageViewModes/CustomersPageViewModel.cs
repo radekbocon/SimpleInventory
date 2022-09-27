@@ -2,7 +2,8 @@
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
-using SimpleInventory.Wpf.Dialogs;
+using SimpleInventory.Wpf.Controls.Dialogs;
+using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,24 +19,23 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         public string Name { get; set; } = "Customers";
 
         private readonly ICustomerService _customerService;
-        private readonly IDialogService _dialogService;
+        private readonly INavigationService _dialogService;
 
         private ObservableCollection<CustomerModel> _customers;
         private ObservableCollection<CustomerModel> _filteredCustomers;
         private ICommand _loadCustomersCommand;
         private ICommand _deleteCustomerCommand;
         private ICommand _addNewCustomerCommand;
-        private ICommand _editCustomerCommand;
+        private ICommand _openCustomerCommand;
         private string _searchTerxt;
+        private bool _isBusy;
 
-        public CustomersPageViewModel(ICustomerService customerService, IDialogService dialogService)
+        public CustomersPageViewModel(ICustomerService customerService, INavigationService dialogService)
         {
             _customerService = customerService;
             _dialogService = dialogService;
             //GenerateFakeCustomers();
         }
-
-        private bool _isBusy;
 
         public bool IsBusy
         {
@@ -96,7 +96,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 {
                     _deleteCustomerCommand = new RelayCommand(
                         async p => await DeleteCustomer((CustomerModel)p),
-                        p => p is ItemModel);
+                        p => p is CustomerModel);
                 }
 
                 return _deleteCustomerCommand;
@@ -111,25 +111,25 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 {
                     _addNewCustomerCommand = new RelayCommand(
                         async p => await AddNewCustomer(),
-                        p => p is ItemModel);
+                        p => true);
                 }
 
                 return _addNewCustomerCommand;
             }
         }
 
-        public ICommand EditCustomerCommand
+        public ICommand OpenCustomerCommand
         {
             get
             {
-                if (_editCustomerCommand == null)
+                if (_openCustomerCommand == null)
                 {
-                    _editCustomerCommand = new RelayCommand(
+                    _openCustomerCommand = new RelayCommand(
                         async p => await EditCustomer((CustomerModel)p),
                         p => p is CustomerModel);
                 }
 
-                return _editCustomerCommand;
+                return _openCustomerCommand;
             }
         }
 
@@ -178,14 +178,14 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             bool save = false;
             var vm = new CustomerDetailsViewModel(_customerService, _dialogService);
-            _dialogService.ShowDialog(vm, result =>
+            _dialogService.ShowModal(vm, callback => 
             {
-                save = result;
+                save = callback;
             });
 
             if (save)
             {
-                await GetCustomers();
+                await GetCustomers(); 
             }
         }
 
@@ -195,7 +195,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
             bool save = false;
             var vm = new CustomerDetailsViewModel(customer.Id, _customerService, _dialogService);
-            _dialogService.ShowDialog(vm, result =>
+            _dialogService.ShowModal(vm, result =>
             {
                 save = result;
             });

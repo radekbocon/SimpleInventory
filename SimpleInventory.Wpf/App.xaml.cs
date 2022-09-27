@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
-using SimpleInventory.Wpf.Dialogs;
+using SimpleInventory.Wpf.Services;
 using SimpleInventory.Wpf.ViewModels;
 using SimpleInventory.Wpf.ViewModels.PageViewModes;
 using System;
@@ -35,8 +35,9 @@ namespace SimpleInventory.Wpf
             IServiceCollection services = new ServiceCollection();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<IInventoryService, InventoryService>();
-            services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<ICustomerService, CustomerService>();
+            services.AddSingleton<IOrderService, OrderService>();
 
             services.AddScoped<ViewModelBase>();
             services.AddScoped<MainViewModel>();

@@ -1,4 +1,5 @@
 ﻿using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Services;
 using SimpleInventory.Wpf.ViewModels.PageViewModes;
 using System;
 using System.Collections.Generic;
@@ -11,25 +12,28 @@ namespace SimpleInventory.Wpf.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private ICommand _changePageCommand;
+        private ICommand? _changePageCommand;
+        private readonly INavigationService _navigationService;
 
-        private PageViewModel _currentPageViewModel;
-        private List<PageViewModel> _pageViewModels;
+        private PageViewModel? _currentPageViewModel;
+        private List<PageViewModel>? _pageViewModels;
 
         public MainViewModel(
+            INavigationService navigationService,
             HomePageViewModel homePageViewModel, 
             InventoryPageViewModel inventoryPageViewModel,
             OrdersPageViewModel ordersPageViewModel,
             CustomersPageViewModel customersPageViewModel,
             SettingsPageViewModel settingsPageViewModel)
         {
+            _navigationService = navigationService;
             PageViewModels.Add(homePageViewModel);
             PageViewModels.Add(inventoryPageViewModel);
             PageViewModels.Add(ordersPageViewModel);
             PageViewModels.Add(customersPageViewModel);
             PageViewModels.Add(settingsPageViewModel);
 
-            CurrentPageViewModel = PageViewModels[0];
+            ChangePageCommand.Execute(homePageViewModel);
         }
 
         public ICommand ChangePageCommand
@@ -76,15 +80,6 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        private bool _isDialogOpen;
-
-        public bool IsDialogOpen
-        {
-            get { return _isDialogOpen; }
-            set { SetProperty(ref _isDialogOpen, value); }
-        }
-
-
         private void SetActive(bool active)
         {
             if (_currentPageViewModel != null)
@@ -95,10 +90,8 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private void ChangeViewModel(PageViewModel viewModel)
         {
-            if (!PageViewModels.Contains(viewModel))
-                PageViewModels.Add(viewModel);
-
-            CurrentPageViewModel = PageViewModels.FirstOrDefault(vm => vm == viewModel);
+            _navigationService.OpenPage(viewModel);
+            CurrentPageViewModel = viewModel;
         }
     }
 }

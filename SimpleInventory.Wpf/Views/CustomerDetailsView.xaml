@@ -3,133 +3,114 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SimpleInventory.Wpf.Dialogs"
+             xmlns:local="clr-namespace:SimpleInventory.Wpf.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border CornerRadius="5" Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#bdc3c7"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#7f8c8d"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
-
-    <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="Black">
-        <Grid Margin="10">
+             d:DesignHeight="450" d:DesignWidth="600">
+    <Border>
+        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel 
                 Orientation="Vertical"
-                Grid.Row="0"
+                Grid.Row="1"
                 Grid.Column="0"
-                Margin="0 30 0 0">
-                <Label Content="Company Name" Height="{Binding ActualHeight, ElementName=CompanyNameTextBox}" Margin="0 0 0 -1"/>
-                <Label Content="First Name" Height="{Binding ActualHeight, ElementName=FirstNameTextBox}" Margin="0 0 0 -1"/>
-                <Label Content="Last Name" Height="{Binding ActualHeight, ElementName=LastNameTextBox}" Margin="0 0 0 -1"/>
-                <Label Content="Email" Height="{Binding ActualHeight, ElementName=EmailTextBox}" Margin="0 0 0 -1"/>
-                <Label Content="Phone Number" Height="{Binding ActualHeight, ElementName=PhoneTextBox}"/>
+                Margin="0 50 10 0">
+                <Label Content="Company Name" Height="{Binding ActualHeight, ElementName=CompanyNameTextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="First Name" Height="{Binding ActualHeight, ElementName=FirstNameTextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="Last Name" Height="{Binding ActualHeight, ElementName=LastNameTextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="Email" Height="{Binding ActualHeight, ElementName=EmailTextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="Phone Number" Height="{Binding ActualHeight, ElementName=PhoneTextBox}" Margin="5" HorizontalAlignment="Right"/>
             </StackPanel>
 
             <StackPanel 
                 Orientation="Vertical"
-                Grid.Row="0"
+                Grid.Row="1"
                 Grid.Column="1"
-                Margin="0 30 10 0">
+                Margin="0 50 10 0">
                 <TextBox
                     x:Name="CompanyNameTextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.CompanyName, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="FirstNameTextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.FirstName, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="LastNameTextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.LastName, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="EmailTextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.Email, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="PhoneTextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
             <StackPanel 
-                Margin="10 0 0 0"
+                Margin="10 10 10 0"
                 Orientation="Vertical"
-                Grid.Row="0"
+                Grid.Row="1"
                 Grid.Column="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button 
-                    Content="Add" 
-                    Height="{Binding ActualHeight, ElementName=AddressesComboBox}" 
-                    Width="50" 
-                    Margin="0 0 5 0"
-                    Command="{Binding AddNewAddress}"/>
+                        Content="Add" 
+                        Height="{Binding ActualHeight, ElementName=AddressesComboBox}" 
+                        Width="50" 
+                        Margin="5"
+                        Command="{Binding AddNewAddress}"/>
                     <Button 
-                    Content="Delete" 
-                    Height="{Binding ActualHeight, ElementName=AddressesComboBox}" 
-                    Width="50" 
-                    Margin="0 0 5 0"
-                    Command="{Binding DeleteAddress}"/>
+                        Content="Delete" 
+                        Height="{Binding ActualHeight, ElementName=AddressesComboBox}" 
+                        Width="50" 
+                        Margin="5"
+                        Command="{Binding DeleteAddress}"/>
                 </StackPanel>
-                <Label Content="Address Line 1" Height="{Binding ActualHeight, ElementName=Address1TextBox}" Margin="0 0 0 -1"/>
-                <Label Content="Address Line 2" Height="{Binding ActualHeight, ElementName=Address2TextBox}" Margin="0 0 0 -1"/>
-                <Label Content="Phone Number" Height="{Binding ActualHeight, ElementName=AddresPhoneTextBox}" Margin="0 0 0 -1"/>
-                <Label Content="City" Height="{Binding ActualHeight, ElementName=CityTextBox}" Margin="0 0 0 -1"/>
-                <Label Content="Post Code" Height="{Binding ActualHeight, ElementName=PostCodeTextBox}" Margin="0 0 0 -1"/>
-                <Label Content="Country" Height="{Binding ActualHeight, ElementName=CountryTextBox}"/>
+                <Label Content="Address Line 1" Height="{Binding ActualHeight, ElementName=Address1TextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="Address Line 2" Height="{Binding ActualHeight, ElementName=Address2TextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="Phone Number" Height="{Binding ActualHeight, ElementName=AddresPhoneTextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="City" Height="{Binding ActualHeight, ElementName=CityTextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="Post Code" Height="{Binding ActualHeight, ElementName=PostCodeTextBox}" Margin="5" HorizontalAlignment="Right"/>
+                <Label Content="Country" Height="{Binding ActualHeight, ElementName=CountryTextBox}" Margin="5" HorizontalAlignment="Right"/>
             </StackPanel>
 
             <StackPanel 
                 Orientation="Vertical"
-                Grid.Row="0"
+                Margin="0 10 0 0"
+                Grid.Row="1"
                 Grid.Column="3">
                 <ComboBox 
                     x:Name="AddressesComboBox"
                     MinHeight="30"
+                    Margin="5"
                     ItemsSource="{Binding Customer.Addresses, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     SelectedItem="{Binding SelectedAddress, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     DisplayMemberPath="Line1"/>
@@ -137,41 +118,42 @@
                     x:Name="Address1TextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.Line1, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="Address2TextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.Line2, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="AddresPhoneTextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="CityTextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.City, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="PostCodeTextBox"
                     MinWidth="100"
                     MinHeight="30"
-                    Margin="0 0 0 -1"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.PostCode, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
                     x:Name="CountryTextBox"
                     MinWidth="100"
                     MinHeight="30"
+                    Margin="5"
                     TextWrapping="Wrap"
                     Text="{Binding SelectedAddress.Country, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
@@ -182,15 +164,15 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="6"
                 Orientation="Horizontal"
-                HorizontalAlignment="Center">
+                HorizontalAlignment="Right">
                 <Button
-                    Margin="10 10 10 0"
+                    Margin="10 10 10 10"
                     Height="30"
                     Width="100"
-                    Command="{Binding SaveCommand, UpdateSourceTrigger=PropertyChanged}"
+                    Command="{Binding SaveCommand}"
                     Content="Save"/>
                 <Button
-                    Margin="10 10 10 0"
+                    Margin="10 10 5 10"
                     Height="30"
                     Width="100"
                     Command="{Binding CancelCommand}"
