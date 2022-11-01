@@ -103,6 +103,7 @@
             Margin="1 0 1 10"
             GridLinesVisibility="Horizontal"
             HorizontalGridLinesBrush="#7f8c8d"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             RowHeaderWidth="0"
             ColumnWidth="*"
             SelectionMode="Single"

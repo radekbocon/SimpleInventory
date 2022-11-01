@@ -31,6 +31,7 @@
             <DataTemplate DataType="{x:Type pages:SettingsPageViewModel}">
                 <views:SettingsPageView/>
             </DataTemplate>
+            
             <DataTemplate DataType="{x:Type viewmodels:ItemDetailsViewModel}">
                 <views:ItemDetailsView/>
             </DataTemplate>
@@ -39,8 +40,16 @@
                 <dialogs:YesNoDialogView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type dialogs:PickCustomerViewModel}">
+                <dialogs:PickCustomerView/>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type viewmodels:CustomerDetailsViewModel}">
                 <views:CustomerDetailsView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:OrderDetailsViewModel}">
+                <views:OrderDetailsView/>
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

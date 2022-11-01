@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SimpleInventory.Wpf.ViewModels.PageViewModes
@@ -20,7 +21,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private readonly ICustomerService _customerService;
         private readonly IOrderService _orderService;
-        private readonly INavigationService _dialogService;
+        private readonly INavigationService _navigationService;
 
         private ObservableCollection<OrderSummaryModel> _orders;
         private ObservableCollection<OrderSummaryModel> _filteredOrders;
@@ -29,13 +30,20 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private ICommand _openOrderCommand;
         private string _searchTerxt;
         private bool _isBusy;
+        private double _scrollPosition;
 
-        public OrdersPageViewModel(ICustomerService customerService, IOrderService orderService, INavigationService dialogService)
+        public OrdersPageViewModel(ICustomerService customerService, IOrderService orderService, INavigationService navigationService)
         {
             _customerService = customerService;
             _orderService = orderService;
-            _dialogService = dialogService;
+            _navigationService = navigationService;
             //GenerateFakeOrders();
+        }
+
+        public double ScrollPosition 
+        { 
+            get => _scrollPosition; 
+            set => SetProperty(ref _scrollPosition, value);
         }
 
         public bool IsBusy
@@ -111,7 +119,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_openOrderCommand == null)
                 {
                     _openOrderCommand = new RelayCommand(
-                        async p => await OpenCustomer((OrderSummaryModel)p),
+                        async p => await OpenOrder((OrderSummaryModel)p),
                         p => p is OrderSummaryModel);
                 }
 
@@ -138,36 +146,28 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private async Task AddNewOrder()
         {
-            //bool save = false;
-            //var vm = new CustomerDetailsViewModel(_customerService, _dialogService);
-            //_dialogService.ShowDialog(vm, result =>
-            //{
-            //    save = result;
-            //});
+            bool save = false;
+            var vm = new OrderDetailsViewModel(_navigationService, _orderService, _customerService);
+            _navigationService.OpenPage(vm);
 
-            //if (save)
-            //{
-            //    await GetOrders();
-            //}
-            throw new NotImplementedException();
+            if (save)
+            {
+                await GetOrders();
+            }
         }
 
-        private async Task OpenCustomer(OrderSummaryModel order)
+        private async Task OpenOrder(OrderSummaryModel order)
         {
-            //if (customer.Id == null) return;
+            if (order.Id == null) return;
 
-            //bool save = false;
-            //var vm = new CustomerDetailsViewModel(customer.Id, _customerService, _dialogService);
-            //_dialogService.ShowDialog(vm, result =>
-            //{
-            //    save = result;
-            //});
+            bool save = false;
+            var vm = new OrderDetailsViewModel(order.Id, _navigationService, _orderService, _customerService);
+            _navigationService.OpenPage(vm);
 
-            //if (save)
-            //{
-            //    await GetOrders();
-            //}
-            throw new NotImplementedException();
+            if (save)
+            {
+                await GetOrders();
+            }
         }
 
         private void ShowBusyIndicator()

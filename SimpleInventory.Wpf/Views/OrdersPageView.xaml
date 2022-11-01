@@ -129,7 +129,7 @@
                 <DataGridTextColumn Header=" " Width="5" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Company Name" Binding="{Binding Customer.CompanyName, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Contact" Binding="{Binding Customer.FullName, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Total" Binding="{Binding OrderTotal, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
+                <DataGridTextColumn Header="Total" Binding="{Binding OrderTotal, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"/>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Updated on" Binding="{Binding LastUpdateDate, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTemplateColumn Width="auto" Header=" ">

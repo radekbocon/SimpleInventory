@@ -1,0 +1,253 @@
+﻿<UserControl x:Class="SimpleInventory.Wpf.Views.OrderDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SimpleInventory.Wpf.Views" 
+             xmlns:controls="clr-namespace:SimpleInventory.Wpf.Controls"
+             xmlns:models="clr-namespace:SimpleInventory.Core.Models;assembly=SimpleInventory.Core"
+             mc:Ignorable="d" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
+             Background="#bdc3c7"
+             d:DesignHeight="500" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:SelectedToVisibilityConverter x:Key="SelectedItemToVis"/>
+    </UserControl.Resources>
+    <Grid Margin="20 0 20 20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Orientation="Horizontal"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Grid.Row="1">
+            <Button
+                Height="30"
+                Style="{StaticResource BackButton}"
+                Command="{Binding GoBackCommand}"
+                Width="30"
+                Content="3"
+                FontSize="26"
+                FontFamily="Marlett"/>
+            <Image 
+                Source="{StaticResource OrdersIcon}"
+                Margin="5"
+                Width="25"
+                Height="25"/>
+            <Label 
+                Content="{Binding Order.Id}"
+                ContentStringFormat="Order #{0}"
+                FontSize="20"/>
+            <Label 
+                Content=" | "
+                FontSize="20"/>
+            <Label 
+                Content="{Binding Order.Status, UpdateSourceTrigger=PropertyChanged}"
+                ContentStringFormat="Status: {0}"
+                FontSize="20"/>
+        </StackPanel>
+
+        <Border
+            x:Name="ContentBorder"
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Grid.RowSpan="3"
+            CornerRadius="5"
+            BorderBrush="#7f8c8d"
+            BorderThickness="1"
+            Background="White">
+
+            <ScrollViewer 
+                PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                Grid.Row="2" 
+                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}}" 
+                VerticalScrollBarVisibility="Auto" 
+                Padding="1">
+                <Grid Margin="10" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <controls:EditableGroupBox
+                        Grid.Column="0"
+                        Grid.Row="0"
+                        EditCommand="{Binding EditCustomerCommand}"
+                        ButtonContent="{Binding CustomerButtonText}"
+                        Header="Customer"
+                        Grid.ColumnSpan="2">
+                        <controls:EditableGroupBox.BoxContent>
+                            <StackPanel Margin="10 0 0 0">
+                                <Label Content="{Binding Order.Customer.CompanyName}" d:Content="Company Name" Padding="2"/>
+                                <Label Content="{Binding Order.Customer.FullName}" d:Content="Full Name" Padding="2"/>
+                                <Label Content="{Binding Order.Customer.Email}" d:Content="email@address.com" Padding="2"/>
+                                <Label Content="{Binding Order.Customer.PhoneNumber}" ContentStringFormat="T: {0}" d:Content="231-654-987" Padding="2"/>
+                            </StackPanel>
+                        </controls:EditableGroupBox.BoxContent>
+                    </controls:EditableGroupBox>
+
+                    <controls:EditableGroupBox 
+                        Margin="0 0 5 0"
+                        Grid.Column="0"
+                        EditCommand="{Binding EditBillingAddressCommand}"
+                        ButtonContent="{Binding BillingAddressButtonText}"
+                        Header="Billing Address"
+                        Grid.Row="1">
+                        <controls:EditableGroupBox.BoxContent>
+                            <StackPanel Margin="10 0 0 0">
+                                <Label Content="{Binding Order.BillingAddress.FullName}" d:Content="Full Name" Padding="2"/>
+                                <Label Content="{Binding Order.BillingAddress.Line1}" d:Content="Line 1" Padding="2"/>
+                                <Label Content="{Binding Order.BillingAddress.Line2}" d:Content="Line 2" Padding="2"/>
+                                <Label Content="{Binding Order.BillingAddress.PostCode}" d:Content="6996 AD" Padding="2"/>
+                                <Label Content="{Binding Order.BillingAddress.City}" d:Content="City" Padding="2"/>
+                                <Label Content="{Binding Order.BillingAddress.Country}" d:Content="USA" Padding="2"/>
+                                <Label Content="{Binding Order.BillingAddress.PhoneNumber}" ContentStringFormat="T: {0}" d:Content="231-654-987" Padding="2"/>
+                            </StackPanel>
+                        </controls:EditableGroupBox.BoxContent>
+                    </controls:EditableGroupBox>
+
+                    <controls:EditableGroupBox 
+                        Margin="5 0 0 0"
+                        Grid.Column="1"
+                        EditCommand="{Binding EditDeliveryAddressCommand}"
+                        ButtonContent="{Binding DeliveryAddressButtonText}"
+                        Header="Delivery Address"
+                        Grid.Row="1">
+                        <controls:EditableGroupBox.BoxContent>
+                            <StackPanel Margin="10 0 0 0">
+                                <Label Content="{Binding Order.DeliveryAddress.FullName}" d:Content="Full Name" Padding="2"/>
+                                <Label Content="{Binding Order.DeliveryAddress.Line1}" d:Content="Line 1" Padding="2"/>
+                                <Label Content="{Binding Order.DeliveryAddress.Line2}" d:Content="Line 2" Padding="2"/>
+                                <Label Content="{Binding Order.DeliveryAddress.PostCode}" d:Content="6996 AD" Padding="2"/>
+                                <Label Content="{Binding Order.DeliveryAddress.City}" d:Content="City" Padding="2"/>
+                                <Label Content="{Binding Order.DeliveryAddress.Country}" d:Content="USA" Padding="2"/>
+                                <Label Content="{Binding Order.DeliveryAddress.PhoneNumber}" ContentStringFormat="T: {0}" d:Content="231-654-987" Padding="2"/>
+                            </StackPanel>
+                        </controls:EditableGroupBox.BoxContent>
+                    </controls:EditableGroupBox>
+
+                    <StackPanel 
+                        Margin="0 10 0 0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Grid.Row="2"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Label 
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            FontSize="16"
+                            Content="Products"/>
+                        <Button 
+                            Margin="10 5 5 5"
+                            Height="25"
+                            Width="40"
+                            Content="Add"
+                            Command="{Binding AddNewLineCommand}"/>
+                    </StackPanel>
+
+                    <DataGrid 
+                        Name="LinesDataGridView" 
+                        ItemsSource="{Binding Order.Lines, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
+                        ColumnHeaderStyle="{StaticResource Header}"
+                        Background="White"
+                        AlternatingRowBackground="#ecf0f1"
+                        AutoGenerateColumns="False"
+                        CanUserDeleteRows="False"
+                        CanUserAddRows="False"
+                        IsReadOnly="True"
+                        BorderThickness="0"
+                        Padding="0 10 0 0"
+                        Margin="1 0 1 10"
+                        CanUserSortColumns="False"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        GridLinesVisibility="Horizontal"
+                        HorizontalGridLinesBrush="#7f8c8d"
+                        RowHeaderWidth="0"
+                        ColumnWidth="*"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow"
+                        FontSize="14"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Grid.Row="3">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#34495e"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction 
+                                    Command="{Binding EditLineCommand}"
+                                    CommandParameter="{Binding ElementName=LinesDataGridView, Path=SelectedItem}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header=" " Width="5" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="#" Width="5" IsReadOnly="True" Binding="{Binding Number}"/>
+                            <DataGridTextColumn Header="ID" MaxWidth="60" Binding="{Binding Item.ProductId, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Item.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Category" MaxWidth="100" Binding="{Binding Item.Type, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Price" MaxWidth="100" Binding="{Binding Price, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"/>
+                            <DataGridTextColumn Header="Quantity" MaxWidth="100" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="Sub-Total" MaxWidth="100" Binding="{Binding Total, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"/>
+                            <DataGridTemplateColumn Width="auto" Header=" ">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button
+                                                Style="{StaticResource EditButton}"
+                                                Command="{Binding DataContext.EditLineCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:OrderLine}}"
+                                                CommandParameter="{Binding}"
+                                                FontFamily="Wingdings 2"
+                                                FontSize="12"
+                                                Content="!"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header=" " Width="5" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Label 
+                        Margin="0 0 20 0"
+                        HorizontalAlignment="Right"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Grid.Row="4"
+                        d:Content="6548.56"
+                        Content="{Binding Order.OrderTotal, UpdateSourceTrigger=PropertyChanged}"
+                        ContentStringFormat="Total: {0:C2}"
+                        FontWeight="Bold"
+                        FontSize="16"/>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

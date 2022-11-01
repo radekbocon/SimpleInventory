@@ -1,5 +1,7 @@
 ﻿using SimpleInventory.Wpf.ViewModels;
 using System;
+using System.CodeDom;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Windows;
@@ -8,12 +10,31 @@ namespace SimpleInventory.Wpf.Services
 {
     public class NavigationService : INavigationService
     {
+        private readonly MainWindow _mainWindow;
+        private Stack<ViewModelBase> _history = new Stack<ViewModelBase>();
+
+        public NavigationService(MainWindow mainWindow)
+        {
+            _mainWindow = mainWindow;
+        }
+
         public void OpenPage(ViewModelBase viewModel)
         {
-            var mainWindow = Application.Current.MainWindow as MainWindow;
-            if (mainWindow == null) return;
+            if (_mainWindow == null) return;
 
-            mainWindow.PageContent.Content = viewModel;
+            if (viewModel is PageViewModel)
+            {
+                _history.Clear();
+            }
+
+            _history.Push(viewModel);
+            _mainWindow.PageContent.Content = viewModel;
+        }
+
+        public void GoBack()
+        {
+            _history.Pop();
+            _mainWindow.PageContent.Content = _history.Peek();
         }
 
         public void ShowDialog(ViewModelBase viewModel, Action<bool> callback, double dialogWidth = 0)
