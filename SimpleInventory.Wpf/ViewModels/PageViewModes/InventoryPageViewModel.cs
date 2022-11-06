@@ -208,21 +208,21 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private void GenerateFakeItems()
-        {
-            var item = new Faker<ItemModel>()
-                .RuleFor(x => x.ProductId, f => f.Random.AlphaNumeric(5).ToUpper())
-                .RuleFor(x => x.Name, f => f.Commerce.ProductName())
-                .RuleFor(x => x.Type, f => f.Commerce.Product())
-                .RuleFor(x => x.Description, f => f.Commerce.ProductDescription())
-                .RuleFor(x => x.Price, f => double.Parse(f.Commerce.Price()))
-                .RuleFor(x => x.Quantity, f => f.Random.Int(0, 450));
+        //private void GenerateFakeItems()
+        //{
+        //    var item = new Faker<ItemModel>()
+        //        .RuleFor(x => x.ProductId, f => f.Random.AlphaNumeric(5).ToUpper())
+        //        .RuleFor(x => x.Name, f => f.Commerce.ProductName())
+        //        .RuleFor(x => x.Type, f => f.Commerce.Product())
+        //        .RuleFor(x => x.Description, f => f.Commerce.ProductDescription())
+        //        .RuleFor(x => x.Price, f => decimal.Parse(f.Commerce.Price()))
+        //        .RuleFor(x => x.Quantity, f => f.Random.Int(0, 450));
 
-            var list = item.Generate(550);
+        //    var list = item.Generate(550);
 
-            _inventyoryService.UpsertMany(list);
+        //    _inventyoryService.UpsertMany(list);
 
-        }
+        //}
 
     }
 }

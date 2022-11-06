@@ -18,9 +18,9 @@ namespace SimpleInventory.Wpf.Controls.Dialogs
     /// <summary>
     /// Logika interakcji dla klasy PickCustomerView.xaml
     /// </summary>
-    public partial class PickCustomerView : UserControl
+    public partial class PickItemView : UserControl
     {
-        public PickCustomerView()
+        public PickItemView()
         {
             InitializeComponent();
         }

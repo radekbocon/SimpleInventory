@@ -41,7 +41,15 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type dialogs:PickCustomerViewModel}">
-                <dialogs:PickCustomerView/>
+                <dialogs:PickItemView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type dialogs:PickAddressViewModel}">
+                <dialogs:PickItemView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type dialogs:PickProductItemViewModel}">
+                <dialogs:PickItemView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodels:CustomerDetailsViewModel}">

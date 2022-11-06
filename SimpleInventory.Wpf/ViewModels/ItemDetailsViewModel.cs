@@ -79,14 +79,14 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private async Task Save()
         {
-            await _inventoryService.UpsertOne(Item);
+            await _inventoryService.UpsertOneAsync(Item);
             await SetItem(Item.Id);
             _dialogService.ModalResult(true);
         }
 
         private async Task SetItem(string id)
         {
-            Item = await _inventoryService.GetById(id);
+            Item = await _inventoryService.GetByIdAsync(id);
             _itemBackup = new ItemModel(Item);
         }
 

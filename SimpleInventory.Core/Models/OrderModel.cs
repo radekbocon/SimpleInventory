@@ -1,15 +1,19 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleInventory.Core.Models
 {
-    public class OrderModel
+    public class OrderModel : INotifyPropertyChanged
     {
-        private List<OrderLine>? _lines;
+        private ObservableCollection<OrderLine>? _lines;
+        private decimal _orderTotal;
 
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
@@ -18,23 +22,29 @@ namespace SimpleInventory.Core.Models
         public DateTime StartDate { get; set; }
         public DateTime LastUpdateDate { get; set; }
         public DateTime CloseDate { get; set; }
-        public decimal OrderTotal { get; set; }
+        public decimal OrderTotal 
+        {
+            get
+            {
+                return _orderTotal;
+            }
+            set
+            {
+                _orderTotal = value;
+                RaisePropertyChanged();
+            }
+            
+        }
         public AddressModel? BillingAddress { get; set; }
         public AddressModel? DeliveryAddress { get; set; }
-        public List<OrderLine>? Lines 
+        public ObservableCollection<OrderLine>? Lines 
         { 
             get => _lines; 
             set
             {
                 _lines = value;
-
-                if (_lines != null)
-                {
-                    foreach (var line in _lines)
-                    {
-                        line.Number = line.Number == 0 ? (_lines.IndexOf(line) + 1) : line.Number;
-                    }
-                }
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(OrderTotal));
             } 
         }
         public OrderStatus Status { get; set; }
@@ -55,6 +65,13 @@ namespace SimpleInventory.Core.Models
             BillingAddress = order.BillingAddress;
             DeliveryAddress = order.DeliveryAddress;
             Lines = order.Lines;
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void RaisePropertyChanged([CallerMemberName] string property = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
     }
 }

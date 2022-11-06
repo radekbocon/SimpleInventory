@@ -26,6 +26,7 @@ namespace SimpleInventory.Core.Models
 
         public AddressModel(AddressModel address)
         {
+            FullName = address.FullName;
             Line1 = address.Line1;
             Line2 = address.Line2;
             PhoneNumber = address.PhoneNumber;

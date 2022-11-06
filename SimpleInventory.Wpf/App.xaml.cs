@@ -38,6 +38,7 @@ namespace SimpleInventory.Wpf
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<ICustomerService, CustomerService>();
             services.AddSingleton<IOrderService, OrderService>();
+            services.AddSingleton<MongoDbConnection>();
 
             services.AddScoped<ViewModelBase>();
             services.AddScoped<MainViewModel>();

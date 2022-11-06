@@ -12,11 +12,17 @@ namespace SimpleInventory.Core.Services
         private const string _connectionString = "mongodb+srv://simple-inventory-client:pnp81TyNe3H1YNsa@cluster0.ltt09c9.mongodb.net/?retryWrites=true&w=majority";
         private const string _databaseName = "SimpleInventoryDB";
 
+        private readonly IMongoClient _client = new MongoClient(_connectionString);
+
         public IMongoCollection<T> ConnectToMongo<T>(in string collection)
         {
-            var client = new MongoClient(_connectionString);
-            var db = client.GetDatabase(_databaseName);
+            var db = _client.GetDatabase(_databaseName);
             return db.GetCollection<T>(collection);
-        }   
+        }
+
+        public IMongoClient GetClient()
+        {
+            return _client;  
+        }
     }
 }

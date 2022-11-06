@@ -5,10 +5,9 @@ using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.Controls.Dialogs;
 using SimpleInventory.Wpf.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace SimpleInventory.Wpf.ViewModels
@@ -18,19 +17,83 @@ namespace SimpleInventory.Wpf.ViewModels
         private readonly ICustomerService _customerService;
         private readonly INavigationService _navigationService;
         private readonly IOrderService _orderService;
+        private readonly IInventoryService _inventoryService;
 
-		private OrderModel? _order;
+        private OrderModel? _order;
         private OrderModel? _orderBackup;
-        private ICommand _goBackCommand;
-        private ICommand _editCustomerCommand;
-        private ICommand _editBillingAddressCommand;
-        private ICommand _editDeliveryAddressrCommand;
-
+        private ICommand? _goBackCommand;
+        private ICommand? _editCustomerCommand;
+        private ICommand? _editBillingAddressCommand;
+        private ICommand? _editDeliveryAddressrCommand;
+        private ICommand? _editLineCommand;
+        private ICommand? _addLineCommand;
+        private ICommand? _updateTotalCommand;
+        private ICommand? _saveOrderCommand;
 
 
         public string CustomerButtonText => Order?.Customer == null ? "Add" : "Edit";
         public string DeliveryAddressButtonText => Order?.DeliveryAddress == null ? "Add" : "Edit";
         public string BillingAddressButtonText => Order?.BillingAddress == null ? "Add" : "Edit";
+
+        public ICommand SaveOrderCommand
+        {
+            get
+            {
+                if (_saveOrderCommand == null)
+                {
+                    _saveOrderCommand = new RelayCommand(
+                        async p => await SaveOrder(),
+                        p => Order?.Lines != null);
+                }
+
+                return _saveOrderCommand;
+            }
+        }
+
+        public ICommand UpdateTotalCommand
+        {
+            get
+            {
+                if (_updateTotalCommand == null)
+                {
+                    _updateTotalCommand = new RelayCommand(
+                        p => CalculateTotal(),
+                        p => true);
+                }
+
+                return _updateTotalCommand;
+            }
+        }
+
+        public ICommand AddLineCommand
+        {
+            get
+            {
+                if (_addLineCommand == null)
+                {
+                    _addLineCommand = new RelayCommand(
+                        p => AddLine(),
+                        p => true);
+                }
+
+                return _addLineCommand;
+            }
+        }
+
+        public ICommand EditLineCommand
+        {
+            get
+            {
+                if (_editLineCommand == null)
+                {
+                    _editLineCommand = new RelayCommand(
+                        p => EditLine((OrderLine)p),
+                        p => p is OrderLine);
+                }
+
+                return _editLineCommand;
+            }
+        }
 
         public ICommand EditCustomerCommand
         {
@@ -54,7 +117,7 @@ namespace SimpleInventory.Wpf.ViewModels
                 if (_editBillingAddressCommand == null)
                 {
                     _editBillingAddressCommand = new RelayCommand(
-                        p => EditCustomer(),
+                        p => EditBillingAddress(),
                         p => Order?.Customer != null);
                 }
 
@@ -69,7 +132,7 @@ namespace SimpleInventory.Wpf.ViewModels
                 if (_editDeliveryAddressrCommand == null)
                 {
                     _editDeliveryAddressrCommand = new RelayCommand(
-                        p => EditCustomer(),
+                        p => EditDeliveryAddress(),
                         p => Order?.Customer != null);
                 }
 
@@ -79,9 +142,12 @@ namespace SimpleInventory.Wpf.ViewModels
 
         public OrderModel Order
         {
-            get => _order;
+            get
+            {
+                return _order;
+            }
             set 
-            { 
+            {
                 SetProperty(ref _order, value);
                 NotifyPropertyChanged(nameof(CustomerButtonText));
                 NotifyPropertyChanged(nameof(DeliveryAddressButtonText));
@@ -104,19 +170,21 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public OrderDetailsViewModel(INavigationService navigationService, IOrderService orderService, ICustomerService customerService)
+        public OrderDetailsViewModel(INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService)
         {
             _navigationService = navigationService;
             _customerService = customerService;
             _orderService = orderService;
+            _inventoryService = inventoryService;
             Order = new OrderModel();
         }
 
-        public OrderDetailsViewModel(string id, INavigationService navigationService, IOrderService orderService, ICustomerService customerService)
+        public OrderDetailsViewModel(string id, INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService)
 		{
 			_navigationService = navigationService;
             _customerService = customerService;
             _orderService = orderService;
+            _inventoryService = inventoryService;
             SetOrder(id).Await();
 		}
 
@@ -127,7 +195,7 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private async Task SetOrder(string id)
         {
-            Order = await _orderService.GetByNumber(id);
+            Order = await _orderService.GetByNumberAsync(id);
             _orderBackup = new OrderModel(Order);
         }
 
@@ -141,6 +209,86 @@ namespace SimpleInventory.Wpf.ViewModels
             });
 
             _navigationService.ShowDialog(vm, callback: result => { });
+        }
+
+        private void EditBillingAddress()
+        {
+            var vm = new PickAddressViewModel(Order?.Customer?.Id, _customerService, _navigationService, address =>
+            {
+                Order.BillingAddress = address;
+                NotifyPropertyChanged(nameof(Order));
+                NotifyPropertyChanged(nameof(CustomerButtonText));
+            });
+
+            _navigationService.ShowDialog(vm, callback: result => { });
+        }
+
+        private void EditDeliveryAddress()
+        {
+            var vm = new PickAddressViewModel(Order?.Customer?.Id, _customerService, _navigationService, address =>
+            {
+                Order.DeliveryAddress = address;
+                NotifyPropertyChanged(nameof(Order));
+                NotifyPropertyChanged(nameof(CustomerButtonText));
+            });
+
+            _navigationService.ShowDialog(vm, callback: result => { });
+        }
+
+        private void EditLine(OrderLine line)
+        {
+            var vm = new PickProductItemViewModel(_inventoryService, _navigationService, item =>
+            {
+                line.Item = item;
+                line.Price = line.Item.Price;
+                NotifyPropertyChanged(nameof(Order));
+                NotifyPropertyChanged(nameof(Order.Lines));
+            });
+
+            _navigationService.ShowDialog(vm, callback: result => { });
+        }
+
+        private void AddLine()
+        {
+            Order.Lines = Order.Lines == null ? new ObservableCollection<OrderLine>() : Order.Lines;
+
+            var vm = new PickProductItemViewModel(_inventoryService, _navigationService, item =>
+            {
+                var line = new OrderLine(item);
+                Order.Lines.Add(line);
+                line.Number = Order.Lines.IndexOf(line) + 1;
+                line.Price = line.Item.Price;
+                NotifyPropertyChanged(nameof(Order));
+                NotifyPropertyChanged(nameof(Order.Lines));
+            });
+
+            _navigationService.ShowDialog(vm, callback: result => { });
+        }
+
+        private void CalculateTotal()
+        {
+            if (Order?.Lines != null)
+            {
+                decimal total = 0;
+                foreach (var item in Order.Lines)
+                {
+                    total += item.Total;
+                }
+                Order.OrderTotal = total;
+            }
+        }
+
+        private async Task SaveOrder()
+        {
+            try
+            {
+                await _orderService.UpsertOneAsync(Order);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show("Not enough items in inventory");
+            }
         }
     }
 }

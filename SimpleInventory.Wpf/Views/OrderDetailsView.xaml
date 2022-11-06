@@ -161,7 +161,7 @@
                             Height="25"
                             Width="40"
                             Content="Add"
-                            Command="{Binding AddNewLineCommand}"/>
+                            Command="{Binding AddLineCommand}"/>
                     </StackPanel>
 
                     <DataGrid 
@@ -173,7 +173,6 @@
                         AutoGenerateColumns="False"
                         CanUserDeleteRows="False"
                         CanUserAddRows="False"
-                        IsReadOnly="True"
                         BorderThickness="0"
                         Padding="0 10 0 0"
                         Margin="1 0 1 10"
@@ -200,22 +199,23 @@
                             </Style>
                         </DataGrid.CellStyle>
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:EventTrigger EventName="CurrentCellChanged">
                                 <i:InvokeCommandAction 
-                                    Command="{Binding EditLineCommand}"
-                                    CommandParameter="{Binding ElementName=LinesDataGridView, Path=SelectedItem}"/>
+                                    Command="{Binding UpdateTotalCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header=" " Width="5" IsReadOnly="True"/>
                             <DataGridTextColumn Header="#" Width="5" IsReadOnly="True" Binding="{Binding Number}"/>
-                            <DataGridTextColumn Header="ID" MaxWidth="60" Binding="{Binding Item.ProductId, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Name" Binding="{Binding Item.Name, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Category" MaxWidth="100" Binding="{Binding Item.Type, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Price" MaxWidth="100" Binding="{Binding Price, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"/>
-                            <DataGridTextColumn Header="Quantity" MaxWidth="100" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"/>
-                            <DataGridTextColumn Header="Sub-Total" MaxWidth="100" Binding="{Binding Total, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}"/>
-                            <DataGridTemplateColumn Width="auto" Header=" ">
+                            <DataGridTextColumn Header="ID" MaxWidth="60" Binding="{Binding Item.ProductId, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Item.Name, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Category" MaxWidth="100" Binding="{Binding Item.Type, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="List Price" MaxWidth="100" Binding="{Binding Item.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Price" MaxWidth="100" Binding="{Binding Price, UpdateSourceTrigger=PropertyChanged, StringFormat=C2, Mode=TwoWay}" IsReadOnly="False"/>
+                            <DataGridTextColumn Header="In Inventory" MaxWidth="100" Binding="{Binding Item.Quantity, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Quantity" MaxWidth="100" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="False"/>
+                            <DataGridTextColumn Header="Sub-Total" MaxWidth="100" Binding="{Binding Total, UpdateSourceTrigger=PropertyChanged, StringFormat=C2}" IsReadOnly="True"/>
+                            <DataGridTemplateColumn Width="auto" Header=" " IsReadOnly="True">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -235,17 +235,27 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <Label 
-                        Margin="0 0 20 0"
-                        HorizontalAlignment="Right"
+                    <StackPanel 
                         Grid.Column="0"
                         Grid.ColumnSpan="2"
                         Grid.Row="4"
-                        d:Content="6548.56"
-                        Content="{Binding Order.OrderTotal, UpdateSourceTrigger=PropertyChanged}"
-                        ContentStringFormat="Total: {0:C2}"
-                        FontWeight="Bold"
-                        FontSize="16"/>
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Button 
+                            Content="Save"
+                            Margin="5 5 20 5"
+                            Width="80"
+                            Height="25"
+                            Command="{Binding SaveOrderCommand}"/>
+                        <Label 
+                            Margin="0 0 20 0"
+                            HorizontalAlignment="Right"
+                            d:Content="6548.56"
+                            Content="{Binding Order.OrderTotal, UpdateSourceTrigger=PropertyChanged}"
+                            ContentStringFormat="Total: {0:C2}"
+                            FontWeight="Bold"
+                            FontSize="16"/>
+                    </StackPanel>
                 </Grid>
             </ScrollViewer>
         </Border>

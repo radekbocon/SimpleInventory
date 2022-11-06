@@ -11,7 +11,16 @@ namespace SimpleInventory.Core.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly MongoDbConnection _db = new MongoDbConnection();
+        private readonly MongoDbConnection _db;
+        private readonly IMongoClient _client;
+        private readonly IInventoryService _inventoryService;
+
+        public OrderService(IInventoryService inventoryService, MongoDbConnection db)
+        {
+            _inventoryService = inventoryService;
+            _db = db;
+            _client = _db.GetClient();
+        }
 
         public async Task<List<OrderSummaryModel>> GetAll()
         {
@@ -20,28 +29,92 @@ namespace SimpleInventory.Core.Services
             return orders.ToList();
         }
 
-        public async Task<OrderModel> GetByNumber(string id)
+        public async Task<OrderModel> GetByNumberAsync(string id)
         {
             var collection = _db.ConnectToMongo<OrderModel>("Orders");
             var order = await collection.FindAsync(x => x.Id == id);
-            return order.Single();
+            return order.SingleOrDefault();
         }
 
-        public async Task UpsertOne(OrderModel order)
+        public OrderModel GetByNumber(string id)
+        {
+            var collection = _db.ConnectToMongo<OrderModel>("Orders");
+            var order = collection.Find(x => x.Id == id);
+            return order.SingleOrDefault();
+        }
+
+        public void UpsertOne(OrderModel order)
         {
             order.Id ??= ObjectId.GenerateNewId().ToString();
+            order.StartDate = order.StartDate == DateTime.MinValue ? DateTime.Today : order.StartDate;
+            order.LastUpdateDate = DateTime.Today;
+            ProcessInventoryTransaction(order);
             var collection = _db.ConnectToMongo<OrderModel>("Orders");
-            await collection.ReplaceOneAsync(x => x.Id == order.Id, order, new ReplaceOptions { IsUpsert = true });
+            collection.ReplaceOne(x => x.Id == order.Id, order, new ReplaceOptions { IsUpsert = true});
+        }
+
+        public async Task UpsertOneAsync(OrderModel order)
+        {
+            order.Id ??= ObjectId.GenerateNewId().ToString();
+            order.StartDate = order.StartDate == DateTime.MinValue ? DateTime.Today : order.StartDate;
+            order.LastUpdateDate = DateTime.Today;
+            ProcessInventoryTransaction(order);
+            var collection = _db.ConnectToMongo<OrderModel>("Orders");
+            await collection.ReplaceOneAsync(x => x.Id == order.Id, order, new ReplaceOptions { IsUpsert = true } );
         }
 
         public async Task UpsertMany(List<OrderModel> orders)
         {
             foreach (var order in orders)
             {
-                order.Id ??= ObjectId.GenerateNewId().ToString();
-                var collection = _db.ConnectToMongo<OrderModel>("Orders");
-                await collection.ReplaceOneAsync(x => x.Id == order.Id, order, new ReplaceOptions { IsUpsert = true });
+                await UpsertOneAsync(order);
             }
+        }
+
+        private void ProcessInventoryTransaction(OrderModel orderNew)
+        {
+            if (orderNew.Lines == null)
+            {
+                return;
+            }
+
+            try
+            {
+
+                using (var session = _client.StartSession())
+                {
+                    session.StartTransaction();
+
+                    OrderModel orderOriginal = GetByNumber(orderNew.Id);
+                    if (orderOriginal != null && orderOriginal.Lines != null)
+                    {
+                        foreach (var line in orderOriginal.Lines)
+                        {
+                            var item = _inventoryService.GetById(line.Item.Id, session);
+                            item.Quantity += line.Quantity;
+                            _inventoryService.UpsertOne(item, session);
+                        }
+                    }
+
+                    foreach (var line in orderNew.Lines)
+                    {
+                        var item = _inventoryService.GetById(line.Item.Id, session);
+                        item.Quantity -= line.Quantity;
+                        _inventoryService.UpsertOne(item, session);
+                    }
+
+                    var collection = _db.ConnectToMongo<OrderModel>("Orders");
+                    collection.ReplaceOne(session, x => x.Id == orderNew.Id, orderNew, new ReplaceOptions { IsUpsert = true });
+
+                    session.CommitTransaction();
+                }
+
+            }
+            catch (StackOverflowException)
+            {
+                throw;
+            }
+            
         }
     }
 }
