@@ -59,6 +59,10 @@
             <DataTemplate DataType="{x:Type viewmodels:OrderDetailsViewModel}">
                 <views:OrderDetailsView/>
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:ReceivingViewModel}">
+                <views:ReceiveingView/>
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -1,10 +1,9 @@
-﻿<UserControl x:Class="SimpleInventory.Wpf.Views.ItemDetailsView"
+﻿<UserControl x:Class="SimpleInventory.Wpf.Views.ReceiveingView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SimpleInventory.Wpf.Views"
-             Name="root"
+             xmlns:local="clr-namespace:SimpleInventory.Wpf.Views" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Border>
@@ -21,68 +20,53 @@
             <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" Margin="50 10 10 10">
                 <Label
                     Margin="5"
-                    Height="{Binding ElementName=ProductIdTextBox, Path=ActualHeight}"
+                    Height="{Binding ElementName=ItemsComboBox, Path=ActualHeight}"
                     HorizontalAlignment="Right"
-                    Content="Product ID"/>
+                    Content="Product Name"/>
                 <Label
                     Margin="5"
-                    Height="{Binding ElementName=NameTextBox, Path=ActualHeight}"
+                    Height="{Binding ElementName=LocationTextBox, Path=ActualHeight}"
                     HorizontalAlignment="Right"
-                    Content="Name"/>
+                    Content="Loacation"/>
                 <Label
                     Margin="5"
-                    Height="{Binding ElementName=TypeTextBox, Path=ActualHeight}"
+                    Height="{Binding ElementName=QuantityTextBox, Path=ActualHeight}"
                     HorizontalAlignment="Right"
-                    Content="Type"/>
-                <Label
-                    Margin="5"
-                    Height="{Binding ElementName=PriceTextBox, Path=ActualHeight}"
-                    HorizontalAlignment="Right"
-                    Content="Price"/>
-                <Label
-                    Margin="5"
-                    Height="{Binding ElementName=DescriptionTextBox, Path=ActualHeight}"
-                    HorizontalAlignment="Right"
-                    Content="Description"/>
+                    Content="Quantity"/>
             </StackPanel>
 
             <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0" Margin="10 10 50 10">
+                <ComboBox 
+                    x:Name="ItemsComboBox"
+                    Margin="5"
+                    Grid.Row="1"
+                    MinHeight="30"
+                    MinWidth="100"
+                    Focusable="True"
+                    IsEditable="True"
+                    DisplayMemberPath="{Binding DisplayProperty}"
+                    SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                    ItemsSource="{Binding Items, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
                 <TextBox
-                    x:Name="ProductIdTextBox"
+                    x:Name="LocationTextBox"
                     Margin="5"
                     MinWidth="100"
                     MinHeight="30"
                     TextWrapping="Wrap"
-                    ClipToBounds="True"
-                    Text="{Binding Item.ProductId, UpdateSourceTrigger=PropertyChanged}"/>
+                    Text="{Binding Entry.Location, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox
-                    x:Name="NameTextBox"
+                    x:Name="QuantityTextBox"
                     Margin="5"
                     MinWidth="100"
                     MinHeight="30"
                     TextWrapping="Wrap"
-                    Text="{Binding Item.Name, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="TypeTextBox"
-                    Margin="5"
-                    MinWidth="100"
-                    MinHeight="30"
-                    TextWrapping="Wrap"
-                    Text="{Binding Item.Type, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="PriceTextBox"
-                    Margin="5"
-                    MinWidth="100"
-                    MinHeight="30"
-                    TextWrapping="Wrap"
-                    Text="{Binding Item.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}"/>
-                <TextBox
-                    x:Name="DescriptionTextBox"
-                    Margin="5"
-                    MinWidth="100"
-                    MinHeight="30"
-                    TextWrapping="Wrap"
-                    Text="{Binding Item.Description, UpdateSourceTrigger=PropertyChanged}"/>
+                    Text="{Binding Entry.Quantity, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
             <StackPanel
@@ -97,7 +81,7 @@
                     Height="30"
                     Width="100"
                     Command="{Binding SaveCommand, UpdateSourceTrigger=PropertyChanged}"
-                    Content="Save"/>
+                    Content="Receive"/>
                 <Button
                     Margin="10 10 5 10"
                     Height="30"

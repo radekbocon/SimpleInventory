@@ -23,7 +23,7 @@ namespace SimpleInventory.Wpf.Controls.Dialogs
 
         protected override async Task GetItems()
         {
-            var list = await _inventoryService.GetAll();
+            var list = await _inventoryService.GetAllItemsAsync();
             Items = new ObservableCollection<ItemModel>(list);
         }
     }

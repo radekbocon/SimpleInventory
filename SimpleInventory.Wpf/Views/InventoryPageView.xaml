@@ -15,7 +15,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadItemsCommand}"/>
+            <i:InvokeCommandAction Command="{Binding LoadInventoryCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
@@ -76,6 +76,11 @@
                 Width="150"/>
             <Button 
                 Margin="0 0 5 0"
+                Content="Receiving"
+                Style="{StaticResource DarkButton}"
+                Command="{Binding ReceiveCommand}"/>
+            <Button 
+                Margin="0 0 5 0"
                 Content="Add New Item"
                 Style="{StaticResource DarkButton}"
                 Command="{Binding AddNewItemCommand}"/>
@@ -130,12 +135,12 @@
             </i:Interaction.Triggers>
             <DataGrid.Columns>
                 <DataGridTextColumn Header=" " Width="5" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Product ID" Binding="{Binding ProductId, UpdateSourceTrigger=PropertyChanged}" MaxWidth="100"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"/>
-                <DataGridTextColumn Header="Description" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding Type, UpdateSourceTrigger=PropertyChanged}" MaxWidth="100"/>
+                <DataGridTextColumn Header="Product ID" Binding="{Binding Item.ProductId, UpdateSourceTrigger=PropertyChanged}" MaxWidth="100"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Item.Name, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"/>
+                <DataGridTextColumn Header="Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Item.Type, UpdateSourceTrigger=PropertyChanged}" MaxWidth="100"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" MaxWidth="85"/>
-                <DataGridTextColumn Header="Price" Binding="{Binding Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}" MaxWidth="85"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Item.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}" MaxWidth="85"/>
                 <DataGridTemplateColumn Width="auto" Header=" ">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -143,7 +148,7 @@
                                 <Button
                                     Style="{StaticResource EditButton}"
                                     Command="{Binding DataContext.EditItemCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:ItemModel}}"
+                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:InventoryEntryModel}}"
                                     CommandParameter="{Binding}"
                                     FontFamily="Wingdings 2"
                                     FontSize="12"
@@ -152,7 +157,7 @@
                                 <Button
                                     Style="{StaticResource DeleteButton}"
                                     Command="{Binding DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:ItemModel}}"
+                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:InventoryEntryModel}}"
                                     CommandParameter="{Binding}"
                                     FontFamily="Marlett"
                                     FontSize="12"

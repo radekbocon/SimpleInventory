@@ -32,6 +32,7 @@ namespace SimpleInventory.Wpf.ViewModels
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
+            SetItem().Await();
         }
 
         public string Name { get; set; } = "Item Details";
@@ -79,14 +80,14 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private async Task Save()
         {
-            await _inventoryService.UpsertOneAsync(Item);
+            await _inventoryService.UpsertOneItemAsync(Item);
             await SetItem(Item.Id);
             _dialogService.ModalResult(true);
         }
 
-        private async Task SetItem(string id)
+        private async Task SetItem(string id = null)
         {
-            Item = await _inventoryService.GetByIdAsync(id);
+            Item = id == null ? new ItemModel() : await _inventoryService.GetItemByIdAsync(id);
             _itemBackup = new ItemModel(Item);
         }
 
@@ -96,7 +97,8 @@ namespace SimpleInventory.Wpf.ViewModels
             {
                 return false;
             }
-            return !_item.IsEqualTo(_itemBackup);
+            bool hasChanged = !_item.Equals(_itemBackup);
+            return hasChanged;
         }
     }
 }

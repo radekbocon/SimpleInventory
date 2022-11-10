@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace SimpleInventory.Core.Models
 {
+    [BsonIgnoreExtraElements]
     public class ItemModel
     {
         [BsonId]
@@ -18,7 +19,6 @@ namespace SimpleInventory.Core.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? Type { get; set; }
-        public uint Quantity { get; set; }
         public decimal Price { get; set; }
 
         public ItemModel()
@@ -28,13 +28,27 @@ namespace SimpleInventory.Core.Models
 
         public ItemModel(ItemModel item)
         {
+            if (item == null)
+            {
+                return;
+            }
             Id = item.Id;
             ProductId = item.ProductId;
             Name = item.Name;
             Description = item.Description;
             Type = item.Type;
-            Quantity = item.Quantity;
             Price = item.Price;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ItemModel model &&
+                   Id == model.Id &&
+                   ProductId == model.ProductId &&
+                   Name == model.Name &&
+                   Description == model.Description &&
+                   Type == model.Type &&
+                   Price == model.Price;
         }
     }
 }

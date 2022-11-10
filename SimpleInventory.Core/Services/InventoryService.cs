@@ -13,83 +13,117 @@ namespace SimpleInventory.Core.Services
     public class InventoryService : IInventoryService
     {
         private readonly MongoDbConnection _db;
+        private readonly IMongoCollection<InventoryEntryModel> _inventoryCollection;
+        private readonly IMongoCollection<ItemModel> _itemsCollection;
 
         public InventoryService(MongoDbConnection db)
         {
             _db = db;
+            _inventoryCollection = _db.ConnectToMongo<InventoryEntryModel>("Inventory");
+            _itemsCollection = _db.ConnectToMongo<ItemModel>("Items");
         }
 
-        public async Task DeleteOne(ItemModel item)
+        public async Task DeleteOne(InventoryEntryModel item)
         {
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            await collection.DeleteOneAsync(x => x.Id == item.Id);
+            await _inventoryCollection.DeleteOneAsync(x => x.Id == item.Id);
         }
 
-        public async Task<ItemModel> GetByIdAsync(string id)
+        public async Task<InventoryEntryModel> GetByIdAsync(string id)
         {
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            var item = await collection.FindAsync(x => x.Id == id);
+            var item = await _inventoryCollection.FindAsync(x => x.Id == id);
             return item.SingleOrDefault();
         }
 
-        public ItemModel GetById(string id)
+        public async Task<ItemModel> GetItemByIdAsync(string id)
         {
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            var item = collection.Find(x => x.Id == id);
+            var item = await _itemsCollection.FindAsync(x => x.Id == id);
             return item.SingleOrDefault();
         }
 
-        public ItemModel GetById(string id, IClientSessionHandle session)
+        public InventoryEntryModel GetById(string id)
         {
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            var item = collection.Find(session, x => x.Id == id);
+            var item = _inventoryCollection.Find(x => x.Id == id);
             return item.SingleOrDefault();
         }
 
-        public async Task<List<ItemModel>> Search(string key)
+        public InventoryEntryModel GetById(string id, IClientSessionHandle session)
         {
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            var filter = Builders<ItemModel>.Filter.Regex("Name", new BsonRegularExpression("/.*" + key + ".*/i"));
-            var items = await collection.Find(filter).ToListAsync();
+            var item = _inventoryCollection.Find(session, x => x.Id == id);
+            return item.SingleOrDefault();
+        }
+
+        public async Task<List<InventoryEntryModel>> Search(string key)
+        {
+            var filter = Builders<InventoryEntryModel>.Filter.Regex("Name", new BsonRegularExpression("/.*" + key + ".*/i"));
+            var items = await _inventoryCollection.Find(filter).ToListAsync();
             return items.ToList();
         }
 
-        public async Task<List<ItemModel>> GetAll()
+        public async Task<List<InventoryEntryModel>> GetAllEntriesAsync()
         {
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            var items = await collection.FindAsync(_ => true);
+            var items = await _inventoryCollection.FindAsync(_ => true);
             return items.ToList();
         }
 
-        public async Task UpsertMany(List<ItemModel> items)
+        public async Task<List<ItemModel>> GetAllItemsAsync()
+        {
+            var items = await _itemsCollection.FindAsync(_ => true);
+            return items.ToList();
+        }
+
+        public List<ItemModel> GetAllItems()
+        {
+            var items = _itemsCollection.Find(_ => true);
+            return items.ToList();
+        }
+
+        public async Task UpsertMany(List<InventoryEntryModel> items)
         {
             foreach (var item in items)
             {
                 item.Id ??= ObjectId.GenerateNewId().ToString();
-                var collection = _db.ConnectToMongo<ItemModel>("Items");
-                await collection.ReplaceOneAsync(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
+                await _inventoryCollection.ReplaceOneAsync(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
             }
         }
 
-        public void UpsertOne(ItemModel item)
+        public void UpsertOne(InventoryEntryModel item)
         {
             item.Id ??= ObjectId.GenerateNewId().ToString();
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            collection.ReplaceOne(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
+            _inventoryCollection.ReplaceOne(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
         }
 
-        public void UpsertOne(ItemModel item, IClientSessionHandle session)
+        public void UpsertOne(InventoryEntryModel item, IClientSessionHandle session)
         {
             item.Id ??= ObjectId.GenerateNewId().ToString();
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            collection.ReplaceOne(session, x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
+            _inventoryCollection.ReplaceOne(session, x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
         }
 
-        public async Task UpsertOneAsync(ItemModel item)
+        public async Task UpsertOneAsync(InventoryEntryModel item)
         {
             item.Id ??= ObjectId.GenerateNewId().ToString();
-            var collection = _db.ConnectToMongo<ItemModel>("Items");
-            await collection.ReplaceOneAsync(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
+            await _inventoryCollection.ReplaceOneAsync(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
+        }
+
+        public async Task UpsertOneItemAsync(ItemModel item)
+        {
+            item.Id ??= ObjectId.GenerateNewId().ToString();
+            await _itemsCollection.ReplaceOneAsync(x => x.Id == item.Id, item, new ReplaceOptions { IsUpsert = true });
+        }
+
+        public async Task ReceiveItem(InventoryEntryModel receive)
+        {
+            var entry = _inventoryCollection.Find(x => x.Item == receive.Item && x.Location == receive.Location).SingleOrDefault();
+
+            if (entry == null)
+            {
+                entry = receive;
+                entry.Id = ObjectId.GenerateNewId().ToString();
+            }
+            else
+            {
+                entry.Quantity += receive.Quantity;
+            }
+            await UpsertOneAsync(entry);
         }
     }
 }

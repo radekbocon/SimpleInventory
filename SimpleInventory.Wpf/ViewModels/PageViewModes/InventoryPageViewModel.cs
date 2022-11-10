@@ -16,15 +16,16 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
     public class InventoryPageViewModel : PageViewModel
     {
         private readonly IInventoryService _inventyoryService;
-        private readonly Services.INavigationService _dialogService;
+        private readonly INavigationService _navigationService;
 
         private string _searchText;
-        private ObservableCollection<ItemModel> _filteredInventory;
-        private ObservableCollection<ItemModel> _inventory;
+        private ObservableCollection<InventoryEntryModel> _filteredInventory;
+        private ObservableCollection<InventoryEntryModel> _inventory;
         private ICommand _deleteItemCommand;
         private ICommand _addNewItemCommand;
-        private ICommand _loadItemsCommand;
+        private ICommand _loadInventoryCommand;
         private ICommand _editItemCommand;
+        private ICommand _receiveCommand;
         private bool _isBusy;
 
         public string Name { get; set; } = "Inventory";
@@ -32,8 +33,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService)
         {
             _inventyoryService = inventyoryService;
-            _dialogService = dialogService;
-            //GenerateFakeItems();
+            _navigationService = dialogService;
         }
 
         public bool IsBusy
@@ -53,7 +53,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ObservableCollection<ItemModel> Inventory
+        public ObservableCollection<InventoryEntryModel> Inventory
         {
             get
             {
@@ -62,8 +62,8 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                     return _inventory;
                 }
 
-                IEnumerable<ItemModel> list = FilterInventory();
-                _filteredInventory = new ObservableCollection<ItemModel>(list);
+                IEnumerable<InventoryEntryModel> list = FilterInventory();
+                _filteredInventory = new ObservableCollection<InventoryEntryModel>(list);
                 return _filteredInventory;
             }
             set 
@@ -79,8 +79,8 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_deleteItemCommand == null)
                 {
                     _deleteItemCommand = new RelayCommand(
-                        async p => await DeleteItem((ItemModel)p),
-                        p => p is ItemModel);
+                        async p => await DeleteItem((InventoryEntryModel)p),
+                        p => p is InventoryEntryModel);
                 }
 
                 return _deleteItemCommand;
@@ -102,18 +102,18 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ICommand LoadItemsCommand
+        public ICommand LoadInventoryCommand
         {
             get
             {
-                if (_loadItemsCommand == null)
+                if (_loadInventoryCommand == null)
                 {
-                    _loadItemsCommand = new RelayCommand(
-                        async p => await GetItems(),
+                    _loadInventoryCommand = new RelayCommand(
+                        async p => await GetInventory(),
                         p => true);
                 }
 
-                return _loadItemsCommand;
+                return _loadInventoryCommand;
             }
         }
 
@@ -124,63 +124,79 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_editItemCommand == null)
                 {
                     _editItemCommand = new RelayCommand(
-                        async p => await EditItem((ItemModel)p),
-                        p => p is ItemModel);
+                        async p => await EditEntry((InventoryEntryModel)p),
+                        p => p is InventoryEntryModel);
                 }
 
                 return _editItemCommand;
             }
         }
 
-        private IEnumerable<ItemModel> FilterInventory()
+        public ICommand ReceiveCommand
+        {
+            get
+            {
+                if (_receiveCommand == null)
+                {
+                    _receiveCommand = new RelayCommand(
+                        async p => await ReceiveItem(),
+                        p => true);
+                }
+
+                return _receiveCommand;
+            }
+        }
+
+        private IEnumerable<InventoryEntryModel> FilterInventory()
         {
             return from i in _inventory
-                   where i.Name != null && i.Name.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
-                         i.ProductId != null && i.ProductId.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
-                         i.Description != null && i.Description.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
-                         i.Type != null && i.Type.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase)
+                   where i.Item?.Name != null && i.Item.Name.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
+                         i.Item?.ProductId != null && i.Item.ProductId.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
+                         i.Item?.Description != null && i.Item.Description.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
+                         i.Location != null && i.Location.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
+                         i.Item?.Type != null && i.Item.Type.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase)
                    select i;
         }
 
         private async Task AddNewItem()
         {
             bool save = false;
-            var vm = new ItemDetailsViewModel(_inventyoryService, _dialogService);
-            _dialogService.ShowModal(vm, result =>
+            var vm = new ItemDetailsViewModel(_inventyoryService, _navigationService);
+            _navigationService.ShowModal(vm, result =>
             {
                 save = result;
             });
 
             if (save)
             {
-                await GetItems();
+                await GetInventory();
             }
         }
 
-        private async Task EditItem(ItemModel item)
+        private async Task EditEntry(InventoryEntryModel entry)
         {
-            if (item.Id == null) return;
+            if (entry.Id == null) return;
 
             bool save = false;
-            var vm = new ItemDetailsViewModel(item.Id, _inventyoryService, _dialogService);
-            _dialogService.ShowModal(vm, result =>
+            var vm = new ReceivingViewModel(entry.Id, _inventyoryService, _navigationService);
+            _navigationService.ShowModal(vm, result =>
             {
                 save = result;
             });
 
             if (save)
             {
-                await GetItems();
+                await GetInventory();
             }
         }
 
-        private async Task DeleteItem(ItemModel item)
+        private async Task DeleteItem(InventoryEntryModel item)
         {
             if (item == null) return;
 
             bool delete = false;
-            var vm = new YesNoDialogViewModel(_dialogService, "Delete this record?");
-            _dialogService.ShowDialog(viewModel: vm, dialogWidth: 250, callback: result => 
+            var vm = new YesNoDialogViewModel(_navigationService, "Delete this record?");
+            _navigationService.ShowDialog(viewModel: vm, dialogWidth: 250, callback: result => 
             {
                 delete = result;
             });
@@ -188,16 +204,31 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (delete)
             {
                 await _inventyoryService.DeleteOne(item)
-                    .ContinueWith(async t => await GetItems());
+                    .ContinueWith(async t => await GetInventory());
             }
         }
 
-        private async Task GetItems()
+        private async Task GetInventory()
         {
             ShowBusyIndicator();
-            var list = await _inventyoryService.GetAll();
-            Inventory = new ObservableCollection<ItemModel>(list);
+            var list = await _inventyoryService.GetAllEntriesAsync();
+            Inventory = new ObservableCollection<InventoryEntryModel>(list);
             IsBusy = false;
+        }
+
+        private async Task ReceiveItem()
+        {
+            bool save = false;
+            var vm = new ReceivingViewModel(_inventyoryService, _navigationService);
+            _navigationService.ShowModal(vm, result =>
+            {
+                save = result;
+            });
+
+            if (save)
+            {
+                await GetInventory();
+            }
         }
 
         private void ShowBusyIndicator()
@@ -207,22 +238,5 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 IsBusy = true;
             }
         }
-
-        //private void GenerateFakeItems()
-        //{
-        //    var item = new Faker<ItemModel>()
-        //        .RuleFor(x => x.ProductId, f => f.Random.AlphaNumeric(5).ToUpper())
-        //        .RuleFor(x => x.Name, f => f.Commerce.ProductName())
-        //        .RuleFor(x => x.Type, f => f.Commerce.Product())
-        //        .RuleFor(x => x.Description, f => f.Commerce.ProductDescription())
-        //        .RuleFor(x => x.Price, f => decimal.Parse(f.Commerce.Price()))
-        //        .RuleFor(x => x.Quantity, f => f.Random.Int(0, 450));
-
-        //    var list = item.Generate(550);
-
-        //    _inventyoryService.UpsertMany(list);
-
-        //}
-
     }
 }

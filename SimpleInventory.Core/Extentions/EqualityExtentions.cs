@@ -57,7 +57,6 @@ namespace SimpleInventory.Core.Extentions
                 obj.Name == another.Name &&
                 obj.Description == another.Description &&
                 obj.Type == another.Type &&
-                obj.Quantity == another.Quantity &&
                 obj.Price == another.Price;
         }
     }
