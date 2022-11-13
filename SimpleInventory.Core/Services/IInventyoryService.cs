@@ -25,5 +25,7 @@ namespace SimpleInventory.Core.Services
         public Task<ItemModel> GetItemByIdAsync(string id);
         public Task UpsertOneItemAsync(ItemModel item);
         public Task ReceiveItem(InventoryEntryModel receive);
+        InventoryEntryModel GetByItemId(string id);
+        InventoryEntryModel GetByItemId(string id, IClientSessionHandle session);
     }
 }

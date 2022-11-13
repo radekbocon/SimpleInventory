@@ -7,7 +7,7 @@ namespace SimpleInventory.Core.Services
     {
         Task<List<OrderSummaryModel>> GetAll();
         Task<OrderModel> GetByNumberAsync(string id);
-        OrderModel GetByNumber(string id);
+        OrderModel GetById(string id);
         Task UpsertMany(List<OrderModel> orders);
         Task UpsertOneAsync(OrderModel order);
         void UpsertOne(OrderModel order);

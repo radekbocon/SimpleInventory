@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
+             xmlns:vm="clr-namespace:SimpleInventory.Wpf.ViewModels"
              xmlns:local="clr-namespace:SimpleInventory.Wpf.Views"
              xmlns:models="clr-namespace:SimpleInventory.Core.Models;assembly=SimpleInventory.Core"
              mc:Ignorable="d"
@@ -139,7 +140,7 @@
                                 <Button
                                     Style="{StaticResource EditButton}"
                                     Command="{Binding DataContext.OpenCustomerCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:CustomerModel}}"
+                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type vm:CustomerViewModel}}"
                                     CommandParameter="{Binding}"
                                     FontFamily="Wingdings 2"
                                     FontSize="12"
@@ -148,7 +149,7 @@
                                 <Button
                                     Style="{StaticResource DeleteButton}"
                                     Command="{Binding DataContext.DeleteCustomerCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:CustomerModel}}"
+                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type vm:CustomerViewModel}}"
                                     CommandParameter="{Binding}"
                                     FontFamily="Marlett"
                                     FontSize="12"

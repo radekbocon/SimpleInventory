@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using AutoMapper;
+using Bogus;
 using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
@@ -23,9 +24,10 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private readonly IOrderService _orderService;
         private readonly INavigationService _navigationService;
         private readonly IInventoryService _inventoryService;
+        private readonly IMapper _mapper;
 
-        private ObservableCollection<OrderSummaryModel> _orders;
-        private ObservableCollection<OrderSummaryModel> _filteredOrders;
+        private ObservableCollection<OrderSummaryViewModel> _orders;
+        private ObservableCollection<OrderSummaryViewModel> _filteredOrders;
         private ICommand _loadOrdersCommand;
         private ICommand _addNewOrderCommand;
         private ICommand _openOrderCommand;
@@ -33,12 +35,13 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private bool _isBusy;
         private double _scrollPosition;
 
-        public OrdersPageViewModel(ICustomerService customerService, IOrderService orderService, INavigationService navigationService, IInventoryService inventoryService)
+        public OrdersPageViewModel(ICustomerService customerService, IOrderService orderService, INavigationService navigationService, IInventoryService inventoryService, IMapper mapper)
         {
             _customerService = customerService;
             _orderService = orderService;
             _navigationService = navigationService;
             _inventoryService = inventoryService;
+            _mapper = mapper;
             //GenerateFakeOrders();
         }
 
@@ -65,7 +68,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ObservableCollection<OrderSummaryModel> Orders
+        public ObservableCollection<OrderSummaryViewModel> Orders
         {
             get
             {
@@ -74,8 +77,8 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                     return _orders;
                 }
 
-                IEnumerable<OrderSummaryModel> list = FilterOrders();
-                _filteredOrders = new ObservableCollection<OrderSummaryModel>(list);
+                IEnumerable<OrderSummaryViewModel> list = FilterOrders();
+                _filteredOrders = new ObservableCollection<OrderSummaryViewModel>(list);
                 return _filteredOrders;
             }
             set
@@ -121,15 +124,15 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_openOrderCommand == null)
                 {
                     _openOrderCommand = new RelayCommand(
-                        async p => await OpenOrder((OrderSummaryModel)p),
-                        p => p is OrderSummaryModel);
+                        async p => await OpenOrder((OrderSummaryViewModel)p),
+                        p => p is OrderSummaryViewModel);
                 }
 
                 return _openOrderCommand;
             }
         }
 
-        private IEnumerable<OrderSummaryModel> FilterOrders()
+        private IEnumerable<OrderSummaryViewModel> FilterOrders()
         {
             return from i in _orders
                    where i.Customer?.CompanyName != null && i.Customer.CompanyName.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
@@ -142,14 +145,15 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             ShowBusyIndicator();
             var list = await _orderService.GetAll();
-            Orders = new ObservableCollection<OrderSummaryModel>(list);
+            var vmList = _mapper.Map<ObservableCollection<OrderSummaryViewModel>>(list);
+            Orders = new ObservableCollection<OrderSummaryViewModel>(vmList);
             IsBusy = false;
         }
 
         private async Task AddNewOrder()
         {
             bool save = false;
-            var vm = new OrderDetailsViewModel(_navigationService, _orderService, _customerService, _inventoryService);
+            var vm = new OrderDetailsViewModel(_navigationService, _orderService, _customerService, _inventoryService, _mapper);
             _navigationService.OpenPage(vm);
 
             if (save)
@@ -158,12 +162,12 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private async Task OpenOrder(OrderSummaryModel order)
+        private async Task OpenOrder(OrderSummaryViewModel order)
         {
             if (order.Id == null) return;
 
             bool save = false;
-            var vm = new OrderDetailsViewModel(order.Id, _navigationService, _orderService, _customerService, _inventoryService);
+            var vm = new OrderDetailsViewModel(order.Id, _navigationService, _orderService, _customerService, _inventoryService, _mapper);
             _navigationService.OpenPage(vm);
 
             if (save)

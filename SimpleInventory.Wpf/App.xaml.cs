@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoMapper;
+using AutoMapper.EquivalencyExpression;
+using Microsoft.Extensions.DependencyInjection;
+using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.Services;
@@ -6,6 +9,7 @@ using SimpleInventory.Wpf.ViewModels;
 using SimpleInventory.Wpf.ViewModels.PageViewModes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
@@ -39,6 +43,7 @@ namespace SimpleInventory.Wpf
             services.AddSingleton<ICustomerService, CustomerService>();
             services.AddSingleton<IOrderService, OrderService>();
             services.AddSingleton<MongoDbConnection>();
+            services.AddSingleton(CreateMapper());
 
             services.AddScoped<ViewModelBase>();
             services.AddScoped<MainViewModel>();
@@ -49,6 +54,22 @@ namespace SimpleInventory.Wpf
             services.AddScoped<SettingsPageViewModel>();
 
             return services.BuildServiceProvider();
+        }
+
+        private IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddCollectionMappers();
+                cfg.CreateMap<InventoryEntryViewModel, InventoryEntryModel>().ReverseMap();
+                cfg.CreateMap<OrderViewModel, OrderModel>().ReverseMap();
+                cfg.CreateMap<OrderSummaryViewModel, OrderSummaryModel>().ReverseMap();
+                cfg.CreateMap<OrderLineViewModel, OrderLineModel>().ReverseMap();
+                cfg.CreateMap<ItemViewModel, ItemModel>().ReverseMap();
+                cfg.CreateMap<CustomerViewModel, CustomerModel>().ReverseMap();
+            });
+            config.AssertConfigurationIsValid();
+            return config.CreateMapper();
         }
     }
 }

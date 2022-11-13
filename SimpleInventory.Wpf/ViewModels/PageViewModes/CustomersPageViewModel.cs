@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using AutoMapper;
+using Bogus;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
@@ -20,9 +21,10 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private readonly ICustomerService _customerService;
         private readonly INavigationService _dialogService;
+        private readonly IMapper _mapper;
 
-        private ObservableCollection<CustomerModel> _customers;
-        private ObservableCollection<CustomerModel> _filteredCustomers;
+        private ObservableCollection<CustomerViewModel> _customers;
+        private ObservableCollection<CustomerViewModel> _filteredCustomers;
         private ICommand _loadCustomersCommand;
         private ICommand _deleteCustomerCommand;
         private ICommand _addNewCustomerCommand;
@@ -30,10 +32,11 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private string _searchTerxt;
         private bool _isBusy;
 
-        public CustomersPageViewModel(ICustomerService customerService, INavigationService dialogService)
+        public CustomersPageViewModel(ICustomerService customerService, INavigationService dialogService, IMapper mapper)
         {
             _customerService = customerService;
             _dialogService = dialogService;
+            _mapper = mapper;
             //GenerateFakeCustomers();
         }
 
@@ -54,7 +57,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ObservableCollection<CustomerModel> Customers
+        public ObservableCollection<CustomerViewModel> Customers
         {
             get
             {
@@ -63,8 +66,8 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                     return _customers;
                 }
 
-                IEnumerable<CustomerModel> list = FilterCustomers();
-                _filteredCustomers = new ObservableCollection<CustomerModel>(list);
+                IEnumerable<CustomerViewModel> list = FilterCustomers();
+                _filteredCustomers = new ObservableCollection<CustomerViewModel>(list);
                 return _filteredCustomers;
             }
             set
@@ -95,8 +98,8 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_deleteCustomerCommand == null)
                 {
                     _deleteCustomerCommand = new RelayCommand(
-                        async p => await DeleteCustomer((CustomerModel)p),
-                        p => p is CustomerModel);
+                        async p => await DeleteCustomer((CustomerViewModel)p),
+                        p => p is CustomerViewModel);
                 }
 
                 return _deleteCustomerCommand;
@@ -125,15 +128,15 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_openCustomerCommand == null)
                 {
                     _openCustomerCommand = new RelayCommand(
-                        async p => await EditCustomer((CustomerModel)p),
-                        p => p is CustomerModel);
+                        async p => await EditCustomer((CustomerViewModel)p),
+                        p => p is CustomerViewModel);
                 }
 
                 return _openCustomerCommand;
             }
         }
 
-        private IEnumerable<CustomerModel> FilterCustomers()
+        private IEnumerable<CustomerViewModel> FilterCustomers()
         {
             return from i in _customers
                    where i.CompanyName != null && i.CompanyName.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
@@ -152,11 +155,12 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             ShowBusyIndicator();
             var list = await _customerService.GetAll();
-            Customers = new ObservableCollection<CustomerModel>(list);
+            var vmList = _mapper.Map<List<CustomerViewModel>>(list);
+            Customers = new ObservableCollection<CustomerViewModel>(vmList);
             IsBusy = false;
         }
 
-        private async Task DeleteCustomer(CustomerModel customer)
+        private async Task DeleteCustomer(CustomerViewModel customer)
         {
             if (customer == null) return;
 
@@ -169,7 +173,8 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
             if (delete)
             {
-                await _customerService.DeleteOne(customer)
+                var customerModel = _mapper.Map<CustomerModel>(customer);   
+                await _customerService.DeleteOne(customerModel)
                     .ContinueWith(async t => await GetCustomers());
             }
         }
@@ -177,7 +182,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewCustomer()
         {
             bool save = false;
-            var vm = new CustomerDetailsViewModel(_customerService, _dialogService);
+            var vm = new CustomerDetailsViewModel(_customerService, _dialogService, _mapper);
             _dialogService.ShowModal(vm, callback => 
             {
                 save = callback;
@@ -189,12 +194,12 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private async Task EditCustomer(CustomerModel customer)
+        private async Task EditCustomer(CustomerViewModel customer)
         {
             if (customer.Id == null) return;
 
             bool save = false;
-            var vm = new CustomerDetailsViewModel(customer.Id, _customerService, _dialogService);
+            var vm = new CustomerDetailsViewModel(customer.Id, _customerService, _dialogService, _mapper);
             _dialogService.ShowModal(vm, result =>
             {
                 save = result;

@@ -1,4 +1,5 @@
-﻿using SimpleInventory.Core.Extentions;
+﻿using AutoMapper;
+using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
@@ -17,6 +18,7 @@ namespace SimpleInventory.Wpf.Controls.Dialogs
     public abstract class PickItemViewModel<T> : ViewModelBase where T : class
     {
         protected readonly INavigationService _navigationService;
+        protected readonly IMapper _mapper;
         private ObservableCollection<T> _items;
         private Action<T> _action;
         private T _selectedListItem;
@@ -90,10 +92,11 @@ namespace SimpleInventory.Wpf.Controls.Dialogs
             }
         }
 
-        public PickItemViewModel(INavigationService navigationService, Action<T> callback)
+        public PickItemViewModel(INavigationService navigationService, IMapper mapper, Action<T> callback)
         {
             _navigationService = navigationService;
             _action = callback;
+            _mapper = mapper;
         }
 
         protected abstract Task GetItems();

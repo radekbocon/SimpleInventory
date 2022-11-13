@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using AutoMapper;
+using Bogus;
 using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
@@ -19,26 +20,29 @@ namespace SimpleInventory.Wpf.ViewModels
     {
         private readonly ICustomerService _customerService;
         private readonly INavigationService _navigationService;
+        private readonly IMapper _mapper;
 
-        private CustomerModel _customer;
-        private CustomerModel _customerBackup;
+        private CustomerViewModel _customer;
+        private CustomerViewModel _customerBackup;
         private ICommand _cancelCommand;
         private ICommand _saveCommand;
         private ICommand _addNewAddress;
         private ICommand _deleteAddress;
 
-        public CustomerDetailsViewModel(string customerId, ICustomerService customerService, INavigationService navigationService)
+        public CustomerDetailsViewModel(string customerId, ICustomerService customerService, INavigationService navigationService, IMapper mapper)
         {
             _customerService = customerService;
             _navigationService = navigationService;
+            _mapper = mapper;
             SetCustomer(customerId).Await();
         }
 
-        public CustomerDetailsViewModel(ICustomerService customerService, INavigationService dialogService)
+        public CustomerDetailsViewModel(ICustomerService customerService, INavigationService dialogService, IMapper mapper)
         {
             _customerService = customerService;
             _navigationService = dialogService;
-            Customer = new CustomerModel();
+            _mapper = mapper;
+            Customer = new CustomerViewModel();
         }
 
         public string Name { get; set; } = "Customer Details";
@@ -51,7 +55,7 @@ namespace SimpleInventory.Wpf.ViewModels
             {
                 if (Customer?.Addresses.Count < 1)
                 {
-                    Customer.Addresses = new List<AddressModel>();
+                    Customer.Addresses = new ObservableCollection<AddressModel>();
                     Customer.Addresses.Add(new AddressModel());
                 }
                 if (_selectedAddress == null)
@@ -64,7 +68,7 @@ namespace SimpleInventory.Wpf.ViewModels
         }
 
 
-        public CustomerModel Customer
+        public CustomerViewModel Customer
         {
             get => _customer;
             set
@@ -152,20 +156,22 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private async Task Save()
         {
-            await _customerService.UpsertOne(Customer);
+            var customerModel = _mapper.Map<CustomerModel>(Customer);
+            await _customerService.UpsertOne(customerModel);
             await SetCustomer(Customer.Id);
             _navigationService.ModalResult(true);
         }
 
         private void CancelChanges()
         {
-            Customer = new CustomerModel(_customerBackup);
+            Customer = new CustomerViewModel(_customerBackup);
         }
 
         private async Task SetCustomer(string id)
         {
-            Customer = await _customerService.GetById(id);
-            _customerBackup = new CustomerModel(_customer);
+            var customerModel = await _customerService.GetById(id);
+            Customer = _mapper.Map<CustomerViewModel>(customerModel);
+            _customerBackup = new CustomerViewModel(_customer);
         }
 
         private bool HasCustomerChanged()
@@ -174,7 +180,7 @@ namespace SimpleInventory.Wpf.ViewModels
             {
                 return false;
             }
-            return !_customer.IsEqualTo(_customerBackup);
+            return !_customer.Equals(_customerBackup);
         }
     }
 }

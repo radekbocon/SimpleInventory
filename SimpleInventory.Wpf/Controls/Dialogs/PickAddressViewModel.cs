@@ -1,4 +1,5 @@
-﻿using SimpleInventory.Core.Models;
+﻿using AutoMapper;
+using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Services;
 using System;
@@ -18,7 +19,7 @@ namespace SimpleInventory.Wpf.Controls.Dialogs
         public override string Title => "Pick Address";
         public override string DisplayProperty => nameof(SelectedItem.Line1);
 
-        public PickAddressViewModel(string id, ICustomerService customerService, INavigationService navigationService, Action<AddressModel> callback) : base(navigationService, callback)
+        public PickAddressViewModel(string id, ICustomerService customerService, INavigationService navigationService, IMapper mapper, Action<AddressModel> callback) : base(navigationService, mapper, callback)
         {
             _customerService = customerService;
             _id = id;

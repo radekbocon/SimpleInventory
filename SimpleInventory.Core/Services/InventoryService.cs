@@ -52,6 +52,18 @@ namespace SimpleInventory.Core.Services
             return item.SingleOrDefault();
         }
 
+        public InventoryEntryModel GetByItemId(string id)
+        {
+            var item = _inventoryCollection.Find(x => x.Item.Id == id);
+            return item.SingleOrDefault();
+        }
+
+        public InventoryEntryModel GetByItemId(string id, IClientSessionHandle session)
+        {
+            var item = _inventoryCollection.Find(session, x => x.Item.Id == id);
+            return item.SingleOrDefault();
+        }
+
         public async Task<List<InventoryEntryModel>> Search(string key)
         {
             var filter = Builders<InventoryEntryModel>.Filter.Regex("Name", new BsonRegularExpression("/.*" + key + ".*/i"));

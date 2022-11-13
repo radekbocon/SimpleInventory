@@ -1,4 +1,5 @@
-﻿using SimpleInventory.Core.Extentions;
+﻿using AutoMapper;
+using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
@@ -18,9 +19,10 @@ namespace SimpleInventory.Wpf.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IOrderService _orderService;
         private readonly IInventoryService _inventoryService;
+        private readonly IMapper _mapper;
 
-        private OrderModel? _order;
-        private OrderModel? _orderBackup;
+        private OrderViewModel? _order;
+        private OrderViewModel? _orderBackup;
         private ICommand? _goBackCommand;
         private ICommand? _editCustomerCommand;
         private ICommand? _editBillingAddressCommand;
@@ -87,8 +89,8 @@ namespace SimpleInventory.Wpf.ViewModels
                 if (_editLineCommand == null)
                 {
                     _editLineCommand = new RelayCommand(
-                        p => EditLine((OrderLine)p),
-                        p => p is OrderLine);
+                        p => EditLine((OrderLineViewModel)p),
+                        p => p is OrderLineViewModel);
                 }
 
                 return _editLineCommand;
@@ -140,7 +142,7 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public OrderModel Order
+        public OrderViewModel Order
         {
             get
             {
@@ -170,21 +172,23 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public OrderDetailsViewModel(INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService)
+        public OrderDetailsViewModel(INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService, IMapper mapper)
         {
             _navigationService = navigationService;
             _customerService = customerService;
             _orderService = orderService;
             _inventoryService = inventoryService;
-            Order = new OrderModel();
+            Order = new OrderViewModel();
+            _mapper = mapper;
         }
 
-        public OrderDetailsViewModel(string id, INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService)
+        public OrderDetailsViewModel(string id, INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService, IMapper mapper)
 		{
 			_navigationService = navigationService;
             _customerService = customerService;
             _orderService = orderService;
             _inventoryService = inventoryService;
+            _mapper = mapper;
             SetOrder(id).Await();
 		}
 
@@ -195,13 +199,14 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private async Task SetOrder(string id)
         {
-            Order = await _orderService.GetByNumberAsync(id);
-            _orderBackup = new OrderModel(Order);
+            var model = await _orderService.GetByNumberAsync(id);
+            Order = _mapper.Map<OrderViewModel>(model);
+            _orderBackup = new OrderViewModel(Order);
         }
 
         private void EditCustomer()
         {
-            var vm = new PickCustomerViewModel(_customerService, _navigationService, customer =>
+            var vm = new PickCustomerViewModel(_customerService, _navigationService, _mapper, customer =>
             {
                 Order.Customer = customer;
                 NotifyPropertyChanged(nameof(Order));
@@ -213,7 +218,7 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private void EditBillingAddress()
         {
-            var vm = new PickAddressViewModel(Order?.Customer?.Id, _customerService, _navigationService, address =>
+            var vm = new PickAddressViewModel(Order?.Customer?.Id, _customerService, _navigationService, _mapper, address =>
             {
                 Order.BillingAddress = address;
                 NotifyPropertyChanged(nameof(Order));
@@ -225,7 +230,7 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private void EditDeliveryAddress()
         {
-            var vm = new PickAddressViewModel(Order?.Customer?.Id, _customerService, _navigationService, address =>
+            var vm = new PickAddressViewModel(Order?.Customer?.Id, _customerService, _navigationService, _mapper, address =>
             {
                 Order.DeliveryAddress = address;
                 NotifyPropertyChanged(nameof(Order));
@@ -235,11 +240,11 @@ namespace SimpleInventory.Wpf.ViewModels
             _navigationService.ShowDialog(vm, callback: result => { });
         }
 
-        private void EditLine(OrderLine line)
+        private void EditLine(OrderLineViewModel line)
         {
-            var vm = new PickProductItemViewModel(_inventoryService, _navigationService, item =>
+            var vm = new PickProductItemViewModel(_inventoryService, _navigationService, _mapper, inventory =>
             {
-                line.Item = item;
+                line.Item = inventory.Item;
                 line.Price = line.Item.Price;
                 NotifyPropertyChanged(nameof(Order));
                 NotifyPropertyChanged(nameof(Order.Lines));
@@ -250,11 +255,11 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private void AddLine()
         {
-            Order.Lines = Order.Lines == null ? new ObservableCollection<OrderLine>() : Order.Lines;
+            Order.Lines = Order.Lines ?? new ObservableCollection<OrderLineViewModel>();
 
-            var vm = new PickProductItemViewModel(_inventoryService, _navigationService, item =>
+            var vm = new PickProductItemViewModel(_inventoryService, _navigationService, _mapper, inventory =>
             {
-                var line = new OrderLine(item);
+                var line = new OrderLineViewModel(inventory.Item);
                 Order.Lines.Add(line);
                 line.Number = Order.Lines.IndexOf(line) + 1;
                 line.Price = line.Item.Price;
@@ -282,7 +287,8 @@ namespace SimpleInventory.Wpf.ViewModels
         {
             try
             {
-                await _orderService.UpsertOneAsync(Order);
+                var model = _mapper.Map<OrderModel>(Order);
+                await _orderService.UpsertOneAsync(model);
             }
             catch (Exception ex)
             {

@@ -1,6 +1,8 @@
-﻿using SimpleInventory.Core.Models;
+﻿using AutoMapper;
+using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Services;
+using SimpleInventory.Wpf.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace SimpleInventory.Wpf.Controls.Dialogs
 {
-    internal class PickCustomerViewModel : PickItemViewModel<CustomerModel>
+    internal class PickCustomerViewModel : PickItemViewModel<CustomerViewModel>
     {
         private readonly ICustomerService _customerService;
 
         public override string Title => "Pick Customer";
         public override string DisplayProperty => nameof(SelectedItem.CompanyName);
 
-        public PickCustomerViewModel(ICustomerService customerService, INavigationService navigationService, Action<CustomerModel> callback) : base(navigationService, callback)
+        public PickCustomerViewModel(ICustomerService customerService, INavigationService navigationService, IMapper mapper, Action<CustomerViewModel> callback) : base(navigationService, mapper, callback)
         {
             _customerService = customerService;
         }
@@ -25,7 +27,8 @@ namespace SimpleInventory.Wpf.Controls.Dialogs
         protected override async Task GetItems()
         {
             var list = await _customerService.GetAll();
-            Items = new ObservableCollection<CustomerModel>(list);
+            var vmList = _mapper.Map<ObservableCollection<CustomerViewModel>>(list);
+            Items = new ObservableCollection<CustomerViewModel>(vmList);
         }
     }
 }

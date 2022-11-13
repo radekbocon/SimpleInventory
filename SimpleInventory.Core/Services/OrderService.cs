@@ -36,7 +36,7 @@ namespace SimpleInventory.Core.Services
             return order.SingleOrDefault();
         }
 
-        public OrderModel GetByNumber(string id)
+        public OrderModel GetById(string id)
         {
             var collection = _db.ConnectToMongo<OrderModel>("Orders");
             var order = collection.Find(x => x.Id == id);
@@ -85,22 +85,22 @@ namespace SimpleInventory.Core.Services
                 {
                     session.StartTransaction();
 
-                    OrderModel orderOriginal = GetByNumber(orderNew.Id);
+                    OrderModel orderOriginal = GetById(orderNew.Id);
                     if (orderOriginal != null && orderOriginal.Lines != null)
                     {
                         foreach (var line in orderOriginal.Lines)
                         {
-                            var item = _inventoryService.GetById(line.Item.Id, session);
-                            item.Quantity += line.Quantity;
-                            _inventoryService.UpsertOne(item, session);
+                            var inventoryEntry = _inventoryService.GetByItemId(line.Item.Id, session);
+                            inventoryEntry.Quantity += line.Quantity;
+                            _inventoryService.UpsertOne(inventoryEntry, session);
                         }
                     }
 
                     foreach (var line in orderNew.Lines)
                     {
-                        var item = _inventoryService.GetById(line.Item.Id, session);
-                        item.Quantity -= line.Quantity;
-                        _inventoryService.UpsertOne(item, session);
+                        var inventoryEntry = _inventoryService.GetByItemId(line.Item.Id, session);
+                        inventoryEntry.Quantity -= line.Quantity;
+                        _inventoryService.UpsertOne(inventoryEntry, session);
                     }
 
                     var collection = _db.ConnectToMongo<OrderModel>("Orders");

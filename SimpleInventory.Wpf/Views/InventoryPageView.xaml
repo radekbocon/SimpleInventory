@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:models="clr-namespace:SimpleInventory.Core.Models;assembly=SimpleInventory.Core"
-             xmlns:vm="clr-namespace:SimpleInventory.Wpf.ViewModels.PageViewModes"
+             xmlns:vm="clr-namespace:SimpleInventory.Wpf.ViewModels"
              xmlns:local="clr-namespace:SimpleInventory.Wpf.Views"
              xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -129,7 +129,7 @@
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <i:InvokeCommandAction 
-                        Command="{Binding EditItemCommand}"
+                        Command="{Binding EditEntryCommand}"
                         CommandParameter="{Binding ElementName=ItemsDataGridView, Path=SelectedItem}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
@@ -147,8 +147,8 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button
                                     Style="{StaticResource EditButton}"
-                                    Command="{Binding DataContext.EditItemCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:InventoryEntryModel}}"
+                                    Command="{Binding DataContext.EditEntryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type vm:InventoryEntryViewModel}}"
                                     CommandParameter="{Binding}"
                                     FontFamily="Wingdings 2"
                                     FontSize="12"
@@ -157,7 +157,7 @@
                                 <Button
                                     Style="{StaticResource DeleteButton}"
                                     Command="{Binding DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:InventoryEntryModel}}"
+                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type vm:InventoryEntryViewModel}}"
                                     CommandParameter="{Binding}"
                                     FontFamily="Marlett"
                                     FontSize="12"

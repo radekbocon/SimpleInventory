@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using AutoMapper;
+using Bogus;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
@@ -17,23 +18,25 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
     {
         private readonly IInventoryService _inventyoryService;
         private readonly INavigationService _navigationService;
+        private readonly IMapper _mapper;
 
         private string _searchText;
-        private ObservableCollection<InventoryEntryModel> _filteredInventory;
-        private ObservableCollection<InventoryEntryModel> _inventory;
+        private ObservableCollection<InventoryEntryViewModel> _filteredInventory;
+        private ObservableCollection<InventoryEntryViewModel> _inventory;
         private ICommand _deleteItemCommand;
         private ICommand _addNewItemCommand;
         private ICommand _loadInventoryCommand;
-        private ICommand _editItemCommand;
+        private ICommand _editEntryCommand;
         private ICommand _receiveCommand;
         private bool _isBusy;
 
         public string Name { get; set; } = "Inventory";
 
-        public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService)
+        public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService, IMapper mapper)
         {
             _inventyoryService = inventyoryService;
             _navigationService = dialogService;
+            _mapper = mapper;
         }
 
         public bool IsBusy
@@ -53,7 +56,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ObservableCollection<InventoryEntryModel> Inventory
+        public ObservableCollection<InventoryEntryViewModel> Inventory
         {
             get
             {
@@ -62,8 +65,8 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                     return _inventory;
                 }
 
-                IEnumerable<InventoryEntryModel> list = FilterInventory();
-                _filteredInventory = new ObservableCollection<InventoryEntryModel>(list);
+                IEnumerable<InventoryEntryViewModel> list = FilterInventory();
+                _filteredInventory = new ObservableCollection<InventoryEntryViewModel>(list);
                 return _filteredInventory;
             }
             set 
@@ -79,7 +82,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_deleteItemCommand == null)
                 {
                     _deleteItemCommand = new RelayCommand(
-                        async p => await DeleteItem((InventoryEntryModel)p),
+                        async p => await DeleteItem((InventoryEntryViewModel)p),
                         p => p is InventoryEntryModel);
                 }
 
@@ -117,18 +120,18 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ICommand EditItemCommand
+        public ICommand EditEntryCommand
         {
             get
             {
-                if (_editItemCommand == null)
+                if (_editEntryCommand == null)
                 {
-                    _editItemCommand = new RelayCommand(
-                        async p => await EditEntry((InventoryEntryModel)p),
-                        p => p is InventoryEntryModel);
+                    _editEntryCommand = new RelayCommand(
+                        async p => await EditEntry((InventoryEntryViewModel)p),
+                        p => p is InventoryEntryViewModel);
                 }
 
-                return _editItemCommand;
+                return _editEntryCommand;
             }
         }
 
@@ -147,7 +150,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private IEnumerable<InventoryEntryModel> FilterInventory()
+        private IEnumerable<InventoryEntryViewModel> FilterInventory()
         {
             return from i in _inventory
                    where i.Item?.Name != null && i.Item.Name.Contains(SearchText, StringComparison.CurrentCultureIgnoreCase) ||
@@ -173,12 +176,12 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private async Task EditEntry(InventoryEntryModel entry)
+        private async Task EditEntry(InventoryEntryViewModel entry)
         {
             if (entry.Id == null) return;
 
             bool save = false;
-            var vm = new ReceivingViewModel(entry.Id, _inventyoryService, _navigationService);
+            var vm = new ReceivingViewModel(entry.Id, _inventyoryService, _navigationService, _mapper);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;
@@ -190,10 +193,11 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private async Task DeleteItem(InventoryEntryModel item)
+        private async Task DeleteItem(InventoryEntryViewModel item)
         {
             if (item == null) return;
 
+            var model = _mapper.Map<InventoryEntryModel>(item);
             bool delete = false;
             var vm = new YesNoDialogViewModel(_navigationService, "Delete this record?");
             _navigationService.ShowDialog(viewModel: vm, dialogWidth: 250, callback: result => 
@@ -203,7 +207,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
             if (delete)
             {
-                await _inventyoryService.DeleteOne(item)
+                await _inventyoryService.DeleteOne(model)
                     .ContinueWith(async t => await GetInventory());
             }
         }
@@ -212,14 +216,15 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             ShowBusyIndicator();
             var list = await _inventyoryService.GetAllEntriesAsync();
-            Inventory = new ObservableCollection<InventoryEntryModel>(list);
+            var vmList = _mapper.Map<List<InventoryEntryViewModel>>(list);
+            Inventory = new ObservableCollection<InventoryEntryViewModel>(vmList);
             IsBusy = false;
         }
 
         private async Task ReceiveItem()
         {
             bool save = false;
-            var vm = new ReceivingViewModel(_inventyoryService, _navigationService);
+            var vm = new ReceivingViewModel(_inventyoryService, _navigationService, _mapper);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;

@@ -1,4 +1,5 @@
-﻿using SimpleInventory.Core.Extentions;
+﻿using AutoMapper;
+using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
@@ -17,14 +18,15 @@ namespace SimpleInventory.Wpf.ViewModels
     {
         private readonly IInventoryService _inventoryService;
         private readonly INavigationService _navigationService;
+        private readonly IMapper _mapper;
         private ICommand? _saveCommand;
         private ICommand? _cancelCommand;
         private ICommand? _selectionChangedCommand;
-        private InventoryEntryModel _entry;
-        private ObservableCollection<ItemModel> _items;
-        private ItemModel _selectedItem;
+        private InventoryEntryViewModel _entry;
+        private ObservableCollection<ItemViewModel> _items;
+        private ItemViewModel _selectedItem;
 
-        public string DisplayProperty => nameof(SelectedItem.Name);
+        public string DisplayProperty => nameof(SelectedItem.DisplayProperty);
 
         public string Name { get; set; } = "Receiving";
 
@@ -73,39 +75,42 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public ItemModel SelectedItem 
+        public ItemViewModel SelectedItem 
         { 
             get => _selectedItem; 
             set => SetProperty(ref _selectedItem, value); 
         }
 
-        public ObservableCollection<ItemModel> Items
+        public ObservableCollection<ItemViewModel> Items
         {
             get => _items;
             set => SetProperty(ref _items, value);
         }
 
 
-        public InventoryEntryModel Entry
+        public InventoryEntryViewModel Entry
         {
             get => _entry;
             set => SetProperty(ref _entry, value);
         }
 
-        public ReceivingViewModel(IInventoryService inventoryService, INavigationService navigationService)
+        public ReceivingViewModel(IInventoryService inventoryService, INavigationService navigationService, IMapper mapper)
         {
             _inventoryService = inventoryService;
             _navigationService = navigationService;
+            _mapper = mapper;
             GetItems();
-            Entry = new InventoryEntryModel();
+            Entry = new InventoryEntryViewModel();
         }
 
-        public ReceivingViewModel(string id, IInventoryService inventoryService, INavigationService navigationService)
+        public ReceivingViewModel(string id, IInventoryService inventoryService, INavigationService navigationService, IMapper mapper)
         {
             _inventoryService = inventoryService;
             _navigationService = navigationService;
+            _mapper = mapper;
             GetItems();
-            Entry = _inventoryService.GetById(id);
+            var entry = _inventoryService.GetById(id);
+            Entry = _mapper.Map<InventoryEntryViewModel>(entry);
             Entry.Quantity = 0;
             SelectedItem = Items?.Where(x => x.Id == Entry?.Item?.Id).FirstOrDefault();
         }
@@ -113,7 +118,8 @@ namespace SimpleInventory.Wpf.ViewModels
         private void GetItems()
         {
             var list = _inventoryService.GetAllItems();
-            Items = new ObservableCollection<ItemModel>(list);
+            var vmList = _mapper.Map<List<ItemViewModel>>(list);
+            Items = new ObservableCollection<ItemViewModel>(vmList);
         }
 
         private void Cancel()
@@ -123,7 +129,8 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private async Task Save()
         {
-            await _inventoryService.ReceiveItem(Entry);
+            var model = _mapper.Map<InventoryEntryModel>(Entry);
+            await _inventoryService.ReceiveItem(model);
             _navigationService.ModalResult(true);
         }
 

@@ -99,6 +99,7 @@
             BorderThickness="0"
             Padding="0 10 0 0"
             Margin="1 0 1 10"
+            HorizontalScrollBarVisibility="Disabled"
             GridLinesVisibility="Horizontal"
             HorizontalGridLinesBrush="#7f8c8d"
             RowHeaderWidth="0"
