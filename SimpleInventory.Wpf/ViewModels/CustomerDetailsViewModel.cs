@@ -43,6 +43,7 @@ namespace SimpleInventory.Wpf.ViewModels
             _navigationService = dialogService;
             _mapper = mapper;
             Customer = new CustomerViewModel();
+            _customerBackup = new CustomerViewModel();
         }
 
         public string Name { get; set; } = "Customer Details";
@@ -53,15 +54,7 @@ namespace SimpleInventory.Wpf.ViewModels
         {
             get
             {
-                if (Customer?.Addresses.Count < 1)
-                {
-                    Customer.Addresses = new ObservableCollection<AddressModel>();
-                    Customer.Addresses.Add(new AddressModel());
-                }
-                if (_selectedAddress == null)
-                {
-                    _selectedAddress = Customer?.Addresses[0];
-                }
+                
                 return _selectedAddress;
             }
             set { SetProperty(ref _selectedAddress, value); }
@@ -180,7 +173,8 @@ namespace SimpleInventory.Wpf.ViewModels
             {
                 return false;
             }
-            return !_customer.Equals(_customerBackup);
+            var hasCHanged = !Customer.Equals(_customerBackup);
+            return hasCHanged;
         }
     }
 }

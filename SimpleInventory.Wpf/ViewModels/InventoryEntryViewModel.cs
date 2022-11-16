@@ -60,8 +60,9 @@ namespace SimpleInventory.Wpf.ViewModels
             return obj is InventoryEntryViewModel model &&
                    Id == model.Id &&
                    Location == model.Location &&
-                   Item.Equals(model) &&
-                   Quantity == model.Quantity;
+                   EqualityComparer<ItemViewModel?>.Default.Equals(Item, model.Item) &&
+                   Quantity == model.Quantity &&
+                   DisplayProperty == model.DisplayProperty;
         }
     }
 }

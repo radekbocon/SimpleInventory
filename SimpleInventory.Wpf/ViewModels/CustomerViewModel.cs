@@ -102,10 +102,26 @@ namespace SimpleInventory.Wpf.ViewModels
                    FirstName == model.FirstName &&
                    LastName == model.LastName &&
                    Email == model.Email &&
+                   AreAddressesEqual(model.Addresses) &&
                    PhoneNumber == model.PhoneNumber &&
-                   EqualityComparer<ObservableCollection<AddressModel>>.Default.Equals(Addresses, model.Addresses) &&
                    FullName == model.FullName &&
                    Location == model.Location;
+        }
+
+        private bool AreAddressesEqual(ObservableCollection<AddressModel> addresses)
+        {
+            if (Addresses.Count != addresses.Count)
+            {
+                return false;
+            }
+            for (int i = 0; i < Addresses.Count; i++)
+            {
+                if (!Addresses[i].Equals(addresses[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

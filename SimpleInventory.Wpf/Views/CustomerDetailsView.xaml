@@ -5,164 +5,208 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SimpleInventory.Wpf.Views"
              mc:Ignorable="d" 
+             x:Name="root"
              d:DesignHeight="450" d:DesignWidth="600">
-    <Border>
-        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="150" />
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="150"/>
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding ElementName=root, Path=ActualWidth}"/>
+        </Grid.ColumnDefinitions>
 
-            <StackPanel 
-                Orientation="Vertical"
-                Grid.Row="1"
-                Grid.Column="0"
-                Margin="0 50 10 0">
-                <Label Content="Company Name" Height="{Binding ActualHeight, ElementName=CompanyNameTextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="First Name" Height="{Binding ActualHeight, ElementName=FirstNameTextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="Last Name" Height="{Binding ActualHeight, ElementName=LastNameTextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="Email" Height="{Binding ActualHeight, ElementName=EmailTextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="Phone Number" Height="{Binding ActualHeight, ElementName=PhoneTextBox}" Margin="5" HorizontalAlignment="Right"/>
-            </StackPanel>
-
-            <StackPanel 
-                Orientation="Vertical"
-                Grid.Row="1"
-                Grid.Column="1"
-                Margin="0 50 10 0">
-                <TextBox
-                    x:Name="CompanyNameTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding Customer.CompanyName, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="FirstNameTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding Customer.FirstName, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="LastNameTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding Customer.LastName, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="EmailTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding Customer.Email, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="PhoneTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
-
-            <StackPanel 
-                Margin="10 10 10 0"
-                Orientation="Vertical"
-                Grid.Row="1"
-                Grid.Column="2">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button 
-                        Content="Add" 
-                        Height="{Binding ActualHeight, ElementName=AddressesComboBox}" 
-                        Width="50" 
-                        Margin="5"
-                        Command="{Binding AddNewAddress}"/>
-                    <Button 
-                        Content="Delete" 
-                        Height="{Binding ActualHeight, ElementName=AddressesComboBox}" 
-                        Width="50" 
-                        Margin="5"
-                        Command="{Binding DeleteAddress}"/>
-                </StackPanel>
-                <Label Content="Address Line 1" Height="{Binding ActualHeight, ElementName=Address1TextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="Address Line 2" Height="{Binding ActualHeight, ElementName=Address2TextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="Phone Number" Height="{Binding ActualHeight, ElementName=AddresPhoneTextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="City" Height="{Binding ActualHeight, ElementName=CityTextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="Post Code" Height="{Binding ActualHeight, ElementName=PostCodeTextBox}" Margin="5" HorizontalAlignment="Right"/>
-                <Label Content="Country" Height="{Binding ActualHeight, ElementName=CountryTextBox}" Margin="5" HorizontalAlignment="Right"/>
-            </StackPanel>
-
-            <StackPanel 
-                Orientation="Vertical"
+        <TabControl 
+                BorderThickness="0 1 0 0"
+                Panel.ZIndex="-1"
+                Background="Transparent"
                 Margin="0 10 0 0"
-                Grid.Row="1"
-                Grid.Column="3">
-                <ComboBox 
-                    x:Name="AddressesComboBox"
-                    MinHeight="30"
-                    Margin="5"
-                    ItemsSource="{Binding Customer.Addresses, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    SelectedItem="{Binding SelectedAddress, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    DisplayMemberPath="Line1"/>
-                <TextBox
-                    x:Name="Address1TextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding SelectedAddress.Line1, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="Address2TextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding SelectedAddress.Line2, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="AddresPhoneTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding SelectedAddress.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="CityTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding SelectedAddress.City, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="PostCodeTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding SelectedAddress.PostCode, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox
-                    x:Name="CountryTextBox"
-                    MinWidth="100"
-                    MinHeight="30"
-                    Margin="5"
-                    TextWrapping="Wrap"
-                    Text="{Binding SelectedAddress.Country, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
+                Grid.Row="0"
+                Grid.Column="0">
+            <TabItem Header="Customer">
+                <Grid HorizontalAlignment="Center" Margin="0 10 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" Grid.Row="0" Content="Company Name" Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="1" Content="First Name" Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="2" Content="Last Name" Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="3" Content="Email"  Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="4" Content="Phone Number" Margin="5" HorizontalAlignment="Right"/>
+
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="1"
+                            x:Name="CompanyNameTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding Customer.CompanyName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="2"
+                            x:Name="FirstNameTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding Customer.FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="3"
+                            x:Name="LastNameTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding Customer.LastName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="4"
+                            x:Name="EmailTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding Customer.Email, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="0"
+                            x:Name="PhoneTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Addresses" d:IsSelected="True">
+                <Grid HorizontalAlignment="Center" Margin="0 10 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="0">
+                        <Button 
+                                Content="Add" 
+                                Height="{Binding ActualHeight, ElementName=AddressesComboBox}" 
+                                Width="50" 
+                                Margin="5"
+                                Command="{Binding AddNewAddress}"/>
+                        <Button 
+                                Content="Delete" 
+                                Height="{Binding ActualHeight, ElementName=AddressesComboBox}" 
+                                Width="50" 
+                                Margin="5"
+                                Command="{Binding DeleteAddress}"/>
+                    </StackPanel>
+                    <Label Grid.Column="0" Grid.Row="1" Content="Address Line 1" Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="2" Content="Address Line 2" Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="3" Content="Phone Number" Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="4" Content="City" Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="5" Content="Post Code" Margin="5" HorizontalAlignment="Right"/>
+                    <Label Grid.Column="0" Grid.Row="6" Content="Country" Margin="5" HorizontalAlignment="Right"/>
+
+                    <ComboBox 
+                            Grid.Column="1" 
+                            Grid.Row="0"
+                            x:Name="AddressesComboBox"
+                            MinHeight="30"
+                            MinWidth="200"
+                            Margin="5"
+                            ItemsSource="{Binding Customer.Addresses, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            SelectedItem="{Binding SelectedAddress, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            DisplayMemberPath="Line1"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="1"
+                            x:Name="Address1TextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding SelectedAddress.Line1, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="2"
+                            x:Name="Address2TextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding SelectedAddress.Line2, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="3"
+                            x:Name="AddresPhoneTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding SelectedAddress.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="4"
+                            x:Name="CityTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding SelectedAddress.City, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="5"
+                            x:Name="PostCodeTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding SelectedAddress.PostCode, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox
+                            Grid.Column="1" 
+                            Grid.Row="6"
+                            x:Name="CountryTextBox"
+                            MinWidth="200"
+                            MinHeight="30"
+                            Margin="5"
+                            TextWrapping="Wrap"
+                            Text="{Binding SelectedAddress.Country, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
 
 
+        <Border
+            Margin="0 10 0 0"
+            BorderThickness="0 1 0 0"
+            BorderBrush="#bdc3c7"
+            Background="#ecf0f1"
+            Grid.Row="1"
+            CornerRadius="0 0 8 8"
+            Grid.Column="0">
             <StackPanel
-                Grid.Row="3"
-                Grid.Column="0"
-                Grid.ColumnSpan="6"
+                Margin="5"
                 Orientation="Horizontal"
                 HorizontalAlignment="Right">
                 <Button
@@ -172,12 +216,12 @@
                     Command="{Binding SaveCommand}"
                     Content="Save"/>
                 <Button
-                    Margin="10 10 5 10"
+                    Margin="10 10 10 10"
                     Height="30"
                     Width="100"
                     Command="{Binding CancelCommand}"
                     Content="Cancel"/>
             </StackPanel>
-        </Grid>
-    </Border>
+        </Border>
+    </Grid>
 </UserControl>

@@ -23,6 +23,7 @@ namespace SimpleInventory.Wpf.ViewModels
         private ICommand? _cancelCommand;
         private ICommand? _selectionChangedCommand;
         private InventoryEntryViewModel _entry;
+        private InventoryEntryViewModel _entryBackup;
         private ObservableCollection<ItemViewModel> _items;
         private ItemViewModel _selectedItem;
 
@@ -53,7 +54,7 @@ namespace SimpleInventory.Wpf.ViewModels
                 {
                     _cancelCommand = new RelayCommand(
                         p => Cancel(),
-                        p => true);
+                        p => HasEntryChanged());
                 }
 
                 return _cancelCommand;
@@ -68,7 +69,7 @@ namespace SimpleInventory.Wpf.ViewModels
                 {
                     _saveCommand = new RelayCommand(
                         async p => await Save(),
-                        p => Entry != null);
+                        p => CanSave() && HasEntryChanged());
                 }
 
                 return _saveCommand;
@@ -101,6 +102,7 @@ namespace SimpleInventory.Wpf.ViewModels
             _mapper = mapper;
             GetItems();
             Entry = new InventoryEntryViewModel();
+            _entryBackup = new InventoryEntryViewModel();
         }
 
         public ReceivingViewModel(string id, IInventoryService inventoryService, INavigationService navigationService, IMapper mapper)
@@ -109,10 +111,7 @@ namespace SimpleInventory.Wpf.ViewModels
             _navigationService = navigationService;
             _mapper = mapper;
             GetItems();
-            var entry = _inventoryService.GetById(id);
-            Entry = _mapper.Map<InventoryEntryViewModel>(entry);
-            Entry.Quantity = 0;
-            SelectedItem = Items?.Where(x => x.Id == Entry?.Item?.Id).FirstOrDefault();
+            Initialaze(id);
         }
 
         private void GetItems()
@@ -124,6 +123,8 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private void Cancel()
         {
+            Entry = _entryBackup;
+            SelectedItem = Entry.Item ?? null;
             _navigationService.ModalResult(false);
         }
 
@@ -131,12 +132,35 @@ namespace SimpleInventory.Wpf.ViewModels
         {
             var model = _mapper.Map<InventoryEntryModel>(Entry);
             await _inventoryService.ReceiveItem(model);
+            _entryBackup = Entry;
             _navigationService.ModalResult(true);
         }
 
         private void ChangeSelectedItem()
         {
             Entry.Item = SelectedItem;
+        }
+
+        private bool CanSave()
+        {
+            return Entry != null && 
+                Entry.Quantity > 0 && 
+                Entry.Item != null && 
+                Entry.Location != null;
+        }
+
+        private bool HasEntryChanged()
+        {
+            return !Entry.Equals(_entryBackup);
+        }
+
+        private void Initialaze(string id)
+        {
+            var entry = _inventoryService.GetById(id);
+            Entry = _mapper.Map<InventoryEntryViewModel>(entry);
+            Entry.Quantity = 0;
+            SelectedItem = Items?.Where(x => x.Id == Entry?.Item?.Id).FirstOrDefault();
+            _entryBackup = new InventoryEntryViewModel(Entry);
         }
     }
 }

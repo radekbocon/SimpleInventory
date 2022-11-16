@@ -32,7 +32,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border CornerRadius="5" Background="{TemplateBinding Background}">
+                    <Border CornerRadius="5" Background="{TemplateBinding Background}" BorderBrush="#bdc3c7" BorderThickness="1">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                 </ControlTemplate>
@@ -260,6 +260,31 @@
                             </Track>
                         </Border>
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type TabItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Border Name="Border" HorizontalAlignment="Stretch" Margin="0">
+                        <StackPanel>
+                            <Label Name="HeaderText" Content="{TemplateBinding Header}" FontSize="14" Background="Transparent" FontWeight="DemiBold" HorizontalAlignment="Center" Padding="10 5 10 5"/>
+                            <Rectangle x:Name="HeaderBar" Height="4" Fill="#f39c12" Margin="0 0 0 -1"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="HeaderText" Property="Foreground" Value="#f39c12" />
+                            <Setter TargetName="HeaderBar" Property="Fill" Value="#f39c12" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter TargetName="HeaderText" Property="Foreground" Value="Black" />
+                            <Setter TargetName="HeaderBar" Property="Fill" Value="Transparent" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -83,7 +83,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 {
                     _deleteItemCommand = new RelayCommand(
                         async p => await DeleteItem((InventoryEntryViewModel)p),
-                        p => p is InventoryEntryModel);
+                        p => p is InventoryEntryViewModel);
                 }
 
                 return _deleteItemCommand;

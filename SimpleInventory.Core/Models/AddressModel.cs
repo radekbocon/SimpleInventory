@@ -34,5 +34,17 @@ namespace SimpleInventory.Core.Models
             City = address.City;
             Country = address.Country;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is AddressModel model &&
+                   FullName == model.FullName &&
+                   Line1 == model.Line1 &&
+                   Line2 == model.Line2 &&
+                   PhoneNumber == model.PhoneNumber &&
+                   PostCode == model.PostCode &&
+                   City == model.City &&
+                   Country == model.Country;
+        }
     }
 }
