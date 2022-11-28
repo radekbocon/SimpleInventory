@@ -164,7 +164,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewItem()
         {
             bool save = false;
-            var vm = new ItemDetailsViewModel(_inventyoryService, _navigationService);
+            var vm = new ItemDetailsViewModel(_inventyoryService, _navigationService, _mapper);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;

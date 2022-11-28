@@ -1,4 +1,5 @@
-﻿using SimpleInventory.Core.Extentions;
+﻿using AutoMapper;
+using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
@@ -14,30 +15,33 @@ namespace SimpleInventory.Wpf.ViewModels
 {
     public class ItemDetailsViewModel : ViewModelBase
     {
-        private ItemModel _item;
-        private ItemModel _itemBackup;
+        private ItemViewModel? _item;
+        private ItemViewModel? _itemBackup;
         private ICommand? _saveCommand;
         private ICommand? _cancelCommand;
         private readonly IInventoryService _inventoryService;
         private readonly INavigationService _dialogService;
+        private readonly IMapper _mapper;
 
-        public ItemDetailsViewModel(string itemId, IInventoryService inventoryService, INavigationService dialogService)
+        public ItemDetailsViewModel(string itemId, IInventoryService inventoryService, INavigationService dialogService, IMapper mapper)
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
-            SetItem(itemId).Await();
+            _mapper = mapper;
+            Initialize(itemId).Await();
         }
 
-        public ItemDetailsViewModel(IInventoryService inventoryService, INavigationService dialogService)
+        public ItemDetailsViewModel(IInventoryService inventoryService, INavigationService dialogService, IMapper mapper)
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
-            SetItem().Await();
+            _mapper = mapper;
+            Initialize().Await();
         }
 
         public string Name { get; set; } = "Item Details";
 
-        public ItemModel Item
+        public ItemViewModel Item
         {
             get { return _item; }
             set { SetProperty(ref _item, value); }
@@ -66,7 +70,7 @@ namespace SimpleInventory.Wpf.ViewModels
                 {
                     _saveCommand = new RelayCommand(
                         async p => await Save(),
-                        p => HasItemChanged());
+                        p => HasItemChanged() && !Item.HasErrors);
                 }
 
                 return _saveCommand;
@@ -75,20 +79,26 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private void Cancel()
         {
-            Item = new ItemModel(_itemBackup);
+            Item = new ItemViewModel(_itemBackup);
         }
 
         private async Task Save()
         {
-            await _inventoryService.UpsertOneItemAsync(Item);
-            await SetItem(Item.Id);
+            Item.Validate();
+            if (Item.HasErrors)
+            {
+                return;
+            }
+            var model = _mapper.Map<ItemModel>(Item);
+            await _inventoryService.UpsertOneItemAsync(model);
+            _itemBackup = new ItemViewModel(Item);
             _dialogService.ModalResult(true);
         }
 
-        private async Task SetItem(string id = null)
+        private async Task Initialize(string id = null)
         {
-            Item = id == null ? new ItemModel() : await _inventoryService.GetItemByIdAsync(id);
-            _itemBackup = new ItemModel(Item);
+            Item = id == null ? new ItemViewModel() : _mapper.Map<ItemViewModel>(await _inventoryService.GetItemByIdAsync(id));
+            _itemBackup = new ItemViewModel(Item); 
         }
 
         private bool HasItemChanged()

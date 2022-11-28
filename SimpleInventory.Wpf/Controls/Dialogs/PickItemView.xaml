@@ -17,8 +17,8 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
-                <RowDefinition Height="70"/>
-                <RowDefinition Height="70"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <Label 
                 FontSize="18"
@@ -42,22 +42,29 @@
                     <KeyBinding Key="Return" Command="{Binding PickItemCommand}"/>
                 </ComboBox.InputBindings>
             </ComboBox>
-            <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="20">
-                <Button 
+            <Border 
+                BorderThickness="0 1 0 0"
+                BorderBrush="#bdc3c7"
+                Background="#ecf0f1"
+                CornerRadius="0 0 8 8"
+                Grid.Row="2">
+                <StackPanel Orientation="Horizontal"  HorizontalAlignment="Right" Margin="5">
+                    <Button 
                     Focusable="False"
                     Command="{Binding PickItemCommand}"
                     Content="Choose" 
                     Margin="10 0" 
                     Height="30" 
                     Width="60"/>
-                <Button 
+                    <Button 
                     Focusable="False"
                     Command="{Binding CancelCommand}"
                     Content="Cancel" 
                     Margin="10 0" 
                     Height="30" 
                     Width="60"/>
-            </StackPanel>
+                </StackPanel>
+            </Border>
         </Grid>
     </Border>
 </UserControl>

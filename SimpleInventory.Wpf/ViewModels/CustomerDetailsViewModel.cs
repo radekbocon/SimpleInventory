@@ -54,7 +54,10 @@ namespace SimpleInventory.Wpf.ViewModels
         {
             get
             {
-                
+                if (_selectedAddress == null)
+                {
+                    _selectedAddress = Customer?.Addresses.FirstOrDefault();
+                }
                 return _selectedAddress;
             }
             set { SetProperty(ref _selectedAddress, value); }
@@ -151,7 +154,7 @@ namespace SimpleInventory.Wpf.ViewModels
         {
             var customerModel = _mapper.Map<CustomerModel>(Customer);
             await _customerService.UpsertOne(customerModel);
-            await SetCustomer(Customer.Id);
+            _customerBackup = new CustomerViewModel(Customer);
             _navigationService.ModalResult(true);
         }
 

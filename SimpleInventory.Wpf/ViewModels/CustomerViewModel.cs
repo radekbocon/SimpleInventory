@@ -91,7 +91,7 @@ namespace SimpleInventory.Wpf.ViewModels
 
         public CustomerViewModel()
         {
-
+            Addresses.Add(new AddressModel());
         }
 
         public override bool Equals(object? obj)

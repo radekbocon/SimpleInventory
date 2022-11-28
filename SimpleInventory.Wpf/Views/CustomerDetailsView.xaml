@@ -202,8 +202,8 @@
             BorderThickness="0 1 0 0"
             BorderBrush="#bdc3c7"
             Background="#ecf0f1"
-            Grid.Row="1"
             CornerRadius="0 0 8 8"
+            Grid.Row="1"
             Grid.Column="0">
             <StackPanel
                 Margin="5"

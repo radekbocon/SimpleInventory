@@ -65,7 +65,7 @@ namespace SimpleInventory.Wpf
                 cfg.CreateMap<OrderViewModel, OrderModel>().ReverseMap();
                 cfg.CreateMap<OrderSummaryViewModel, OrderSummaryModel>().ReverseMap();
                 cfg.CreateMap<OrderLineViewModel, OrderLineModel>().ReverseMap();
-                cfg.CreateMap<ItemViewModel, ItemModel>().ReverseMap();
+                cfg.CreateMap<ItemViewModel, ItemModel>().ReverseMap().DisableCtorValidation();
                 cfg.CreateMap<CustomerViewModel, CustomerModel>().ReverseMap();
             });
             config.AssertConfigurationIsValid();
