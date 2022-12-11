@@ -155,7 +155,41 @@ namespace SimpleInventory.Tests
 
             // Assert
             Assert.True(_sut.HasErrors);
-            Assert.True(_sut.Errors.Any());
+            Assert.True(_sut.Errors.Count >= 5);
+        }
+
+        [Theory]
+        [InlineData("aaa", "aaa", true)]
+        [InlineData("aaa", "bbb", false)]
+        public void Items_WhenCompared_HashCodesCompareWithSameResults(string value1, string value2, bool expectedEquals)
+        {
+            // Arange
+            var item1 = new ItemViewModel
+            {
+                Id = value1,
+                ProductId = value1,
+                Name = value1,
+                Description = value1,
+                Type = value1,
+                Price = 1,
+            };
+            var item2 = new ItemViewModel
+            {
+                Id = value2,
+                ProductId = value2,
+                Name = value2,
+                Description = value2,
+                Type = value2,
+                Price = 1,
+            };
+
+            // Act
+            var actualEquals = item1.Equals(item2);
+            var actualHashCodeEquals = item1.GetHashCode() == item2.GetHashCode();
+
+            // Assert
+            Assert.Equal(actualEquals, expectedEquals);
+            Assert.Equal(actualHashCodeEquals, expectedEquals);
         }
     }
 }

@@ -64,5 +64,10 @@ namespace SimpleInventory.Wpf.ViewModels
                    Quantity == model.Quantity &&
                    DisplayProperty == model.DisplayProperty;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Location, Item, Quantity, DisplayProperty);
+        }
     }
 }

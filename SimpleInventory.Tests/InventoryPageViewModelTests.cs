@@ -11,20 +11,12 @@ namespace SimpleInventory.Tests
     public class InventoryPageViewModelTests
     {
         private const string TO_BE_FIXED = "To be fixed";
-        private readonly IInventoryService _inventoryService;
-        private readonly INavigationService _dialogService;
 
-        public InventoryPageViewModelTests()
-        {
-            _inventoryService = A.Fake<IInventoryService>();
-            _dialogService = A.Fake<INavigationService>();
-        }
-
-        [Theory(Skip = TO_BE_FIXED)]
+        [Theory]
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        public void WhenSearchTextIsEmpty_ShouldReturnFullInventory(string searchText)
+        public void Inventory_WhenSearchTextIsEmpty_ShouldReturnFullInventory(string searchText)
         {
             // Arrange
             var sut = A.Fake<InventoryPageViewModel>();
@@ -40,16 +32,18 @@ namespace SimpleInventory.Tests
         }
 
        
-        [Theory(Skip = TO_BE_FIXED)]
+        [Theory]
         [InlineData("aaa", 1)]
-        [InlineData("bb", 2)]
-        [InlineData("bbc", 0)]
-        public void WhenSearchTextIsNotEmpty_ShouldReturnFilteredInventory(string searchText, int expectedCount)
+        [InlineData("AAA", 1)]
+        [InlineData("aaaa", 0)]
+        [InlineData("bbb", 0)]
+        public void Inventory_WhenSearchByLocation_ShouldReturnFilteredInventory(string searchText, int expectedCount)
         {
             // Arrange
             var sut = A.Fake<InventoryPageViewModel>();
             var inventoryItem = A.Fake<InventoryEntryViewModel>();
-            sut.Inventory = new ObservableCollection<InventoryEntryViewModel> {inventoryItem};
+            inventoryItem.Location = "AAA";
+            sut.Inventory = new ObservableCollection<InventoryEntryViewModel> { inventoryItem };
 
             // Act
             sut.SearchText = searchText;
@@ -58,26 +52,31 @@ namespace SimpleInventory.Tests
             Assert.Equal(expectedCount, sut.Inventory.Count);
         }
 
-        [Fact]
-        public void Test()
+        [Theory]
+        [InlineData("aaa", 1)]
+        [InlineData("bbb", 1)]
+        [InlineData("ccc", 1)]
+        [InlineData("ddd", 1)]
+        [InlineData("eee", 0)]
+        public void Inventory_WhenSearchByItemProperties_ShouldReturnFilteredInventory(string searchText, int expectedCount)
         {
             // Arrange
             var sut = A.Fake<InventoryPageViewModel>();
             var inventoryItem = A.Fake<InventoryEntryViewModel>();
-            sut.Inventory = new ObservableCollection<InventoryEntryViewModel> {inventoryItem};
+            inventoryItem.Item = new ItemViewModel
+            {
+                ProductId = "aaa",
+                Name = "bbb",
+                Description = "ccc",
+                Type = "ddd"
+            };
+            sut.Inventory = new ObservableCollection<InventoryEntryViewModel> { inventoryItem };
 
             // Act
-        }
+            sut.SearchText = searchText;
 
-        private static List<ItemModel> FakeInventory()
-        {
-            return new List<ItemModel>()
-            {
-                new ItemModel { Name = "aaa", Description = "555", ProductId = "jjj" },
-                new ItemModel { Name = "bbb", Description = "bbb", ProductId = "bbb" },
-                new ItemModel { Name = "BBB", Description = "BBB", ProductId = "BBB" },
-                new ItemModel { Name = "ccc", Description = "ccc", ProductId = "ccc" }
-            };
+            // Assert
+            Assert.Equal(expectedCount, sut.Inventory.Count);
         }
     }
 }

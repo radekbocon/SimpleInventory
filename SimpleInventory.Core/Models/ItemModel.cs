@@ -50,5 +50,10 @@ namespace SimpleInventory.Core.Models
                    Type == model.Type &&
                    Price == model.Price;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, ProductId, Name, Description, Type, Price);
+        }
     }
 }

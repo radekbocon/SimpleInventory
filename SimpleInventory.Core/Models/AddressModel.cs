@@ -46,5 +46,10 @@ namespace SimpleInventory.Core.Models
                    City == model.City &&
                    Country == model.Country;
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(FullName, Line1, Line2, PhoneNumber, PostCode, City, Country);
+        }
     }
 }

@@ -95,6 +95,11 @@ namespace SimpleInventory.Wpf.ViewModels
                    Price == model.Price;
         }
 
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, ProductId, Name, Description, Type, Price);
+        }
+
         public void Validate()
         {
             ValidateProductId();
