@@ -5,12 +5,24 @@ using SimpleInventory.Wpf.ViewModels.PageViewModes;
 using System.Collections.ObjectModel;
 using SimpleInventory.Wpf.Services;
 using SimpleInventory.Wpf.ViewModels;
+using AutoMapper;
+using SharpCompress.Common;
 
 namespace SimpleInventory.Tests
 {
     public class InventoryPageViewModelTests
     {
         private const string TO_BE_FIXED = "To be fixed";
+        private readonly INavigationService _navigationService; 
+        private readonly IInventoryService _inventoryService;
+        private readonly IMapper _mapper;
+
+        public InventoryPageViewModelTests()
+        {
+            _navigationService = A.Fake<INavigationService>();
+            _inventoryService = A.Fake<IInventoryService>();
+            _mapper = A.Fake<IMapper>();
+        }
 
         [Theory]
         [InlineData(null)]
@@ -77,6 +89,65 @@ namespace SimpleInventory.Tests
 
             // Assert
             Assert.Equal(expectedCount, sut.Inventory.Count);
+        }
+
+        [Fact]
+        public void AddNewItemCommand_WhenExecuted_OpensItemDetailsInModalWindow()
+        {
+            // Arrange
+            var sut = new InventoryPageViewModel(_inventoryService, _navigationService, _mapper);
+
+            // Act
+            sut.AddNewItemCommand.Execute(null);
+
+            // Assert
+            A.CallTo(() => _navigationService.ShowModal(A<ViewModelBase>.That.IsInstanceOf(typeof(ItemDetailsViewModel)), A<Action<bool>>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
+
+        }
+
+        [Fact]
+        public void EditEntryCommand_WhenExecutedWithParameter_OpensInventoryReceivingPageInModalWindow()
+        {
+            // Arrange
+            var sut = new InventoryPageViewModel(_inventoryService, _navigationService, _mapper);
+            var inventoryEntry = A.Fake<InventoryEntryViewModel>();
+            inventoryEntry.Id = Guid.NewGuid().ToString();
+
+            // Act
+            sut.EditEntryCommand.Execute(inventoryEntry);
+
+            // Assert
+            A.CallTo(() => _navigationService.ShowModal(A<ViewModelBase>.That.IsInstanceOf(typeof(ReceivingViewModel)), A<Action<bool>>.Ignored, A<double>.Ignored)).MustHaveHappenedOnceExactly();
+
+        }
+
+        [Fact]
+        public void EditEntryCommand_WhenEntryIdIsNull_ShouldNotOpenReceivingPage()
+        {
+            // Arrange
+            var sut = new InventoryPageViewModel(_inventoryService, _navigationService, _mapper);
+            var inventoryEntry = A.Fake<InventoryEntryViewModel>();
+            inventoryEntry.Id = null;
+
+            // Act
+            sut.EditEntryCommand.Execute(inventoryEntry);
+
+            // Assert
+            A.CallTo(() => _navigationService.ShowModal(A<ViewModelBase>.Ignored, A<Action<bool>>.Ignored, A<double>.Ignored)).MustNotHaveHappened();
+
+        }
+
+        [Fact]
+        public void EditEntryCommand_WhenParameterIsNull_ShouldNotExecute()
+        {
+            // Arrange
+            var sut = new InventoryPageViewModel(_inventoryService, _navigationService, _mapper);
+
+            // Act
+
+            // Assert
+            Assert.False(sut.EditEntryCommand.CanExecute(null));
+
         }
     }
 }

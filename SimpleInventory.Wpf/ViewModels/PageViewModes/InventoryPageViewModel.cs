@@ -16,7 +16,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 {
     public class InventoryPageViewModel : PageViewModel
     {
-        private readonly IInventoryService _inventyoryService;
+        private readonly IInventoryService _inventoryService;
         private readonly INavigationService _navigationService;
         private readonly IMapper _mapper;
 
@@ -34,7 +34,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService, IMapper mapper)
         {
-            _inventyoryService = inventyoryService;
+            _inventoryService = inventyoryService;
             _navigationService = dialogService;
             _mapper = mapper;
         }
@@ -164,7 +164,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewItem()
         {
             bool save = false;
-            var vm = new ItemDetailsViewModel(_inventyoryService, _navigationService, _mapper);
+            var vm = new ItemDetailsViewModel(_inventoryService, _navigationService, _mapper);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;
@@ -181,7 +181,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (entry.Id == null) return;
 
             bool save = false;
-            var vm = new ReceivingViewModel(entry.Id, _inventyoryService, _navigationService, _mapper);
+            var vm = new ReceivingViewModel(entry.Id, _inventoryService, _navigationService, _mapper);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;
@@ -207,7 +207,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
             if (delete)
             {
-                await _inventyoryService.DeleteOne(model)
+                await _inventoryService.DeleteOne(model)
                     .ContinueWith(async t => await GetInventory());
             }
         }
@@ -215,7 +215,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task GetInventory()
         {
             ShowBusyIndicator();
-            var list = await _inventyoryService.GetAllEntriesAsync();
+            var list = await _inventoryService.GetAllEntriesAsync();
             var vmList = _mapper.Map<List<InventoryEntryViewModel>>(list);
             Inventory = new ObservableCollection<InventoryEntryViewModel>(vmList);
             IsBusy = false;
@@ -224,7 +224,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task ReceiveItem()
         {
             bool save = false;
-            var vm = new ReceivingViewModel(_inventyoryService, _navigationService, _mapper);
+            var vm = new ReceivingViewModel(_inventoryService, _navigationService, _mapper);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;
