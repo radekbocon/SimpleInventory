@@ -3,6 +3,7 @@ using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace SimpleInventory.Wpf.ViewModels
     {
         private readonly IInventoryService _inventoryService;
         private readonly INavigationService _navigationService;
+        private readonly INotificationService _notificationService;
         private readonly IMapper _mapper;
         private ICommand? _saveCommand;
         private ICommand? _cancelCommand;
@@ -95,20 +97,22 @@ namespace SimpleInventory.Wpf.ViewModels
             set => SetProperty(ref _entry, value);
         }
 
-        public ReceivingViewModel(IInventoryService inventoryService, INavigationService navigationService, IMapper mapper)
+        public ReceivingViewModel(IInventoryService inventoryService, INavigationService navigationService, IMapper mapper, INotificationService notificationService)
         {
             _inventoryService = inventoryService;
             _navigationService = navigationService;
+            _notificationService = notificationService;
             _mapper = mapper;
             GetItems();
             Entry = new InventoryEntryViewModel();
             _entryBackup = new InventoryEntryViewModel();
         }
 
-        public ReceivingViewModel(string id, IInventoryService inventoryService, INavigationService navigationService, IMapper mapper)
+        public ReceivingViewModel(string id, IInventoryService inventoryService, INavigationService navigationService, IMapper mapper, INotificationService notificationService)
         {
             _inventoryService = inventoryService;
             _navigationService = navigationService;
+            _notificationService = notificationService;
             _mapper = mapper;
             GetItems();
             Initialaze(id);
@@ -134,6 +138,13 @@ namespace SimpleInventory.Wpf.ViewModels
             await _inventoryService.ReceiveItem(model);
             _entryBackup = Entry;
             _navigationService.ModalResult(true);
+            ShowSavedNotification(model);
+        }
+
+        private void ShowSavedNotification(InventoryEntryModel model)
+        {
+            string message = model.Quantity > 1 ? $"Received {model.Quantity} {model?.Item?.Name}'s" : $"Received {model.Quantity} {model?.Item?.Name}";
+            _notificationService.Show("Received", message, NotificationType.Info);
         }
 
         private void ChangeSelectedItem()

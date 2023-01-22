@@ -8,7 +8,7 @@
         xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
         xmlns:views="clr-namespace:SimpleInventory.Wpf.Views"
         xmlns:viewmodels="clr-namespace:SimpleInventory.Wpf.ViewModels.PageViewModes" 
-        xmlns:dialogs="clr-namespace:SimpleInventory.Wpf.Controls.Dialogs"
+        xmlns:dialogs="clr-namespace:SimpleInventory.Wpf.Controls.Dialogs" 
         mc:Ignorable="d"
         WindowStyle="SingleBorderWindow"
         BorderThickness="1"
@@ -57,6 +57,18 @@
 
         <ContentControl x:Name="PageContent" Grid.Column="2" Grid.Row="2">
         </ContentControl>
+
+        <ItemsControl 
+            Panel.ZIndex="100"
+            Margin="10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            x:Name="NotificationLayer" 
+            Grid.Column="0" 
+            Grid.ColumnSpan="3"
+            Grid.Row="0"
+            Grid.RowSpan="3">
+        </ItemsControl>
 
     </Grid>
 </Window>

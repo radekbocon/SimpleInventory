@@ -20,7 +20,7 @@ namespace SimpleInventory.Wpf.ViewModels
 
         public MainViewModel(
             INavigationService navigationService,
-            HomePageViewModel homePageViewModel, 
+            HomePageViewModel homePageViewModel,
             InventoryPageViewModel inventoryPageViewModel,
             OrdersPageViewModel ordersPageViewModel,
             CustomersPageViewModel customersPageViewModel,

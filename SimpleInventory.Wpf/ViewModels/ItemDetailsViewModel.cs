@@ -3,6 +3,7 @@ using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections.Generic;
@@ -22,20 +23,23 @@ namespace SimpleInventory.Wpf.ViewModels
         private readonly IInventoryService _inventoryService;
         private readonly INavigationService _dialogService;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
 
-        public ItemDetailsViewModel(string itemId, IInventoryService inventoryService, INavigationService dialogService, IMapper mapper)
+        public ItemDetailsViewModel(string itemId, IInventoryService inventoryService, INavigationService dialogService, IMapper mapper, INotificationService notificationService)
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
             _mapper = mapper;
+            _notificationService = notificationService;
             Initialize(itemId).Await();
         }
 
-        public ItemDetailsViewModel(IInventoryService inventoryService, INavigationService dialogService, IMapper mapper)
+        public ItemDetailsViewModel(IInventoryService inventoryService, INavigationService dialogService, IMapper mapper, INotificationService notificationService)
         {
             _inventoryService = inventoryService;
             _dialogService = dialogService;
             _mapper = mapper;
+            _notificationService = notificationService;
             Initialize().Await();
         }
 
@@ -93,6 +97,7 @@ namespace SimpleInventory.Wpf.ViewModels
             await _inventoryService.UpsertOneItemAsync(model);
             _itemBackup = new ItemViewModel(Item);
             _dialogService.ModalResult(true);
+            _notificationService.Show("Saved", "Item succesfully saved.", NotificationType.Info);
         }
 
         private async Task Initialize(string id = null)

@@ -3,6 +3,7 @@ using Bogus;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Controls.Dialogs;
 using SimpleInventory.Wpf.Services;
 using System;
@@ -18,6 +19,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
     {
         private readonly IInventoryService _inventoryService;
         private readonly INavigationService _navigationService;
+        private readonly INotificationService _notificationService;
         private readonly IMapper _mapper;
 
         private string _searchText;
@@ -32,11 +34,12 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         public string Name { get; set; } = "Inventory";
 
-        public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService, IMapper mapper)
+        public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService, IMapper mapper, INotificationService notificationService)
         {
             _inventoryService = inventyoryService;
             _navigationService = dialogService;
             _mapper = mapper;
+            _notificationService = notificationService;
         }
 
         public bool IsBusy
@@ -164,7 +167,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewItem()
         {
             bool save = false;
-            var vm = new ItemDetailsViewModel(_inventoryService, _navigationService, _mapper);
+            var vm = new ItemDetailsViewModel(_inventoryService, _navigationService, _mapper, _notificationService);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;
@@ -181,7 +184,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (entry.Id == null) return;
 
             bool save = false;
-            var vm = new ReceivingViewModel(entry.Id, _inventoryService, _navigationService, _mapper);
+            var vm = new ReceivingViewModel(entry.Id, _inventoryService, _navigationService, _mapper, _notificationService);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;
@@ -224,7 +227,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task ReceiveItem()
         {
             bool save = false;
-            var vm = new ReceivingViewModel(_inventoryService, _navigationService, _mapper);
+            var vm = new ReceivingViewModel(_inventoryService, _navigationService, _mapper, _notificationService);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;

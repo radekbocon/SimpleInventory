@@ -24,6 +24,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private readonly IOrderService _orderService;
         private readonly INavigationService _navigationService;
         private readonly IInventoryService _inventoryService;
+        private readonly INotificationService _notificationService;
         private readonly IMapper _mapper;
 
         private ObservableCollection<OrderSummaryViewModel> _orders;
@@ -35,13 +36,14 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private bool _isBusy;
         private double _scrollPosition;
 
-        public OrdersPageViewModel(ICustomerService customerService, IOrderService orderService, INavigationService navigationService, IInventoryService inventoryService, IMapper mapper)
+        public OrdersPageViewModel(ICustomerService customerService, IOrderService orderService, INavigationService navigationService, IInventoryService inventoryService, IMapper mapper, INotificationService notificationService)
         {
             _customerService = customerService;
             _orderService = orderService;
             _navigationService = navigationService;
             _inventoryService = inventoryService;
             _mapper = mapper;
+            _notificationService = notificationService;
             //GenerateFakeOrders();
         }
 
@@ -153,7 +155,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewOrder()
         {
             bool save = false;
-            var vm = new OrderDetailsViewModel(_navigationService, _orderService, _customerService, _inventoryService, _mapper);
+            var vm = new OrderDetailsViewModel(_navigationService, _orderService, _customerService, _inventoryService, _mapper, _notificationService);
             _navigationService.OpenPage(vm);
 
             if (save)
@@ -167,7 +169,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (order.Id == null) return;
 
             bool save = false;
-            var vm = new OrderDetailsViewModel(order.Id, _navigationService, _orderService, _customerService, _inventoryService, _mapper);
+            var vm = new OrderDetailsViewModel(order.Id, _navigationService, _orderService, _customerService, _inventoryService, _mapper, _notificationService);
             _navigationService.OpenPage(vm);
 
             if (save)

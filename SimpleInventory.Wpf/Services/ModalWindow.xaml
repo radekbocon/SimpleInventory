@@ -14,7 +14,10 @@
         x:Name="root"
         mc:Ignorable="d"
         Title="ModalWindow" Height="450" Width="800">
-    <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="Black">
+    <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="Black" Margin="15">
+        <Border.Effect>
+            <DropShadowEffect Direction="270" BlurRadius="7" ShadowDepth="3" Opacity="0.4"/>
+        </Border.Effect>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>

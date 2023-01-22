@@ -3,6 +3,7 @@ using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Controls.Dialogs;
 using SimpleInventory.Wpf.Services;
 using System;
@@ -19,6 +20,7 @@ namespace SimpleInventory.Wpf.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IOrderService _orderService;
         private readonly IInventoryService _inventoryService;
+        private readonly INotificationService _notificationService;
         private readonly IMapper _mapper;
 
         private OrderViewModel? _order;
@@ -172,22 +174,24 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public OrderDetailsViewModel(INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService, IMapper mapper)
+        public OrderDetailsViewModel(INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService, IMapper mapper, INotificationService notificationService)
         {
             _navigationService = navigationService;
             _customerService = customerService;
             _orderService = orderService;
             _inventoryService = inventoryService;
+            _notificationService = notificationService;
             Order = new OrderViewModel();
             _mapper = mapper;
         }
 
-        public OrderDetailsViewModel(string id, INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService, IMapper mapper)
+        public OrderDetailsViewModel(string id, INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService, IMapper mapper, INotificationService notificationService)
 		{
 			_navigationService = navigationService;
             _customerService = customerService;
             _orderService = orderService;
             _inventoryService = inventoryService;
+            _notificationService = notificationService;
             _mapper = mapper;
             SetOrder(id).Await();
 		}
@@ -289,11 +293,11 @@ namespace SimpleInventory.Wpf.ViewModels
             {
                 var model = _mapper.Map<OrderModel>(Order);
                 await _orderService.UpsertOneAsync(model);
+                _notificationService.Show("Saved", "Order succesfully saved.", NotificationType.Info);
             }
             catch (Exception ex)
             {
-
-                MessageBox.Show("Not enough items in inventory");
+                _notificationService.Show("Error", "Not enough items in inventory.", NotificationType.Error, 6);
             }
         }
     }
