@@ -155,7 +155,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewOrder()
         {
             bool save = false;
-            var vm = new OrderDetailsViewModel(_navigationService, _orderService, _customerService, _inventoryService, _mapper, _notificationService);
+            var vm = new OrderDetailsViewModel();
             _navigationService.OpenPage(vm);
 
             if (save)
@@ -169,7 +169,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (order.Id == null) return;
 
             bool save = false;
-            var vm = new OrderDetailsViewModel(order.Id, _navigationService, _orderService, _customerService, _inventoryService, _mapper, _notificationService);
+            var vm = new OrderDetailsViewModel(order.Id);
             _navigationService.OpenPage(vm);
 
             if (save)

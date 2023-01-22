@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Bogus;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
@@ -29,19 +30,19 @@ namespace SimpleInventory.Wpf.ViewModels
         private ICommand _addNewAddress;
         private ICommand _deleteAddress;
 
-        public CustomerDetailsViewModel(string customerId, ICustomerService customerService, INavigationService navigationService, IMapper mapper)
+        public CustomerDetailsViewModel(string customerId)
         {
-            _customerService = customerService;
-            _navigationService = navigationService;
-            _mapper = mapper;
+            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
             SetCustomer(customerId).Await();
         }
 
-        public CustomerDetailsViewModel(ICustomerService customerService, INavigationService dialogService, IMapper mapper)
+        public CustomerDetailsViewModel()
         {
-            _customerService = customerService;
-            _navigationService = dialogService;
-            _mapper = mapper;
+            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
             Customer = new CustomerViewModel();
             _customerBackup = new CustomerViewModel();
         }

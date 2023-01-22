@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
@@ -174,25 +175,25 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public OrderDetailsViewModel(INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService, IMapper mapper, INotificationService notificationService)
+        public OrderDetailsViewModel()
         {
-            _navigationService = navigationService;
-            _customerService = customerService;
-            _orderService = orderService;
-            _inventoryService = inventoryService;
-            _notificationService = notificationService;
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
+            _orderService = App.Current.Services.GetRequiredService<IOrderService>();
+            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
             Order = new OrderViewModel();
-            _mapper = mapper;
         }
 
-        public OrderDetailsViewModel(string id, INavigationService navigationService, IOrderService orderService, ICustomerService customerService, IInventoryService inventoryService, IMapper mapper, INotificationService notificationService)
+        public OrderDetailsViewModel(string id)
 		{
-			_navigationService = navigationService;
-            _customerService = customerService;
-            _orderService = orderService;
-            _inventoryService = inventoryService;
-            _notificationService = notificationService;
-            _mapper = mapper;
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
+            _orderService = App.Current.Services.GetRequiredService<IOrderService>();
+            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
             SetOrder(id).Await();
 		}
 

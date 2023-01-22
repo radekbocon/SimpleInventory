@@ -167,7 +167,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewItem()
         {
             bool save = false;
-            var vm = new ItemDetailsViewModel(_inventoryService, _navigationService, _mapper, _notificationService);
+            var vm = new ItemDetailsViewModel();
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;
@@ -184,7 +184,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (entry.Id == null) return;
 
             bool save = false;
-            var vm = new ReceivingViewModel(entry.Id, _inventoryService, _navigationService, _mapper, _notificationService);
+            var vm = new ReceivingViewModel(entry.Id);
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;
@@ -202,7 +202,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
             var model = _mapper.Map<InventoryEntryModel>(item);
             bool delete = false;
-            var vm = new YesNoDialogViewModel(_navigationService, "Delete this record?");
+            var vm = new YesNoDialogViewModel("Delete this record?");
             _navigationService.ShowDialog(viewModel: vm, dialogWidth: 250, callback: result => 
             {
                 delete = result;
@@ -227,7 +227,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task ReceiveItem()
         {
             bool save = false;
-            var vm = new ReceivingViewModel(_inventoryService, _navigationService, _mapper, _notificationService);
+            var vm = new ReceivingViewModel();
             _navigationService.ShowModal(vm, result =>
             {
                 save = result;

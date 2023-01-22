@@ -165,7 +165,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (customer == null) return;
 
             bool delete = false;
-            var vm = new YesNoDialogViewModel(_dialogService, "Delete this record?");
+            var vm = new YesNoDialogViewModel("Delete this record?");
             _dialogService.ShowDialog(viewModel: vm, dialogWidth: 250, callback: result =>
             {
                 delete = result;
@@ -182,7 +182,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private async Task AddNewCustomer()
         {
             bool save = false;
-            var vm = new CustomerDetailsViewModel(_customerService, _dialogService, _mapper);
+            var vm = new CustomerDetailsViewModel();
             _dialogService.ShowModal(vm, callback => 
             {
                 save = callback;
@@ -199,7 +199,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             if (customer.Id == null) return;
 
             bool save = false;
-            var vm = new CustomerDetailsViewModel(customer.Id, _customerService, _dialogService, _mapper);
+            var vm = new CustomerDetailsViewModel(customer.Id);
             _dialogService.ShowModal(vm, result =>
             {
                 save = result;

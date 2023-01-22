@@ -1,4 +1,5 @@
-﻿using SimpleInventory.Wpf.Commands;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.Services;
 using SimpleInventory.Wpf.ViewModels;
 using System;
@@ -18,7 +19,7 @@ namespace SimpleInventory.Wpf.Controls.Dialogs
 
         private ICommand _dialogRelustPositiveCommand;
         private ICommand _dialogRelustNegativeCommand;
-        private readonly INavigationService _dialogService;
+        private readonly INavigationService _navigationService;
 
         public ICommand DialogResultPositiveCommand
         {
@@ -50,22 +51,22 @@ namespace SimpleInventory.Wpf.Controls.Dialogs
             }
         }
 
-        public YesNoDialogViewModel(INavigationService dialogService, string? message, string? positiveButtonText = "Yes", string? negativeButtonText = "No")
+        public YesNoDialogViewModel(string? message, string? positiveButtonText = "Yes", string? negativeButtonText = "No")
         {
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
             Message = message;
             PositiveButtonText = positiveButtonText;
             NegativeButtonText = negativeButtonText;
-            _dialogService = dialogService;
         }
 
         private void DialogResultPositive()
         {
-            _dialogService.DialogResult(true);
+            _navigationService.DialogResult(true);
         }
 
         private void DialogResultNegative()
         {
-            _dialogService.DialogResult(false);
+            _navigationService.DialogResult(false);
         }
     }
 }

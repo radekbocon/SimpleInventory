@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
@@ -97,23 +98,23 @@ namespace SimpleInventory.Wpf.ViewModels
             set => SetProperty(ref _entry, value);
         }
 
-        public ReceivingViewModel(IInventoryService inventoryService, INavigationService navigationService, IMapper mapper, INotificationService notificationService)
+        public ReceivingViewModel()
         {
-            _inventoryService = inventoryService;
-            _navigationService = navigationService;
-            _notificationService = notificationService;
-            _mapper = mapper;
+            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
             GetItems();
             Entry = new InventoryEntryViewModel();
             _entryBackup = new InventoryEntryViewModel();
         }
 
-        public ReceivingViewModel(string id, IInventoryService inventoryService, INavigationService navigationService, IMapper mapper, INotificationService notificationService)
+        public ReceivingViewModel(string id)
         {
-            _inventoryService = inventoryService;
-            _navigationService = navigationService;
-            _notificationService = notificationService;
-            _mapper = mapper;
+            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
             GetItems();
             Initialaze(id);
         }

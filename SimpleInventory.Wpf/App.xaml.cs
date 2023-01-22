@@ -23,12 +23,19 @@ namespace SimpleInventory.Wpf
     /// </summary>
     public partial class App : Application
     {
+        public IServiceProvider Services { get; }
+
+        public new static App Current => (App)Application.Current;
+
+        public App()
+        {
+            Services = CreateServiceProvider();
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
-            IServiceProvider serviceProvider = CreateServiceProvider();
-
-            MainWindow = serviceProvider.GetRequiredService<MainWindow>();
-            MainWindow.DataContext = serviceProvider.GetRequiredService<MainViewModel>();
+            MainWindow = Services.GetRequiredService<MainWindow>();
+            MainWindow.DataContext = Services.GetRequiredService<MainViewModel>();
 
             MainWindow.Show();
             base.OnStartup(e);

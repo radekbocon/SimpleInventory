@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SimpleInventory.Wpf.Services
 {
-    public class NotificationService : ViewModelBase, INotificationService
+    public class NotificationService : ObservableBase, INotificationService
     {
         private readonly MainWindow _mainWindow;
         private ObservableCollection<NotificationViewModel> _notifications = new ObservableCollection<NotificationViewModel>();

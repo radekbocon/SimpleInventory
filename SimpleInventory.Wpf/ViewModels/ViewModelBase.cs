@@ -13,9 +13,8 @@ using System.Threading.Tasks;
 
 namespace SimpleInventory.Wpf.ViewModels
 {
-    public class ViewModelBase : INotifyPropertyChanged, INotifyDataErrorInfo
+    public class ViewModelBase : ObservableBase, INotifyDataErrorInfo
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
         public bool HasErrors => _errorsByPropertyName.Any();
         private readonly Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
@@ -33,25 +32,9 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public void NotifyPropertyChanged(string property)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-
         public IEnumerable GetErrors(string propertyName)
         {
             return _errorsByPropertyName.ContainsKey(propertyName) ? _errorsByPropertyName[propertyName] : null;
-        }
-
-        protected bool SetProperty<T>(ref T field, T newValue, [CallerMemberName] string propertyName = null)
-        {
-            if (!EqualityComparer<T>.Default.Equals(field, newValue))
-            {
-                field = newValue;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                return true;
-            }
-            return false;
         }
 
         protected void OnErrorsChanged(string propertyName)

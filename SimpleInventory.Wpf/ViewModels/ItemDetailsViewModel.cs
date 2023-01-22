@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
@@ -21,25 +22,25 @@ namespace SimpleInventory.Wpf.ViewModels
         private ICommand? _saveCommand;
         private ICommand? _cancelCommand;
         private readonly IInventoryService _inventoryService;
-        private readonly INavigationService _dialogService;
+        private readonly INavigationService _navigationService;
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
 
-        public ItemDetailsViewModel(string itemId, IInventoryService inventoryService, INavigationService dialogService, IMapper mapper, INotificationService notificationService)
+        public ItemDetailsViewModel(string itemId)
         {
-            _inventoryService = inventoryService;
-            _dialogService = dialogService;
-            _mapper = mapper;
-            _notificationService = notificationService;
+            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
             Initialize(itemId).Await();
         }
 
-        public ItemDetailsViewModel(IInventoryService inventoryService, INavigationService dialogService, IMapper mapper, INotificationService notificationService)
+        public ItemDetailsViewModel()
         {
-            _inventoryService = inventoryService;
-            _dialogService = dialogService;
-            _mapper = mapper;
-            _notificationService = notificationService;
+            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
             Initialize().Await();
         }
 
@@ -96,7 +97,7 @@ namespace SimpleInventory.Wpf.ViewModels
             var model = _mapper.Map<ItemModel>(Item);
             await _inventoryService.UpsertOneItemAsync(model);
             _itemBackup = new ItemViewModel(Item);
-            _dialogService.ModalResult(true);
+            _navigationService.ModalResult(true);
             _notificationService.Show("Saved", "Item succesfully saved.", NotificationType.Info);
         }
 
