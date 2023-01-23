@@ -5,6 +5,7 @@ using SimpleInventory.Core.Extentions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections;
@@ -22,6 +23,7 @@ namespace SimpleInventory.Wpf.ViewModels
         private readonly ICustomerService _customerService;
         private readonly INavigationService _navigationService;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
 
         private CustomerViewModel _customer;
         private CustomerViewModel _customerBackup;
@@ -29,22 +31,27 @@ namespace SimpleInventory.Wpf.ViewModels
         private ICommand _saveCommand;
         private ICommand _addNewAddress;
         private ICommand _deleteAddress;
+        private Action _onCustomerSaved;
 
-        public CustomerDetailsViewModel(string customerId)
+        public CustomerDetailsViewModel(string customerId, Action onCustomerSaved)
         {
             _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
             _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
             _mapper = App.Current.Services.GetRequiredService<IMapper>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
             SetCustomer(customerId).Await();
+            _onCustomerSaved = onCustomerSaved;
         }
 
-        public CustomerDetailsViewModel()
+        public CustomerDetailsViewModel(Action onCustomerSaved)
         {
             _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
             _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
             _mapper = App.Current.Services.GetRequiredService<IMapper>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
             Customer = new CustomerViewModel();
             _customerBackup = new CustomerViewModel();
+            _onCustomerSaved = onCustomerSaved;
         }
 
         public string Name { get; set; } = "Customer Details";
@@ -156,7 +163,9 @@ namespace SimpleInventory.Wpf.ViewModels
             var customerModel = _mapper.Map<CustomerModel>(Customer);
             await _customerService.UpsertOne(customerModel);
             _customerBackup = new CustomerViewModel(Customer);
-            _navigationService.ModalResult(true);
+            _onCustomerSaved.Invoke();
+            _navigationService.CloseModal();
+            _notificationService.Show("Saved", "Customer succesfully saved.", NotificationType.Info);
         }
 
         private void CancelChanges()

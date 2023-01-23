@@ -59,7 +59,7 @@ namespace SimpleInventory.Wpf.Services
             dialog.ShowDialog();
         }
 
-        public void ShowModal(ViewModelBase viewModel, Action<bool> callback, double modalWidth = 0)
+        public void ShowModal(ViewModelBase viewModel, double modalWidth = 0)
         {
             var modal = new ModalWindow();
             var parent = Application.Current.MainWindow;
@@ -68,7 +68,6 @@ namespace SimpleInventory.Wpf.Services
             EventHandler closeEventHandler = null;
             closeEventHandler = (s, e) =>
             {
-                callback(modal.CallbackAction);
                 modal.Closed -= closeEventHandler;
                 parent.Opacity = 1;
             };
@@ -88,11 +87,13 @@ namespace SimpleInventory.Wpf.Services
             window.DialogResult = dialogResult;
         }
 
-        public void ModalResult(bool doAction)
+        public void CloseModal()
         {
             var window = Application.Current.Windows.OfType<ModalWindow>().FirstOrDefault();
-            if (window == null) return;
-            window.CallbackAction = doAction;
+            if (window != null)
+            {
+                window.Close();
+            }
         }
     }
 }

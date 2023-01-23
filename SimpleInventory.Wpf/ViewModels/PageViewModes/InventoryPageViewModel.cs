@@ -130,7 +130,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_editEntryCommand == null)
                 {
                     _editEntryCommand = new RelayCommand(
-                        async p => await EditEntry((InventoryEntryViewModel)p),
+                        p => EditEntry((InventoryEntryViewModel)p),
                         p => p is InventoryEntryViewModel);
                 }
 
@@ -145,7 +145,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_receiveCommand == null)
                 {
                     _receiveCommand = new RelayCommand(
-                        async p => await ReceiveItem(),
+                        p => ReceiveItem(),
                         p => true);
                 }
 
@@ -168,10 +168,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             bool save = false;
             var vm = new ItemDetailsViewModel();
-            _navigationService.ShowModal(vm, result =>
-            {
-                save = result;
-            });
+            _navigationService.ShowModal(vm);
 
             if (save)
             {
@@ -179,21 +176,12 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private async Task EditEntry(InventoryEntryViewModel entry)
+        private void EditEntry(InventoryEntryViewModel entry)
         {
             if (entry.Id == null) return;
 
-            bool save = false;
-            var vm = new ReceivingViewModel(entry.Id);
-            _navigationService.ShowModal(vm, result =>
-            {
-                save = result;
-            });
-
-            if (save)
-            {
-                await GetInventory();
-            }
+            var vm = new ReceivingViewModel(entry.Id, async () => await GetInventory());
+            _navigationService.ShowModal(vm);
         }
 
         private async Task DeleteItem(InventoryEntryViewModel item)
@@ -224,19 +212,10 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             IsBusy = false;
         }
 
-        private async Task ReceiveItem()
+        private void ReceiveItem()
         {
-            bool save = false;
-            var vm = new ReceivingViewModel();
-            _navigationService.ShowModal(vm, result =>
-            {
-                save = result;
-            });
-
-            if (save)
-            {
-                await GetInventory();
-            }
+            var vm = new ReceivingViewModel(async () => await GetInventory());
+            _navigationService.ShowModal(vm);
         }
 
         private void ShowBusyIndicator()

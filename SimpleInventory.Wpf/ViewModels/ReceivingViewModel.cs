@@ -30,6 +30,8 @@ namespace SimpleInventory.Wpf.ViewModels
         private ObservableCollection<ItemViewModel> _items;
         private ItemViewModel _selectedItem;
 
+        private Action _onItemReceived;
+
         public string DisplayProperty => nameof(SelectedItem.DisplayProperty);
 
         public string Name { get; set; } = "Receiving";
@@ -98,7 +100,7 @@ namespace SimpleInventory.Wpf.ViewModels
             set => SetProperty(ref _entry, value);
         }
 
-        public ReceivingViewModel()
+        public ReceivingViewModel(Action onItemReceived)
         {
             _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
             _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
@@ -107,9 +109,10 @@ namespace SimpleInventory.Wpf.ViewModels
             GetItems();
             Entry = new InventoryEntryViewModel();
             _entryBackup = new InventoryEntryViewModel();
+            _onItemReceived = onItemReceived;
         }
 
-        public ReceivingViewModel(string id)
+        public ReceivingViewModel(string id, Action onItemReceived)
         {
             _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
             _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
@@ -117,6 +120,7 @@ namespace SimpleInventory.Wpf.ViewModels
             _mapper = App.Current.Services.GetRequiredService<IMapper>();
             GetItems();
             Initialaze(id);
+            _onItemReceived = onItemReceived;
         }
 
         private void GetItems()
@@ -130,7 +134,6 @@ namespace SimpleInventory.Wpf.ViewModels
         {
             Entry = _entryBackup;
             SelectedItem = Entry.Item ?? null;
-            _navigationService.ModalResult(false);
         }
 
         private async Task Save()
@@ -138,7 +141,8 @@ namespace SimpleInventory.Wpf.ViewModels
             var model = _mapper.Map<InventoryEntryModel>(Entry);
             await _inventoryService.ReceiveItem(model);
             _entryBackup = Entry;
-            _navigationService.ModalResult(true);
+            _onItemReceived.Invoke();
+            _navigationService.CloseModal();
             ShowSavedNotification(model);
         }
 

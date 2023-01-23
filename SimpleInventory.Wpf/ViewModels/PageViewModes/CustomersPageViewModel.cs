@@ -3,6 +3,7 @@ using Bogus;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Controls.Dialogs;
 using SimpleInventory.Wpf.Services;
 using System;
@@ -20,7 +21,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         public string Name { get; set; } = "Customers";
 
         private readonly ICustomerService _customerService;
-        private readonly INavigationService _dialogService;
+        private readonly INavigationService _navigationService;
         private readonly IMapper _mapper;
 
         private ObservableCollection<CustomerViewModel> _customers;
@@ -32,12 +33,11 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private string _searchTerxt;
         private bool _isBusy;
 
-        public CustomersPageViewModel(ICustomerService customerService, INavigationService dialogService, IMapper mapper)
+        public CustomersPageViewModel(ICustomerService customerService, INavigationService navigationService, IMapper mapper)
         {
             _customerService = customerService;
-            _dialogService = dialogService;
+            _navigationService = navigationService;
             _mapper = mapper;
-            //GenerateFakeCustomers();
         }
 
         public bool IsBusy
@@ -113,7 +113,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_addNewCustomerCommand == null)
                 {
                     _addNewCustomerCommand = new RelayCommand(
-                        async p => await AddNewCustomer(),
+                        p => AddNewCustomer(),
                         p => true);
                 }
 
@@ -128,7 +128,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_openCustomerCommand == null)
                 {
                     _openCustomerCommand = new RelayCommand(
-                        async p => await EditCustomer((CustomerViewModel)p),
+                        p => EditCustomer((CustomerViewModel)p),
                         p => p is CustomerViewModel);
                 }
 
@@ -166,7 +166,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
             bool delete = false;
             var vm = new YesNoDialogViewModel("Delete this record?");
-            _dialogService.ShowDialog(viewModel: vm, dialogWidth: 250, callback: result =>
+            _navigationService.ShowDialog(viewModel: vm, dialogWidth: 250, callback: result =>
             {
                 delete = result;
             });
@@ -179,36 +179,18 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        private async Task AddNewCustomer()
+        private void AddNewCustomer()
         {
-            bool save = false;
-            var vm = new CustomerDetailsViewModel();
-            _dialogService.ShowModal(vm, callback => 
-            {
-                save = callback;
-            });
-
-            if (save)
-            {
-                await GetCustomers(); 
-            }
+            var vm = new CustomerDetailsViewModel(async () => await GetCustomers());
+            _navigationService.ShowModal(vm);
         }
 
-        private async Task EditCustomer(CustomerViewModel customer)
+        private void EditCustomer(CustomerViewModel customer)
         {
             if (customer.Id == null) return;
 
-            bool save = false;
-            var vm = new CustomerDetailsViewModel(customer.Id);
-            _dialogService.ShowModal(vm, result =>
-            {
-                save = result;
-            });
-
-            if (save)
-            {
-                await GetCustomers();
-            }
+            var vm = new CustomerDetailsViewModel(customer.Id, async () => await GetCustomers());
+            _navigationService.ShowModal(vm);
         }
 
         private void ShowBusyIndicator()
@@ -217,30 +199,6 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             {
                 IsBusy = true;
             }
-        }
-
-        private void GenerateFakeCustomers()
-        {
-            var address = new Faker<AddressModel>()
-                .RuleFor(x => x.Line1, f => f.Address.StreetAddress())
-                .RuleFor(x => x.Line2, f => f.Address.SecondaryAddress())
-                .RuleFor(x => x.PhoneNumber, f => f.Person.Phone)
-                .RuleFor(x => x.City, f => f.Address.City())
-                .RuleFor(x => x.Country, f => f.Address.CountryCode())
-                .RuleFor(x => x.PostCode, f => f.Address.ZipCode());
-
-            var customer = new Faker<CustomerModel>()
-                .RuleFor(x => x.FirstName, f => f.Person.FirstName)
-                .RuleFor(x => x.LastName, f => f.Person.LastName)
-                .RuleFor(x => x.CompanyName, f => f.Company.CompanyName() + " " + f.Company.CompanySuffix())
-                .RuleFor(x => x.Email, f => f.Person.Email)
-                .RuleFor(x => x.PhoneNumber, f => f.Person.Phone)
-                .RuleFor(x => x.Addresses, f => address.Generate(2));
-
-            var list = customer.Generate(1150);
-
-            _customerService.UpsertMany(list);
-
         }
     }
 }

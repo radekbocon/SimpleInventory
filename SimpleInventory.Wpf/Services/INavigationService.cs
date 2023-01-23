@@ -10,10 +10,10 @@ namespace SimpleInventory.Wpf.Services
     public interface INavigationService
     {
         void DialogResult(bool resultPositive);
-        void ModalResult(bool doAction);
+        void CloseModal();
         void OpenPage(ViewModelBase viewModel);
         void GoBack();
         void ShowDialog(ViewModelBase viewModel, Action<bool> callback, double dialogWidth = 0);
-        void ShowModal(ViewModelBase viewModel, Action<bool> callback, double modalWidth = 0);
+        void ShowModal(ViewModelBase viewModel, double modalWidth = 0);
     }
 }

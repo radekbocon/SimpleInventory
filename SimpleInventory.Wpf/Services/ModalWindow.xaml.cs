@@ -24,16 +24,6 @@ namespace SimpleInventory.Wpf.Services
             InitializeComponent();
         }
 
-        public bool CallbackAction
-        {
-            get { return (bool)GetValue(CallbackActionProperty); }
-            set { SetValue(CallbackActionProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for CallbackAction.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CallbackActionProperty =
-            DependencyProperty.Register("CallbackAction", typeof(bool), typeof(Window), new PropertyMetadata(false));
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

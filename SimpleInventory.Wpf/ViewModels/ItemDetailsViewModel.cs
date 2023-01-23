@@ -97,7 +97,7 @@ namespace SimpleInventory.Wpf.ViewModels
             var model = _mapper.Map<ItemModel>(Item);
             await _inventoryService.UpsertOneItemAsync(model);
             _itemBackup = new ItemViewModel(Item);
-            _navigationService.ModalResult(true);
+            _navigationService.CloseModal();
             _notificationService.Show("Saved", "Item succesfully saved.", NotificationType.Info);
         }
 
