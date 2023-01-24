@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimpleInventory.Wpf"
         xmlns:components="clr-namespace:SimpleInventory.Wpf.Components" 
+        xmlns:controls="clr-namespace:SimpleInventory.Wpf.Controls" 
         xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
         xmlns:views="clr-namespace:SimpleInventory.Wpf.Views"
         xmlns:viewmodels="clr-namespace:SimpleInventory.Wpf.ViewModels.PageViewModes" 

@@ -34,6 +34,11 @@ namespace SimpleInventory.Wpf.Services
 
         public void Dismiss(NotificationViewModel notification)
         {
+            DismissAsync(notification).Await(); 
+        }
+
+        private async Task DismissAsync(NotificationViewModel notification)
+        {
             if (Notifications.Contains(notification))
             {
                 Notifications.Remove(notification);
@@ -45,10 +50,7 @@ namespace SimpleInventory.Wpf.Services
             var notification = new NotificationViewModel(title, message, this, notificationType);
             Notifications.Add(notification);
             await Task.Delay(TimeSpan.FromSeconds(durationInSeconds));
-            if (Notifications.Contains(notification))
-            {
-                Notifications.Remove(notification);
-            }
+            Dismiss(notification);
         }
     }
 }

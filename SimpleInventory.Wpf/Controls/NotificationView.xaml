@@ -11,7 +11,27 @@
              d:DesignHeight="80" d:DesignWidth="350">
     <UserControl.Resources>
         <converters:NotificationTypeToImageConverter x:Key="NotificationTypeToImage"/>
+        <Style TargetType="{x:Type local:NotificationView}">
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" AutoReverse="False" From="80" To="0" Duration="0:0:0.2">
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
+
     <Border 
         Margin="0 5"
         BorderThickness="1"
