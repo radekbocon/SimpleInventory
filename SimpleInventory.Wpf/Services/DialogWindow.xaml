@@ -6,9 +6,25 @@
         xmlns:local="clr-namespace:SimpleInventory.Wpf.Services"
         mc:Ignorable="d"
         WindowStyle="None"
+        x:Name="root"
         AllowsTransparency="True"
         Background="Transparent"
         WindowStartupLocation="CenterOwner"
         SizeToContent="Height"
+        Closing="Window_Closing"
         Height="auto" Width="300">
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation 
+                        Storyboard.TargetName="root" 
+                        Storyboard.TargetProperty="Opacity" 
+                        From="0" 
+                        To="1" 
+                        Duration="0:0:0.2" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
 </Window>

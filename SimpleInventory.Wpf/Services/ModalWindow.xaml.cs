@@ -20,6 +20,7 @@ namespace SimpleInventory.Wpf.Services
     /// </summary>
     public partial class ModalWindow : Window
     {
+        private const double CLOSING_ANIMATION_DURATION = 0.2;
         public ModalWindow()
         {
             InitializeComponent();
@@ -34,7 +35,7 @@ namespace SimpleInventory.Wpf.Services
         {
             Closing -= Window_Closing;
             e.Cancel = true;
-            var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(0.2));
+            var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(CLOSING_ANIMATION_DURATION));
             anim.Completed += (s, args) => this.Close();
             this.BeginAnimation(OpacityProperty, anim);
         }
