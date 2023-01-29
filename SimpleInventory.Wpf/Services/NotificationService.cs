@@ -41,13 +41,15 @@ namespace SimpleInventory.Wpf.Services
         {
             if (Notifications.Contains(notification))
             {
+                notification.IsClosing = true;
+                await Task.Delay(TimeSpan.FromSeconds(0.2));
                 Notifications.Remove(notification);
             }
         }
 
         private async Task ShowAsync(string title, string message, NotificationType notificationType, double durationInSeconds)
         {
-            var notification = new NotificationViewModel(title, message, this, notificationType);
+            var notification = new NotificationViewModel(title, message, notificationType);
             Notifications.Add(notification);
             await Task.Delay(TimeSpan.FromSeconds(durationInSeconds));
             Dismiss(notification);

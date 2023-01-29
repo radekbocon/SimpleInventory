@@ -28,6 +28,16 @@
                         </BeginStoryboard>
                     </EventTrigger.Actions>
                 </EventTrigger>
+                <DataTrigger Binding="{Binding IsClosing}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" AutoReverse="False" From="0" To="400" Duration="0:0:0.2">
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
