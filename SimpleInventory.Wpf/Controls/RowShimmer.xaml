@@ -8,14 +8,14 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <StackPanel>
-            <Rectangle Fill="White" Height="23" Margin="1 0 1 0"/>
-            <Rectangle Fill="#ecf0f1" Height="23" Margin="1 0 1 0"/>
-            <Rectangle Fill="White" Height="23" Margin="1 0 1 0"/>
-            <Rectangle Fill="#ecf0f1" Height="23" Margin="1 0 1 0"/>
-            <Rectangle Fill="White" Height="23" Margin="1 0 1 0"/>
-            <Rectangle Fill="#f5f9fa" Height="23" Margin="1 0 1 0"/>
-            <Rectangle Fill="White" Height="23" Margin="1 0 1 0"/>
-            <Rectangle Fill="#fafeff" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="{DynamicResource Brush.Border.Background.3}" Height="23" Margin="1 0 1 0" />
+            <Rectangle Fill="{DynamicResource Brush.Border.Background.2}" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="{DynamicResource Brush.Border.Background.3}" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="{DynamicResource Brush.Border.Background.2}" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="{DynamicResource Brush.Border.Background.3}" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="{DynamicResource Brush.Border.Background.2}" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="{DynamicResource Brush.Border.Background.3}" Height="23" Margin="1 0 1 0"/>
+            <Rectangle Fill="{DynamicResource Brush.Border.Background.2}" Height="23" Margin="1 0 1 0"/>
         </StackPanel>
     </Grid>
 </UserControl>

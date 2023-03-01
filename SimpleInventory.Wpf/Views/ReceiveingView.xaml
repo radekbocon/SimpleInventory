@@ -87,8 +87,8 @@
 
         <Border
                 BorderThickness="0 1 0 0"
-                BorderBrush="#bdc3c7"
-                Background="#ecf0f1"
+                BorderBrush="{DynamicResource Brush.Border.Background.1}"
+                Background="{DynamicResource Brush.Border.Background.3}"
                 CornerRadius="0 0 8 8"
                 Grid.Row="1"
                 Grid.Column="0">

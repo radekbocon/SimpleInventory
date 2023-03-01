@@ -20,8 +20,6 @@ namespace SimpleInventory.Wpf.Controls
     /// </summary>
     public partial class NotificationView : UserControl
     {
-        public event EventHandler Closing;
-
         public NotificationView()
         {
             InitializeComponent();

@@ -22,7 +22,8 @@
                         Storyboard.TargetProperty="Opacity" 
                         From="0" 
                         To="1" 
-                        Duration="0:0:0.2" />
+                        Duration="0:0:0.2"
+                        AccelerationRatio="1"/>
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>

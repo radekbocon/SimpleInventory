@@ -1,4 +1,5 @@
 ﻿using SimpleInventory.Wpf.Controls;
+using System;
 using System.Threading.Tasks;
 
 namespace SimpleInventory.Wpf.Services

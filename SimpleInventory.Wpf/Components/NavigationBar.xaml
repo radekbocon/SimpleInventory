@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
              mc:Ignorable="d"
              Name="navigationBar"
-             Background="#95a5a6"
+             Background="{DynamicResource Brush.Border.Background.1}"
              d:DesignHeight="450" d:DesignWidth="200">
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
@@ -15,6 +15,7 @@
 
         <Style TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Foreground.3}"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="MinHeight" Value="40"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -25,7 +26,7 @@
                                 BorderThickness="0">
                             <StackPanel Orientation="Horizontal">
                                 <Rectangle Width="4" 
-                                           Fill="#f39c12" 
+                                           Fill="{DynamicResource Brush.Accent.1}" 
                                            Visibility="{Binding Path=IsChecked, Converter={StaticResource BoolToVisibility}, 
                                            RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}"/>
                                 <Image Source="{Binding Path=(local:NavigationButtonProperties.Image), 
@@ -46,10 +47,10 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#bdc3c7"/>
+                    <Setter Property="Background" Value="{DynamicResource Brush.Button.Background.1}"/>
                 </Trigger>
                 <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="#7f8c8d"/>
+                    <Setter Property="Background" Value="{DynamicResource Brush.Button.Background.2}"/>
                     <Setter Property="IsEnabled" Value="False"/>
                 </Trigger>
             </Style.Triggers>
@@ -71,10 +72,10 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#bdc3c7"/>
+                    <Setter Property="Background" Value="{DynamicResource Brush.Button.Background.1}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#7f8c8d"/>
+                    <Setter Property="Background" Value="{DynamicResource Brush.Button.Background.2}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -107,6 +108,7 @@
 
         <Label Content="Simple Inventory" 
                VerticalAlignment="Center"
+               Foreground="{DynamicResource Brush.Text.Foreground.3}"
                FontSize="16" 
                FontWeight="Bold"
                Grid.Row="0"

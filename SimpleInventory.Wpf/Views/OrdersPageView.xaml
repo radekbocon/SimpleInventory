@@ -7,10 +7,10 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib" 
              xmlns:controls="clr-namespace:SimpleInventory.Wpf.Controls" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:models="clr-namespace:SimpleInventory.Core.Models;assembly=SimpleInventory.Core"
+             xmlns:vm="clr-namespace:SimpleInventory.Wpf.ViewModels"
              xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
              mc:Ignorable="d" 
-             Background="#bdc3c7"
+             Style="{StaticResource Page}"
              d:DesignHeight="450" d:DesignWidth="800">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -42,10 +42,10 @@
             Grid.ColumnSpan="1"
             Grid.RowSpan="2"
             CornerRadius="5"
-            BorderBrush="#7f8c8d"
+            BorderBrush="{DynamicResource Brush.Text.Foreground.1}"
             BorderThickness="1"
             Panel.ZIndex="-1"
-            Background="White"/>
+            Background="{DynamicResource Brush.Border.Background.3}"/>
 
         <StackPanel
             Orientation="Horizontal"
@@ -90,8 +90,7 @@
             Name="OrdersDataGridView" 
             ItemsSource="{Binding Orders, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
             ColumnHeaderStyle="{StaticResource Header}"
-            Background="White"
-            AlternatingRowBackground="#ecf0f1"
+            Style="{StaticResource Default}"
             AutoGenerateColumns="False"
             CanUserDeleteRows="False"
             CanUserAddRows="False"
@@ -101,7 +100,6 @@
             Margin="1 0 1 10"
             HorizontalScrollBarVisibility="Disabled"
             GridLinesVisibility="Horizontal"
-            HorizontalGridLinesBrush="#7f8c8d"
             RowHeaderWidth="0"
             ColumnWidth="*"
             SelectionMode="Single"
@@ -114,7 +112,8 @@
                     <Setter Property="BorderThickness" Value="0"/>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="#34495e"/>
+                            <Setter Property="Background" Value="{DynamicResource Brush.Text.Foreground.3}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource Brush.Border.Background.1}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -140,7 +139,7 @@
                                 <Button
                                     Style="{StaticResource EditButton}"
                                     Command="{Binding DataContext.OpenOrderCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type models:OrderSummaryModel}}"
+                                    Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type vm:OrderSummaryViewModel}}"
                                     CommandParameter="{Binding}"
                                     FontFamily="Wingdings 2"
                                     FontSize="12"

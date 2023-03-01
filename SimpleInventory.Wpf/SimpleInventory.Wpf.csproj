@@ -8,10 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Fonts\Poppins-Regular.ttf" />
+    <None Remove="Resources\Fonts\Roboto-Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Remove="Resources\Icons.xaml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Fonts\Poppins-Regular.ttf" />
     <Resource Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

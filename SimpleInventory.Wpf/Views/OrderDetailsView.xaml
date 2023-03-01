@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
              xmlns:converters="clr-namespace:SimpleInventory.Wpf.Converters"
-             Background="#bdc3c7"
+             Style="{StaticResource Page}"
              d:DesignHeight="500" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:SelectedToVisibilityConverter x:Key="SelectedItemToVis"/>
@@ -65,9 +65,9 @@
             Grid.ColumnSpan="2"
             Grid.RowSpan="3"
             CornerRadius="5"
-            BorderBrush="#7f8c8d"
+            BorderBrush="{DynamicResource Brush.Text.Foreground.1}"
             BorderThickness="1"
-            Background="White">
+            Background="{DynamicResource Brush.Border.Background.3}">
 
             <ScrollViewer 
                 PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
@@ -91,6 +91,7 @@
                     <controls:EditableGroupBox
                         Grid.Column="0"
                         Grid.Row="0"
+                        Margin="0 0 0 16"
                         EditCommand="{Binding EditCustomerCommand}"
                         ButtonContent="{Binding CustomerButtonText}"
                         Header="Customer"
@@ -169,8 +170,7 @@
                         Name="LinesDataGridView" 
                         ItemsSource="{Binding Order.Lines, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
                         ColumnHeaderStyle="{StaticResource Header}"
-                        Background="White"
-                        AlternatingRowBackground="#ecf0f1"
+                        Style="{StaticResource Default}"
                         AutoGenerateColumns="False"
                         CanUserDeleteRows="False"
                         CanUserAddRows="False"
@@ -180,7 +180,6 @@
                         CanUserSortColumns="False"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         GridLinesVisibility="Horizontal"
-                        HorizontalGridLinesBrush="#7f8c8d"
                         RowHeaderWidth="0"
                         ColumnWidth="*"
                         SelectionMode="Single"
@@ -189,16 +188,6 @@
                         Grid.Column="0"
                         Grid.ColumnSpan="2"
                         Grid.Row="3">
-                        <DataGrid.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="#34495e"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.CellStyle>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="CurrentCellChanged">
                                 <i:InvokeCommandAction 

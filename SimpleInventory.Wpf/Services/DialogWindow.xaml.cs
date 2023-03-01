@@ -30,6 +30,7 @@ namespace SimpleInventory.Wpf.Services
             Closing -= Window_Closing;
             e.Cancel = true;
             var anim = new DoubleAnimation(0, (Duration)TimeSpan.FromSeconds(0.2));
+            anim.AccelerationRatio = 1;
             anim.Completed += (s, args) => this.Close();
             this.BeginAnimation(OpacityProperty, anim);
         }

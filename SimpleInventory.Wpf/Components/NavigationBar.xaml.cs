@@ -48,13 +48,13 @@ namespace SimpleInventory.Wpf.Components
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (!_isCollapsed)
+            if (_isCollapsed)
             {
-                Collapse();
+                Expand();
             }
             else
             {
-                Expand();
+                Collapse();
             }
         }
 

@@ -12,14 +12,15 @@
         xmlns:dialogs="clr-namespace:SimpleInventory.Wpf.Controls.Dialogs" 
         mc:Ignorable="d"
         WindowStyle="SingleBorderWindow"
-        BorderThickness="1"
         ResizeMode="CanResize"
+        FontWeight="Thin"
+        FontFamily="/Resources/Fonts/#Poppins"
         WindowStartupLocation="CenterScreen"
         MinHeight="300"
         MinWidth="400"
         Title="MainWindow" Height="450" Width="950">
     <WindowChrome.WindowChrome>
-        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0" UseAeroCaptionButtons="False" ResizeBorderThickness="7"/>
+        <WindowChrome GlassFrameThickness="1" CaptionHeight="0" UseAeroCaptionButtons="False" ResizeBorderThickness="7"/>
     </WindowChrome.WindowChrome>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVissibility"/>
@@ -45,18 +46,20 @@
             Grid.Column="0"
             Grid.Row="1"
             Grid.RowSpan="2"/>
-        
+
         <Rectangle Grid.Column="1"
                    Grid.Row="1"
                    Grid.RowSpan="3"
-                   Fill="#2c3e50"/>
+                   Fill="{DynamicResource Brush.Button.Background.2}"/>
 
         <Rectangle Grid.Column="1"
                    Grid.Row="1"
                    Grid.ColumnSpan="2"
-                   Fill="#2c3e50"/>
+                   Fill="{DynamicResource Brush.Button.Background.2}"/>
 
-        <ContentControl x:Name="PageContent" Grid.Column="2" Grid.Row="2">
+        <ContentControl 
+            x:Name="PageContent" 
+            Grid.Column="2" Grid.Row="2">
         </ContentControl>
 
         <ItemsControl 

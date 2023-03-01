@@ -22,7 +22,7 @@
                     <EventTrigger.Actions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" AutoReverse="False" From="80" To="0" Duration="0:0:0.2">
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" AutoReverse="False" From="80" To="0" Duration="0:0:0.2" AccelerationRatio="1" >
                                 </DoubleAnimation>
                             </Storyboard>
                         </BeginStoryboard>
@@ -32,7 +32,7 @@
                     <DataTrigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" AutoReverse="False" From="0" To="400" Duration="0:0:0.2">
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" AutoReverse="False" From="0" To="400" Duration="0:0:0.2" AccelerationRatio="1" >
                                 </DoubleAnimation>
                             </Storyboard>
                         </BeginStoryboard>
