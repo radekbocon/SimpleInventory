@@ -7,29 +7,9 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="300">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border CornerRadius="5" Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#bdc3c7"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#7f8c8d"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
-    
-    <Border CornerRadius="8" Background="White" BorderThickness="1" BorderBrush="Black">
+
+
+    <Border CornerRadius="8" Background="{DynamicResource Brush.Border.Background.3}" BorderThickness="1" BorderBrush="Black">
         <Grid Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition/>

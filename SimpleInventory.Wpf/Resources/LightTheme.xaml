@@ -3,19 +3,19 @@
 
 
 
-    <SolidColorBrush x:Key="Brush.Border.Background.1"   Color="#484b6a"/>
-    <SolidColorBrush x:Key="Brush.Border.Background.2"   Color="#9394a5"/>
-    <SolidColorBrush x:Key="Brush.Border.Background.3"   Color="#d2d3db"/>
+    <SolidColorBrush x:Key="Brush.Border.Background.1"   Color="#e1dedb"/>
+    <SolidColorBrush x:Key="Brush.Border.Background.2"   Color="#d7d4cf"/>
+    <SolidColorBrush x:Key="Brush.Border.Background.3"   Color="#c9c6c1"/>
 
-    <SolidColorBrush x:Key="Brush.Button.Background.1"   Color="#9394a5"/>
-    <SolidColorBrush x:Key="Brush.Button.Background.2"   Color="#d2d3db"/>
-    <SolidColorBrush x:Key="Brush.Button.Background.3"   Color="#e4e5f1"/>
+    <SolidColorBrush x:Key="Brush.Button.Background.1"   Color="#e9e4d4"/>
+    <SolidColorBrush x:Key="Brush.Button.Background.2"   Color="#d2c9a8"/>
+    <SolidColorBrush x:Key="Brush.Button.Background.3"   Color="#c6bb92"/>
 
-    <SolidColorBrush x:Key="Brush.Text.Foreground.1"     Color="#424549"/>
-    <SolidColorBrush x:Key="Brush.Text.Foreground.2"     Color="#645f57"/>
-    <SolidColorBrush x:Key="Brush.Text.Foreground.3"     Color="#0f0f0f"/>
+    <SolidColorBrush x:Key="Brush.Text.Foreground.1"     Color="#715f1e"/>
+    <SolidColorBrush x:Key="Brush.Text.Foreground.2"     Color="#473b13"/>
+    <SolidColorBrush x:Key="Brush.Text.Foreground.3"     Color="#2d2d2d"/>
 
-    <SolidColorBrush x:Key="Brush.Accent.1"     Color="#f39c12"/>
+    <SolidColorBrush x:Key="Brush.Accent.1"     Color="#8d7625"/>
     
     
 </ResourceDictionary>

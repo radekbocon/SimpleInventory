@@ -33,7 +33,8 @@
                                        RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}"
                                        Width="22"
                                        Height="22"
-                                       Margin="10 0 0 0"/>
+                                       Margin="10 0 0 0">
+                                </Image>
                                 <ContentPresenter Content="{Binding Path=Content, 
                                                   RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}"
                                                   Margin="18 0 20 0" 
@@ -117,35 +118,35 @@
         <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <ToggleButton Grid.Column="1"
                           IsChecked="{Binding PageViewModels[0].IsActive, Mode=OneWay}"
-                          local:NavigationButtonProperties.Image="{StaticResource HomeIcon}"
+                          local:NavigationButtonProperties.Image="{DynamicResource HomeIcon}"
                           Content="{Binding PageViewModels[0].Name}"
                           Command="{Binding DataContext.ChangePageCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                           CommandParameter="{Binding PageViewModels[0]}">
             </ToggleButton>
             <ToggleButton Grid.Column="1"
                           IsChecked="{Binding PageViewModels[1].IsActive, Mode=OneWay}"
-                          local:NavigationButtonProperties.Image="{StaticResource InventoryIcon}"
+                          local:NavigationButtonProperties.Image="{DynamicResource InventoryIcon}"
                           Content="{Binding PageViewModels[1].Name}"
                           Command="{Binding DataContext.ChangePageCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                           CommandParameter="{Binding PageViewModels[1]}">
             </ToggleButton>
             <ToggleButton Grid.Column="1"
                           IsChecked="{Binding PageViewModels[2].IsActive, Mode=OneWay}"
-                          local:NavigationButtonProperties.Image="{StaticResource OrdersIcon}"
+                          local:NavigationButtonProperties.Image="{DynamicResource OrdersIcon}"
                           Content="{Binding PageViewModels[2].Name}"
                           Command="{Binding DataContext.ChangePageCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                           CommandParameter="{Binding PageViewModels[2]}">
             </ToggleButton>
             <ToggleButton Grid.Column="1"
                           IsChecked="{Binding PageViewModels[3].IsActive, Mode=OneWay}"
-                          local:NavigationButtonProperties.Image="{StaticResource CustomersIcon}"
+                          local:NavigationButtonProperties.Image="{DynamicResource CustomersIcon}"
                           Content="{Binding PageViewModels[3].Name}"
                           Command="{Binding DataContext.ChangePageCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                           CommandParameter="{Binding PageViewModels[3]}">
             </ToggleButton>
             <ToggleButton Grid.Column="1"
                           IsChecked="{Binding PageViewModels[4].IsActive, Mode=OneWay}"
-                          local:NavigationButtonProperties.Image="{StaticResource SettingsIcon}"
+                          local:NavigationButtonProperties.Image="{DynamicResource SettingsIcon}"
                           Content="{Binding PageViewModels[4].Name}"
                           Command="{Binding DataContext.ChangePageCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                           CommandParameter="{Binding PageViewModels[4]}">

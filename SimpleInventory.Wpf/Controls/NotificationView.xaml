@@ -45,8 +45,8 @@
     <Border 
         Margin="0 5"
         BorderThickness="1"
-        BorderBrush="#7f8c8d"
-        Background="#bdc3c7"
+        BorderBrush="{DynamicResource Brush.Border.Background.3}"
+        Background="{DynamicResource Brush.Border.Background.1}"
         CornerRadius="8">
         <Border.Effect>
             <DropShadowEffect Direction="270" BlurRadius="7" ShadowDepth="3" Opacity="0.4"/>
@@ -75,15 +75,16 @@
                     FontWeight="DemiBold"/>
                 <TextBlock 
                     Text="{Binding Message}" 
+                    Foreground="{DynamicResource Brush.Text.Foreground.3}"
                     FontSize="12" 
                     TextWrapping="Wrap" 
                     Padding="5 0"/>
             </StackPanel>
 
-            <Rectangle Grid.Column="2" Width="1" Height="50" Fill="#7f8c8d"/>
+            <Rectangle Grid.Column="2" Width="1" Height="50" Fill="{DynamicResource Brush.Text.Foreground.3}"/>
 
             <Button 
-                Foreground="#7f8c8d"
+                Foreground="{DynamicResource Brush.Text.Foreground.3}"
                 Content="r"
                 FontSize="18"
                 Command="{Binding CloseCommand}"
