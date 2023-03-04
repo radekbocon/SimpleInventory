@@ -149,7 +149,6 @@
                             AllowsTransparency="True" 
                             Focusable="False"
                             PopupAnimation="Slide">
-
                             <Grid Name="DropDown"
                                 SnapsToDevicePixels="True"                
                                 MinWidth="{TemplateBinding ActualWidth}"
@@ -189,6 +188,24 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border x:Name="Border" BorderThickness="1" Padding="8 2" CornerRadius="4">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="Border" Value="{DynamicResource Brush.Border.Background.3}" />
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource Brush.Accent.1}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type TextBox}">
         <Style.Resources>
             <Style TargetType="{x:Type Border}">
@@ -200,7 +217,7 @@
                 <Setter Property="BorderBrush" Value="{DynamicResource Brush.Text.Foreground.3}"/>
             </Trigger>
         </Style.Triggers>
-        <Setter Property="Padding" Value="6 4"/>
+        <Setter Property="Padding" Value="6 5"/>
         <Setter Property="Background" Value="{DynamicResource Brush.Border.Background.3}"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Foreground.3}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Text.Foreground.1}"/>
