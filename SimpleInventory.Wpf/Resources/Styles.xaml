@@ -207,16 +207,28 @@
     </Style>
 
     <Style TargetType="{x:Type TextBox}">
-        <Style.Resources>
-            <Style TargetType="{x:Type Border}">
-                <Setter Property="CornerRadius" Value="4" />
-            </Style>
-        </Style.Resources>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Brush.Text.Foreground.3}"/>
-            </Trigger>
-        </Style.Triggers>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBoxBase}">
+                    <Border 
+                        x:Name="Border" 
+                        BorderThickness="1" 
+                        Background="{DynamicResource Brush.Border.Background.3}"
+                        BorderBrush="{DynamicResource Brush.Accent.1}"
+                        CornerRadius="4">
+                        <ScrollViewer 
+                            Margin="0"
+                            x:Name="PART_ContentHost" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="Border" Value="{DynamicResource Brush.Border.Background.3}" />
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource Brush.Text.Foreground.1}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Padding" Value="6 5"/>
         <Setter Property="Background" Value="{DynamicResource Brush.Border.Background.3}"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Foreground.3}"/>
@@ -433,7 +445,8 @@
                 <ControlTemplate TargetType="{x:Type ScrollBar}">
                     <Grid x:Name="Bg" SnapsToDevicePixels="true">
                         <Border Padding="0 4">
-                            <Track x:Name="PART_Track"
+                            <Track 
+                                x:Name="PART_Track"
                                 IsDirectionReversed="true"
                                 IsEnabled="{TemplateBinding IsMouseOver}"
                                 Width="8"

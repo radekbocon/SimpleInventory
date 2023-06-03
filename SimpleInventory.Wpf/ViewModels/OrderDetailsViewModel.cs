@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace SimpleInventory.Wpf.ViewModels
 {
@@ -175,27 +176,21 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public OrderDetailsViewModel()
+        public OrderDetailsViewModel(ICustomerService customerService, IOrderService orderService, INavigationService navigationService, IInventoryService inventoryService, IMapper mapper, INotificationService notificationService)
         {
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
-            _orderService = App.Current.Services.GetRequiredService<IOrderService>();
-            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
-            Order = new OrderViewModel();
+            _customerService = customerService;
+            _orderService = orderService;
+            _navigationService = navigationService;
+            _inventoryService = inventoryService;
+            _mapper = mapper;
+            _notificationService = notificationService;
         }
 
-        public OrderDetailsViewModel(string id)
-		{
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
-            _orderService = App.Current.Services.GetRequiredService<IOrderService>();
-            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
+        public OrderDetailsViewModel Initialize(string id = null)
+        {
             SetOrder(id).Await();
-		}
+            return this;
+        }
 
         private void GoBack()
         {
@@ -204,9 +199,16 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private async Task SetOrder(string id)
         {
-            var model = await _orderService.GetByNumberAsync(id);
-            Order = _mapper.Map<OrderViewModel>(model);
-            _orderBackup = new OrderViewModel(Order);
+            if (id == null)
+            {
+                Order = new OrderViewModel();
+            }
+            else
+            {
+                var model = await _orderService.GetByNumberAsync(id);
+                Order = _mapper.Map<OrderViewModel>(model);
+                _orderBackup = new OrderViewModel(Order);
+            }
         }
 
         private void EditCustomer()

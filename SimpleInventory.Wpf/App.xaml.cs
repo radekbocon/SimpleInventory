@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Factories;
 using SimpleInventory.Wpf.Properties;
 using SimpleInventory.Wpf.Services;
 using SimpleInventory.Wpf.ViewModels;
@@ -38,7 +39,7 @@ namespace SimpleInventory.Wpf
             MainWindow = Services.GetRequiredService<MainWindow>();
             MainWindow.DataContext = Services.GetRequiredService<MainViewModel>();
 
-            Services.GetService<ISettingsService>().SetTheme(Settings.Default.Theme);
+            Services.GetService<ISettingsService>()!.SetTheme(Settings.Default.Theme);
 
             MainWindow.Show();
             base.OnStartup(e);
@@ -62,6 +63,7 @@ namespace SimpleInventory.Wpf
             services.AddSingleton<MongoDbConnection>();
             services.AddSingleton(CreateMapper());
 
+            services.AddScoped<IViewModelFactory, ViewModelFactory>();
             services.AddScoped<ViewModelBase>();
             services.AddScoped<MainViewModel>();
             services.AddScoped<HomePageViewModel>();
@@ -69,6 +71,10 @@ namespace SimpleInventory.Wpf
             services.AddScoped<OrdersPageViewModel>();
             services.AddScoped<CustomersPageViewModel>();
             services.AddScoped<SettingsPageViewModel>();
+            services.AddScoped<ItemDetailsViewModel>();
+            services.AddScoped<ReceivingViewModel>();
+            services.AddScoped<OrderDetailsViewModel>();
+            services.AddScoped<CustomerDetailsViewModel>();
 
             return services.BuildServiceProvider();
         }

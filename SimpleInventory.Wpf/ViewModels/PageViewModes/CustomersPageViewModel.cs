@@ -5,6 +5,7 @@ using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Controls.Dialogs;
+using SimpleInventory.Wpf.Factories;
 using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private readonly ICustomerService _customerService;
         private readonly INavigationService _navigationService;
         private readonly IMapper _mapper;
-
+        private readonly IViewModelFactory _viewModelFactory;
         private ObservableCollection<CustomerViewModel> _customers;
         private ObservableCollection<CustomerViewModel> _filteredCustomers;
         private ICommand _loadCustomersCommand;
@@ -33,11 +34,12 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private string _searchTerxt;
         private bool _isBusy;
 
-        public CustomersPageViewModel(ICustomerService customerService, INavigationService navigationService, IMapper mapper)
+        public CustomersPageViewModel(ICustomerService customerService, INavigationService navigationService, IMapper mapper, IViewModelFactory viewModelFactory)
         {
             _customerService = customerService;
             _navigationService = navigationService;
             _mapper = mapper;
+            _viewModelFactory = viewModelFactory;
         }
 
         public bool IsBusy
@@ -181,7 +183,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private void AddNewCustomer()
         {
-            var vm = new CustomerDetailsViewModel(async () => await GetCustomers());
+            var vm = _viewModelFactory.Create<CustomerDetailsViewModel>().Initialize(async () => await GetCustomers());
             _navigationService.ShowModal(vm);
         }
 
@@ -189,7 +191,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             if (customer.Id == null) return;
 
-            var vm = new CustomerDetailsViewModel(customer.Id, async () => await GetCustomers());
+            var vm = _viewModelFactory.Create<CustomerDetailsViewModel>().Initialize(async () => await GetCustomers(), customer.Id);
             _navigationService.ShowModal(vm);
         }
 

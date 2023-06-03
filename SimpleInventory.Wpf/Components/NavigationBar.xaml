@@ -102,7 +102,7 @@
                 Height="50"
                 Style="{StaticResource HamburgerStyle}"
                 Click="Button_Click">
-            <Image Source="{StaticResource MenuIcon}"
+            <Image Source="{DynamicResource MenuIcon}"
                    Width="32"
                    Height="32"/>
         </Button>

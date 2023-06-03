@@ -100,27 +100,29 @@ namespace SimpleInventory.Wpf.ViewModels
             set => SetProperty(ref _entry, value);
         }
 
-        public ReceivingViewModel(Action onItemReceived)
+        public ReceivingViewModel(IInventoryService inventoryService, INavigationService navigationService, IMapper mapper, INotificationService notificationService)
         {
-            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
-            GetItems();
-            Entry = new InventoryEntryViewModel();
-            _entryBackup = new InventoryEntryViewModel();
-            _onItemReceived = onItemReceived;
+            _inventoryService = inventoryService;
+            _navigationService = navigationService;
+            _mapper = mapper;
+            _notificationService = notificationService;
+
         }
 
-        public ReceivingViewModel(string id, Action onItemReceived)
+        public ReceivingViewModel Initialize(Action onItemReceived)
         {
-            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
             GetItems();
-            Initialaze(id);
+            InitializeEntry(null);
             _onItemReceived = onItemReceived;
+            return this;
+        }
+
+        public ReceivingViewModel Initialize(string id, Action onItemReceived)
+        {
+            GetItems();
+            InitializeEntry(id);
+            _onItemReceived = onItemReceived;
+            return this;
         }
 
         private void GetItems()
@@ -170,13 +172,22 @@ namespace SimpleInventory.Wpf.ViewModels
             return !Entry.Equals(_entryBackup);
         }
 
-        private void Initialaze(string id)
+        private void InitializeEntry(string id)
         {
-            var entry = _inventoryService.GetById(id);
-            Entry = _mapper.Map<InventoryEntryViewModel>(entry);
-            Entry.Quantity = 0;
-            SelectedItem = Items?.Where(x => x.Id == Entry?.Item?.Id).FirstOrDefault();
-            _entryBackup = new InventoryEntryViewModel(Entry);
+            if (id == null)
+            {
+                Entry = new InventoryEntryViewModel();
+                _entryBackup = new InventoryEntryViewModel();
+            }
+            else
+            {
+                var entry = _inventoryService.GetById(id);
+                Entry = _mapper.Map<InventoryEntryViewModel>(entry);
+                Entry.Quantity = 0;
+                SelectedItem = Items?.Where(x => x.Id == Entry?.Item?.Id).FirstOrDefault();
+                _entryBackup = new InventoryEntryViewModel(Entry);
+            }
+
         }
     }
 }

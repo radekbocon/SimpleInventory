@@ -9,6 +9,7 @@ using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -26,22 +27,18 @@ namespace SimpleInventory.Wpf.ViewModels
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
 
-        public ItemDetailsViewModel(string itemId)
+        public ItemDetailsViewModel(IInventoryService inventoryService, INavigationService navigationService, IMapper mapper, INotificationService notificationService)
         {
-            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
-            Initialize(itemId).Await();
+            _inventoryService = inventoryService;
+            _navigationService = navigationService;
+            _mapper = mapper;
+            _notificationService = notificationService;
         }
 
-        public ItemDetailsViewModel()
+        public ItemDetailsViewModel Create(string id = null)
         {
-            _inventoryService = App.Current.Services.GetRequiredService<IInventoryService>();
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
-            Initialize().Await();
+            Initialize(id).Await();
+            return this;
         }
 
         public string Name { get; set; } = "Item Details";
@@ -101,7 +98,7 @@ namespace SimpleInventory.Wpf.ViewModels
             _notificationService.Show("Saved", "Item succesfully saved.", NotificationType.Info);
         }
 
-        private async Task Initialize(string id = null)
+        private async Task Initialize(string id)
         {
             Item = id == null ? new ItemViewModel() : _mapper.Map<ItemViewModel>(await _inventoryService.GetItemByIdAsync(id));
             _itemBackup = new ItemViewModel(Item); 

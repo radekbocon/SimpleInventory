@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Bogus;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Controls.Dialogs;
+using SimpleInventory.Wpf.Factories;
 using SimpleInventory.Wpf.Services;
 using System;
 using System.Collections.Generic;
@@ -20,6 +22,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private readonly IInventoryService _inventoryService;
         private readonly INavigationService _navigationService;
         private readonly INotificationService _notificationService;
+        private readonly IViewModelFactory _viewModelFactory;
         private readonly IMapper _mapper;
 
         private string _searchText;
@@ -34,12 +37,13 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         public string Name { get; set; } = "Inventory";
 
-        public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService, IMapper mapper, INotificationService notificationService)
+        public InventoryPageViewModel(IInventoryService inventyoryService, INavigationService dialogService, IMapper mapper, INotificationService notificationService, IViewModelFactory viewModelFactory)
         {
             _inventoryService = inventyoryService;
             _navigationService = dialogService;
             _mapper = mapper;
             _notificationService = notificationService;
+            _viewModelFactory = viewModelFactory;
         }
 
         public bool IsBusy
@@ -100,7 +104,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_addNewItemCommand == null)
                 {
                     _addNewItemCommand = new RelayCommand(
-                        async p => await AddNewItem(),
+                        p =>  AddNewItem(),
                         p => true);
                 }
 
@@ -164,23 +168,17 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                    select i;
         }
 
-        private async Task AddNewItem()
+        private async void AddNewItem()
         {
-            bool save = false;
-            var vm = new ItemDetailsViewModel();
+            var vm = _viewModelFactory.Create<ItemDetailsViewModel>();
             _navigationService.ShowModal(vm);
-
-            if (save)
-            {
-                await GetInventory();
-            }
         }
 
         private void EditEntry(InventoryEntryViewModel entry)
         {
-            if (entry.Id == null) return;
+            if (entry?.Id == null) return;
 
-            var vm = new ReceivingViewModel(entry.Id, async () => await GetInventory());
+            var vm = _viewModelFactory.Create<ReceivingViewModel>().Initialize(entry.Id, async () => await GetInventory());
             _navigationService.ShowModal(vm);
         }
 
@@ -214,7 +212,9 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private void ReceiveItem()
         {
-            var vm = new ReceivingViewModel(async () => await GetInventory());
+            var vm = _viewModelFactory
+                .Create<ReceivingViewModel>()
+                .Initialize(async () => await GetInventory());
             _navigationService.ShowModal(vm);
         }
 

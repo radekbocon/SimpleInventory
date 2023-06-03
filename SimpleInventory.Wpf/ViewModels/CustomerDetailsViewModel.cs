@@ -33,27 +33,6 @@ namespace SimpleInventory.Wpf.ViewModels
         private ICommand _deleteAddress;
         private Action _onCustomerSaved;
 
-        public CustomerDetailsViewModel(string customerId, Action onCustomerSaved)
-        {
-            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
-            SetCustomer(customerId).Await();
-            _onCustomerSaved = onCustomerSaved;
-        }
-
-        public CustomerDetailsViewModel(Action onCustomerSaved)
-        {
-            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
-            Customer = new CustomerViewModel();
-            _customerBackup = new CustomerViewModel();
-            _onCustomerSaved = onCustomerSaved;
-        }
-
         public string Name { get; set; } = "Customer Details";
 
         private AddressModel _selectedAddress;
@@ -142,6 +121,21 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
+        public CustomerDetailsViewModel()
+        {
+            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
+            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
+            _mapper = App.Current.Services.GetRequiredService<IMapper>();
+            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
+        }
+
+        public CustomerDetailsViewModel Initialize(Action onCustomerSaved, string customerId = null)
+        {
+            SetCustomer(customerId).Await();
+            _onCustomerSaved = onCustomerSaved;
+            return this;
+        }
+
         private void DeleteSelectedAddress()
         {
             if (SelectedAddress == null) return;
@@ -175,9 +169,17 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private async Task SetCustomer(string id)
         {
-            var customerModel = await _customerService.GetById(id);
-            Customer = _mapper.Map<CustomerViewModel>(customerModel);
-            _customerBackup = new CustomerViewModel(_customer);
+            if (id == null)
+            {
+                Customer = new CustomerViewModel();
+                _customerBackup = new CustomerViewModel();
+            }
+            else
+            {
+                var customerModel = await _customerService.GetById(id);
+                Customer = _mapper.Map<CustomerViewModel>(customerModel);
+                _customerBackup = new CustomerViewModel(_customer);
+            }
         }
 
         private bool HasCustomerChanged()

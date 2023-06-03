@@ -108,7 +108,7 @@
                     TextWrapping="Wrap"
                     Text="{Binding Item.Description, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True, ValidatesOnDataErrors=True}"/>
 
-                <ListView
+                <ItemsControl
                     ItemsSource="{Binding Item.Errors, UpdateSourceTrigger=LostFocus}"
                     BorderThickness="0"
                     IsEnabled="False"
@@ -116,16 +116,18 @@
                     Grid.Row="5"
                     Grid.Column="0"
                     Grid.ColumnSpan="2">
-                    <ListView.ItemTemplate>
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock 
+                                    Background="Transparent"
                                     HorizontalAlignment="Center"
                                     FontSize="12"
                                     Foreground="Red"
                                     Text="• ">
                                 </TextBlock>
                                 <TextBlock 
+                                    Background="Transparent"
                                     HorizontalAlignment="Center"
                                     FontSize="12"
                                     Foreground="Red"
@@ -133,8 +135,8 @@
                                 </TextBlock>
                             </StackPanel>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
    
 
             </Grid>
