@@ -126,6 +126,24 @@ namespace SimpleInventory.Tests
         }
 
         [Fact]
+        public void LoadInventory_WhenExecuted_LoadsInventory()
+        {
+            // Arrange
+            int itemsCount = 4;
+            A.CallTo(() => _inventoryService.GetAllEntriesAsync()).Returns(A.CollectionOfFake<InventoryEntryModel>(itemsCount).ToList());
+            A.CallTo(_mapper).WithReturnType<List<InventoryEntryViewModel>>().Returns(A.CollectionOfFake<InventoryEntryViewModel>(itemsCount).ToList());
+            var sut = new InventoryPageViewModel(_inventoryService, _navigationService, _mapper, _notificationService, _viewModelFactory);
+
+            // Act
+            sut.LoadInventoryCommand.Execute(null);
+
+            // Assert
+            A.CallTo(() => _inventoryService.GetAllEntriesAsync()).MustHaveHappenedOnceExactly();
+            A.CallTo(_mapper).MustHaveHappenedOnceExactly();
+            Assert.Equal(itemsCount, sut.Inventory.Count);
+        }
+
+        [Fact]
         public void EditEntryCommand_WhenEntryIdIsNull_ShouldNotOpenReceivingPage()
         {
             // Arrange
