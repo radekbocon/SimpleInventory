@@ -46,8 +46,8 @@ namespace SimpleInventory.Core.Services
         public void UpsertOne(OrderModel order)
         {
             order.Id ??= ObjectId.GenerateNewId().ToString();
-            order.StartDate = order.StartDate == DateTime.MinValue ? DateTime.Today : order.StartDate;
-            order.LastUpdateDate = DateTime.Today;
+            order.StartDate = order.StartDate == DateTime.MinValue ? DateTime.Now : order.StartDate;
+            order.LastUpdateDate = DateTime.Now;
             ProcessInventoryTransaction(order);
             var collection = _db.ConnectToMongo<OrderModel>("Orders");
             collection.ReplaceOne(x => x.Id == order.Id, order, new ReplaceOptions { IsUpsert = true});
@@ -56,8 +56,8 @@ namespace SimpleInventory.Core.Services
         public async Task UpsertOneAsync(OrderModel order)
         {
             order.Id ??= ObjectId.GenerateNewId().ToString();
-            order.StartDate = order.StartDate == DateTime.MinValue ? DateTime.Today : order.StartDate;
-            order.LastUpdateDate = DateTime.Today;
+            order.StartDate = order.StartDate == DateTime.MinValue ? DateTime.Now : order.StartDate;
+            order.LastUpdateDate = DateTime.Now;
             ProcessInventoryTransaction(order);
             var collection = _db.ConnectToMongo<OrderModel>("Orders");
             await collection.ReplaceOneAsync(x => x.Id == order.Id, order, new ReplaceOptions { IsUpsert = true } );

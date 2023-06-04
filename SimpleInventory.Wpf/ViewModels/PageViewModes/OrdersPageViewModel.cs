@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using Bogus;
-using SimpleInventory.Core.Extentions;
-using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.Factories;
@@ -10,9 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SimpleInventory.Wpf.ViewModels.PageViewModes
@@ -47,7 +42,6 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             _mapper = mapper;
             _notificationService = notificationService;
             _viewModelFactory = viewModelFactory;
-            //GenerateFakeOrders();
         }
 
         public double ScrollPosition 
@@ -150,35 +144,24 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             ShowBusyIndicator();
             var list = await _orderService.GetAll();
-            var vmList = _mapper.Map<ObservableCollection<OrderSummaryViewModel>>(list);
+            var vmList = _mapper.Map<List<OrderSummaryViewModel>>(list);
+            vmList = vmList.OrderByDescending(x => x.LastUpdateDate).ToList();
             Orders = new ObservableCollection<OrderSummaryViewModel>(vmList);
             IsBusy = false;
         }
 
         private async Task AddNewOrder()
         {
-            bool save = false;
             var vm = _viewModelFactory.Create<OrderDetailsViewModel>().Initialize();
             _navigationService.OpenPage(vm);
-
-            if (save)
-            {
-                await GetOrders();
-            }
         }
 
         private async Task OpenOrder(OrderSummaryViewModel order)
         {
-            if (order.Id == null) return;
+            if (order?.Id == null) return;
 
-            bool save = false;
             var vm = _viewModelFactory.Create<OrderDetailsViewModel>().Initialize(order.Id);
             _navigationService.OpenPage(vm);
-
-            if (save)
-            {
-                await GetOrders();
-            }
         }
 
         private void ShowBusyIndicator()
@@ -188,55 +171,5 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 IsBusy = true;
             }
         }
-
-        //private void GenerateFakeOrders()
-        //{
-        //    var address = new Faker<AddressModel>()
-        //        .RuleFor(x => x.Line1, f => f.Address.StreetAddress())
-        //        .RuleFor(x => x.Line2, f => f.Address.SecondaryAddress())
-        //        .RuleFor(x => x.PhoneNumber, f => f.Person.Phone)
-        //        .RuleFor(x => x.City, f => f.Address.City())
-        //        .RuleFor(x => x.Country, f => f.Address.CountryCode())
-        //        .RuleFor(x => x.PostCode, f => f.Address.ZipCode());
-
-        //    var customer = new Faker<CustomerModel>()
-        //        .RuleFor(x => x.FirstName, f => f.Person.FirstName)
-        //        .RuleFor(x => x.LastName, f => f.Person.LastName)
-        //        .RuleFor(x => x.CompanyName, f => f.Company.CompanyName() + " " + f.Company.CompanySuffix())
-        //        .RuleFor(x => x.Email, f => f.Person.Email)
-        //        .RuleFor(x => x.PhoneNumber, f => f.Person.Phone)
-        //        .RuleFor(x => x.Addresses, f => address.Generate(2));
-
-        //    var item = new Faker<ItemModel>()
-        //        .RuleFor(x => x.ProductId, f => f.Random.AlphaNumeric(5).ToUpper())
-        //        .RuleFor(x => x.Name, f => f.Commerce.ProductName())
-        //        .RuleFor(x => x.Type, f => f.Commerce.Product())
-        //        .RuleFor(x => x.Description, f => f.Commerce.ProductDescription())
-        //        .RuleFor(x => x.Price, f => decimal.Parse(f.Commerce.Price()))
-        //        .RuleFor(x => x.Quantity, f => f.Random.Int(0, 450));
-
-        //    var orderLine = new Faker<OrderLine>()
-        //        .RuleFor(x => x.IsCancelled, f => f.Random.Bool(0.8f))
-        //        .RuleFor(x => x.Item, f => item.Generate())
-        //        .RuleFor(x => x.Price, f => f.Random.Decimal(0, 3000))
-        //        .RuleFor(x => x.Quantity, f => f.Random.Int(0, 5000));
-
-            //var order = new Faker<OrderModel>()
-            //    .RuleFor(x => x.Customer, f => customer.Generate())
-            //    .RuleFor(x => x.StartDate, f => f.Date.Recent())
-            //    .RuleFor(x => x.LastUpdateDate, f => f.Date.Recent())
-            //    .RuleFor(x => x.CloseDate, f => f.Date.Recent())
-            //    .RuleFor(x => x.OrderTotal, f => f.Random.Decimal(1, 100000))
-            //    .RuleFor(x => x.BillingAddress, f => address.Generate())
-            //    .RuleFor(x => x.BillingAddress, f => address.Generate())
-            //    .RuleFor(x => x.Lines, f => orderLine.Generate(5))
-            //    .RuleFor(x => x.Status, f => f.Random.Enum<OrderStatus>());
-
-
-            //var list = order.Generate(400);
-
-            //_orderService.UpsertMany(list);
-
-        //}
     }
 }
