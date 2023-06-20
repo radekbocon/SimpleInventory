@@ -80,7 +80,7 @@
                 Margin="0 0 5 0"
                 Content="Receiving"
                 Style="{StaticResource DarkButton}"
-                Command="{Binding ReceiveCommand}"/>
+                Command="{Binding ReceiveNewItemCommand}"/>
             <Button 
                 Margin="0 0 5 0"
                 Content="Add New Item"
@@ -119,30 +119,58 @@
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <i:InvokeCommandAction 
-                        Command="{Binding EditEntryCommand}"
+                        Command="{Binding ReceiveItemCommand}"
                         CommandParameter="{Binding ElementName=ItemsDataGridView, Path=SelectedItem}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+            <DataGrid.ContextMenu>
+                <ContextMenu x:Name="DataGridContextMenu">
+                    <MenuItem 
+                        Header="Receive" 
+                        Command="{Binding PlacementTarget.DataContext.ReceiveItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" 
+                        CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                    <MenuItem 
+                        Header="Move" 
+                        Command="{Binding PlacementTarget.DataContext.MoveItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" 
+                        CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                    <MenuItem 
+                        Header="Correction" 
+                        Command="{Binding PlacementTarget.DataContext.EditItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" 
+                        CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header=" " Width="5" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Product ID" Binding="{Binding Item.ProductId, UpdateSourceTrigger=PropertyChanged}" MaxWidth="100"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Item.Name, UpdateSourceTrigger=PropertyChanged}" MaxWidth="200"/>
                 <DataGridTextColumn Header="Location" Binding="{Binding Location, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Type" Binding="{Binding Item.Type, UpdateSourceTrigger=PropertyChanged}" MaxWidth="100"/>
-                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" MaxWidth="85"/>
+                <DataGridTextColumn Header="Available" Binding="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" MaxWidth="85"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Item.Price, UpdateSourceTrigger=PropertyChanged, StringFormat=F2}" MaxWidth="85"/>
                 <DataGridTemplateColumn Width="auto" Header=" ">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Button
+                                    x:Name="EditButton"
                                     Style="{StaticResource EditButton}"
-                                    Command="{Binding DataContext.EditEntryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                     Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type vm:InventoryEntryViewModel}}"
-                                    CommandParameter="{Binding}"
-                                    FontFamily="Wingdings 2"
-                                    FontSize="12"
-                                    Content="!"/>
+                                    FontFamily="{DynamicResource Fontello}"
+                                    FontSize="14"
+                                    Content="&#xf141;">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:ChangePropertyAction 
+                                                TargetObject="{Binding ElementName=ItemsDataGridView, Path=ContextMenu}" 
+                                                PropertyName="IsOpen" 
+                                                Value="True"/>
+                                            <i:ChangePropertyAction 
+                                                TargetObject="{Binding ElementName=ItemsDataGridView, Path=ContextMenu}" 
+                                                PropertyName="PlacementTarget" 
+                                                Value="{Binding ElementName=ItemsDataGridView, Mode=OneWay}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
 
                                 <Button
                                     Style="{StaticResource DeleteButton}"

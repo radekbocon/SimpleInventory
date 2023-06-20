@@ -37,9 +37,9 @@
                 Style="{StaticResource BackButton}"
                 Command="{Binding GoBackCommand}"
                 Width="30"
-                Content="3"
-                FontSize="26"
-                FontFamily="Marlett"/>
+                Content="&#xe85e;"
+                FontSize="16"
+                FontFamily="{DynamicResource Fontello}"/>
             <Image 
                 Source="{StaticResource OrdersIcon}"
                 Margin="5"

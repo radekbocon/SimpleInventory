@@ -12,7 +12,12 @@ namespace SimpleInventory.Core.Services
 {
     public class CustomerService : ICustomerService
     {
-        private readonly MongoDbConnection _db = new MongoDbConnection();
+        private readonly MongoDbConnection _db;
+
+        public CustomerService(MongoDbConnection db)
+        {
+            _db = db;
+        }
 
         public async Task DeleteOne(CustomerModel customer)
         {
@@ -45,9 +50,7 @@ namespace SimpleInventory.Core.Services
         {
             foreach (var customer in customers)
             {
-                customer.Id ??= ObjectId.GenerateNewId().ToString();
-                var collection = _db.ConnectToMongo<CustomerModel>("Customers");
-                await collection.ReplaceOneAsync(x => x.Id == customer.Id, customer, new ReplaceOptions { IsUpsert = true }); 
+                await UpsertOne(customer);
             }
         }
     }

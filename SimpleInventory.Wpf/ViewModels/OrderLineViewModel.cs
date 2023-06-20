@@ -9,16 +9,17 @@ namespace SimpleInventory.Wpf.ViewModels
 {
     public class OrderLineViewModel : ViewModelBase
     {
-        private ItemViewModel? item;
+        private ItemViewModel? _item;
         private uint _quantity;
         private decimal _price;
         private decimal _total;
         private bool _isCancelled = false;
         private int _number;
+        private string _pickLocation;
 
-        public int Number 
-        { 
-            get => _number; 
+        public int Number
+        {
+            get => _number;
             set => SetProperty(ref _number, value);
         }
         public bool IsCancelled
@@ -28,10 +29,10 @@ namespace SimpleInventory.Wpf.ViewModels
         }
         public ItemViewModel? Item
         {
-            get => item;
+            get => _item;
             set
             {
-                SetProperty(ref item, value);
+                SetProperty(ref _item, value);
                 NotifyPropertyChanged(nameof(Total));
             }
         }
@@ -60,6 +61,11 @@ namespace SimpleInventory.Wpf.ViewModels
             {
                 _total = value;
             }
+        }
+        public string PickLocation 
+        { 
+            get => _pickLocation; 
+            set => SetProperty(ref _pickLocation, value);
         }
 
         public OrderLineViewModel()

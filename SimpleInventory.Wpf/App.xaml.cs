@@ -3,19 +3,13 @@ using AutoMapper.EquivalencyExpression;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
-using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.Factories;
 using SimpleInventory.Wpf.Properties;
 using SimpleInventory.Wpf.Services;
 using SimpleInventory.Wpf.ViewModels;
 using SimpleInventory.Wpf.ViewModels.PageViewModes;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace SimpleInventory.Wpf
@@ -60,7 +54,7 @@ namespace SimpleInventory.Wpf
             services.AddSingleton<IOrderService, OrderService>();
             services.AddSingleton<INotificationService, NotificationService>();
             services.AddSingleton<ISettingsService, SettingsService>();
-            services.AddSingleton<MongoDbConnection>();
+            services.AddSingleton(CreateDbConnection());
             services.AddSingleton(CreateMapper());
 
             services.AddScoped<IViewModelFactory, ViewModelFactory>();
@@ -75,8 +69,15 @@ namespace SimpleInventory.Wpf
             services.AddScoped<ReceivingViewModel>();
             services.AddScoped<OrderDetailsViewModel>();
             services.AddScoped<CustomerDetailsViewModel>();
+            services.AddScoped<MoveInventoryViewModel>();
+            services.AddScoped<InventoryEntryDetailsViewModel>();
 
             return services.BuildServiceProvider();
+        }
+
+        private MongoDbConnection CreateDbConnection()
+        {
+            return new MongoDbConnection(ConfigurationManager.ConnectionStrings["SimpleInventory"].ConnectionString);
         }
 
         private IMapper CreateMapper()

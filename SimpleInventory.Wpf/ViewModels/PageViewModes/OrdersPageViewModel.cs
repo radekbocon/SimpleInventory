@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
 using SimpleInventory.Wpf.Factories;
@@ -29,6 +30,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private ICommand _loadOrdersCommand;
         private ICommand _addNewOrderCommand;
         private ICommand _openOrderCommand;
+        private ICommand _receiveOrderCommand;
         private string _searchTerxt;
         private bool _isBusy;
         private double _scrollPosition;
@@ -108,7 +110,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_addNewOrderCommand == null)
                 {
                     _addNewOrderCommand = new RelayCommand(
-                        async p => await AddNewOrder(),
+                        p => AddNewOrder(),
                         p => true);
                 }
 
@@ -123,11 +125,26 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
                 if (_openOrderCommand == null)
                 {
                     _openOrderCommand = new RelayCommand(
-                        async p => await OpenOrder((OrderSummaryViewModel)p),
+                        p => OpenOrder((OrderSummaryViewModel)p),
                         p => p is OrderSummaryViewModel);
                 }
 
                 return _openOrderCommand;
+            }
+        }
+
+        public ICommand ReceiveOrderCommand
+        {
+            get
+            {
+                if (_receiveOrderCommand == null)
+                {
+                    _receiveOrderCommand = new RelayCommand(
+                        async p => await ReceiveOrder((OrderSummaryViewModel)p),
+                        p => p is OrderSummaryViewModel vm && CanReceiveOrder(vm));
+                }
+
+                return _receiveOrderCommand;
             }
         }
 
@@ -150,18 +167,33 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             IsBusy = false;
         }
 
-        private async Task AddNewOrder()
+        private void AddNewOrder()
         {
             var vm = _viewModelFactory.Create<OrderDetailsViewModel>().Initialize();
             _navigationService.OpenPage(vm);
         }
 
-        private async Task OpenOrder(OrderSummaryViewModel order)
+        private void OpenOrder(OrderSummaryViewModel order)
         {
             if (order?.Id == null) return;
 
             var vm = _viewModelFactory.Create<OrderDetailsViewModel>().Initialize(order.Id);
             _navigationService.OpenPage(vm);
+        }
+
+        private async Task ReceiveOrder(OrderSummaryViewModel order)
+        {
+            if (order?.Id == null) return;
+
+            var orderModel = _orderService.GetById(order.Id);
+            orderModel.Status = OrderStatus.Received;
+            await _orderService.UpsertOneAsync(orderModel);
+            await GetOrders();
+        }
+
+        private bool CanReceiveOrder(OrderSummaryViewModel order)
+        {
+            return order.Status == OrderStatus.Draft;
         }
 
         private void ShowBusyIndicator()

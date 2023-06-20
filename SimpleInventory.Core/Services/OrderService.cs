@@ -73,25 +73,25 @@ namespace SimpleInventory.Core.Services
 
         private void ProcessInventoryTransaction(OrderModel orderNew)
         {
-            if (orderNew.Lines == null)
+            if (orderNew.Lines == null || orderNew.Status == OrderStatus.Draft)
             {
                 return;
             }
 
             try
             {
-
                 using (var session = _client.StartSession())
                 {
                     session.StartTransaction();
 
                     OrderModel orderOriginal = GetById(orderNew.Id);
-                    if (orderOriginal != null && orderOriginal.Lines != null)
+                    if (orderOriginal != null && orderOriginal.Lines != null && orderOriginal.Status != OrderStatus.Draft)
                     {
                         foreach (var line in orderOriginal.Lines)
                         {
                             var inventoryEntry = _inventoryService.GetByItemId(line.Item.Id, session);
                             inventoryEntry.Quantity += line.Quantity;
+                            inventoryEntry.LockedQuantity -= line.Quantity;
                             _inventoryService.UpsertOne(inventoryEntry, session);
                         }
                     }
@@ -100,6 +100,7 @@ namespace SimpleInventory.Core.Services
                     {
                         var inventoryEntry = _inventoryService.GetByItemId(line.Item.Id, session);
                         inventoryEntry.Quantity -= line.Quantity;
+                        inventoryEntry.LockedQuantity += line.Quantity;
                         _inventoryService.UpsertOne(inventoryEntry, session);
                     }
 
@@ -108,13 +109,11 @@ namespace SimpleInventory.Core.Services
 
                     session.CommitTransaction();
                 }
-
             }
             catch (StackOverflowException)
             {
                 throw;
             }
-            
         }
     }
 }

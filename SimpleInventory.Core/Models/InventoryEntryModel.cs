@@ -17,6 +17,6 @@ namespace SimpleInventory.Core.Models
         public string? Location { get; set; }
         public ItemModel? Item { get; set; }
         public uint Quantity { get; set; }
-
+        public uint LockedQuantity { get; set; }
     }
 }

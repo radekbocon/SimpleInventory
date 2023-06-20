@@ -27,5 +27,6 @@ namespace SimpleInventory.Core.Services
         public Task ReceiveItem(InventoryEntryModel receive);
         InventoryEntryModel GetByItemId(string id);
         InventoryEntryModel GetByItemId(string id, IClientSessionHandle session);
+        Task MoveItemAsync(InventoryEntryModel model, string newLocation, uint quantityToMove);
     }
 }

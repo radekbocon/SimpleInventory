@@ -130,9 +130,9 @@
                                     Command="{Binding DataContext.OpenCustomerCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                     Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type vm:CustomerViewModel}}"
                                     CommandParameter="{Binding}"
-                                    FontFamily="Wingdings 2"
-                                    FontSize="12"
-                                    Content="!"/>
+                                    FontFamily="{DynamicResource Fontello}"
+                                    FontSize="14"
+                                    Content="&#xf141;"/>
 
                                 <Button
                                     Style="{StaticResource DeleteButton}"

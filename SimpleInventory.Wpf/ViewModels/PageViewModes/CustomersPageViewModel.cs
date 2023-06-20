@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using Bogus;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
-using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Controls.Dialogs;
 using SimpleInventory.Wpf.Factories;
 using SimpleInventory.Wpf.Services;
@@ -11,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -47,7 +44,6 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             get => _isBusy;
             set { SetProperty(ref _isBusy, value); }
         }
-
 
         public string SearchText
         {
@@ -189,7 +185,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
 
         private void EditCustomer(CustomerViewModel customer)
         {
-            if (customer.Id == null) return;
+            if (customer?.Id == null) return;
 
             var vm = _viewModelFactory.Create<CustomerDetailsViewModel>().Initialize(async () => await GetCustomers(), customer.Id);
             _navigationService.ShowModal(vm);

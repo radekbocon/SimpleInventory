@@ -137,5 +137,40 @@ namespace SimpleInventory.Core.Services
             }
             await UpsertOneAsync(entry);
         }
-    }
+
+        public async Task MoveItemAsync(InventoryEntryModel model, string newLocation, uint quantityToMove)
+        {
+            var resultEntries = new List<InventoryEntryModel>();
+            var entryAtOldLocation = _inventoryCollection.Find(x => x.Item == model.Item && x.Location == model.Location).SingleOrDefault();
+
+            var entryAtNewLocation = _inventoryCollection.Find(x => x.Item == model.Item && x.Location == newLocation).SingleOrDefault();
+
+            if (entryAtNewLocation is null)
+            {
+                resultEntries.Add(new InventoryEntryModel { Id = entryAtOldLocation.Id, Item = entryAtOldLocation.Item, Location = entryAtOldLocation.Location, Quantity = entryAtOldLocation.Quantity - quantityToMove });
+                resultEntries.Add(new InventoryEntryModel { Id = ObjectId.GenerateNewId().ToString(), Item = entryAtOldLocation.Item, Location = newLocation, Quantity = quantityToMove });
+            }
+            else
+            {
+                resultEntries.Add(new InventoryEntryModel { Id = entryAtOldLocation.Id, Item = entryAtOldLocation.Item, Location = entryAtOldLocation.Location, Quantity = entryAtOldLocation.Quantity - quantityToMove });
+                entryAtNewLocation.Quantity += quantityToMove;
+                resultEntries.Add(entryAtNewLocation);
+            }
+            await UpsertMany(resultEntries);
+            await CleanupEmptyRecordsAsync();
+        }
+
+        private async Task CleanupEmptyRecordsAsync()
+        {
+            var entries = await GetAllEntriesAsync();
+            foreach (var entry in entries)
+            {
+                if (entry.Quantity == 0 && entry.LockedQuantity == 0)
+                {
+                    await DeleteOne(entry);
+                }
+            }
+        }
+    } 
 }
+

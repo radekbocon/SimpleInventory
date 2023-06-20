@@ -125,6 +125,30 @@
                         CommandParameter="{Binding ElementName=OrdersDataGridView, Path=SelectedItem}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+            <DataGrid.ContextMenu>
+                <ContextMenu x:Name="DataGridContextMenu">
+                    <MenuItem 
+                        Header="Open" 
+                        Command="{Binding PlacementTarget.DataContext.OpenOrderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" 
+                        CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                    <MenuItem 
+                        Header="Receive" 
+                        Command="{Binding PlacementTarget.DataContext.ReceiveOrderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" 
+                        CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                    <MenuItem 
+                        Header="Pick" 
+                        Command="{Binding PlacementTarget.DataContext.EditItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" 
+                        CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                    <MenuItem 
+                        Header="Ship" 
+                        Command="{Binding PlacementTarget.DataContext.EditItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" 
+                        CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                    <MenuItem 
+                        Header="Cancel" 
+                        Command="{Binding PlacementTarget.DataContext.MoveItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}" 
+                        CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header=" " Width="5" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Company Name" Binding="{Binding Customer.CompanyName, UpdateSourceTrigger=PropertyChanged}"/>
@@ -138,12 +162,23 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button
                                     Style="{StaticResource EditButton}"
-                                    Command="{Binding DataContext.OpenOrderCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                     Visibility="{Binding Converter={StaticResource SelectedItemToVis}, ConverterParameter={x:Type vm:OrderSummaryViewModel}}"
-                                    CommandParameter="{Binding}"
-                                    FontFamily="Wingdings 2"
-                                    FontSize="12"
-                                    Content="!"/>
+                                    FontFamily="{DynamicResource Fontello}"
+                                    FontSize="14"
+                                    Content="&#xf141;">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:ChangePropertyAction 
+                                                TargetObject="{Binding ElementName=OrdersDataGridView, Path=ContextMenu}" 
+                                                PropertyName="IsOpen" 
+                                                Value="True"/>
+                                            <i:ChangePropertyAction 
+                                                TargetObject="{Binding ElementName=OrdersDataGridView, Path=ContextMenu}" 
+                                                PropertyName="PlacementTarget" 
+                                                Value="{Binding ElementName=OrdersDataGridView, Mode=OneWay}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

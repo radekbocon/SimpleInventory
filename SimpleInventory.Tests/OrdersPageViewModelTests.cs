@@ -145,7 +145,7 @@ namespace SimpleInventory.Tests
 
             // Assert
             A.CallTo(() => _viewModelFactory.Create<OrderDetailsViewModel>()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => _navigationService.OpenPage(A<OrderDetailsViewModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _navigationService.OpenPage(A<OrderDetailsViewModel>.That.IsNotNull())).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -160,7 +160,7 @@ namespace SimpleInventory.Tests
 
             // Assert
             A.CallTo(() => _viewModelFactory.Create<OrderDetailsViewModel>()).MustHaveHappenedOnceExactly();
-            A.CallTo(() => _navigationService.OpenPage(A<OrderDetailsViewModel>.Ignored)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _navigationService.OpenPage(A<OrderDetailsViewModel>.That.IsNotNull())).MustHaveHappenedOnceExactly();
         }
 
         [Fact]
@@ -173,6 +173,7 @@ namespace SimpleInventory.Tests
             sut.OpenOrderCommand.Execute(null);
 
             // Assert
+            Assert.False(sut.OpenOrderCommand.CanExecute(null));
             A.CallTo(() => _viewModelFactory.Create<OrderDetailsViewModel>()).MustNotHaveHappened();
             A.CallTo(() => _navigationService.OpenPage(A<OrderDetailsViewModel>.Ignored)).MustNotHaveHappened();
         }

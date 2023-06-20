@@ -13,6 +13,7 @@ namespace SimpleInventory.Wpf.ViewModels
         private string? _location;
         private ItemViewModel? _item;
         private uint _quantity;
+        private uint _lockedQuantity;
 
         public string? Id { get; set; }
         public string? Location
@@ -41,6 +42,12 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
         public string DisplayProperty => $"{Item?.Name} (In Inventory: {Quantity})";
+
+        public uint LockedQuantity 
+        { 
+            get => _lockedQuantity; 
+            set => SetProperty(ref _lockedQuantity, value);
+        }
 
         public InventoryEntryViewModel()
         {

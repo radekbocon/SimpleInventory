@@ -118,7 +118,7 @@ namespace SimpleInventory.Tests
             inventoryEntry.Id = Guid.NewGuid().ToString();
 
             // Act
-            sut.EditEntryCommand.Execute(inventoryEntry);
+            sut.ReceiveItemCommand.Execute(inventoryEntry);
 
             // Assert
             A.CallTo(() => _viewModelFactory.Create<ReceivingViewModel>()).MustHaveHappenedOnceExactly();
@@ -152,7 +152,7 @@ namespace SimpleInventory.Tests
             inventoryEntry.Id = null;
 
             // Act
-            sut.EditEntryCommand.Execute(inventoryEntry);
+            sut.ReceiveItemCommand.Execute(inventoryEntry);
 
             // Assert
             A.CallTo(() => _navigationService.ShowModal(A<ViewModelBase>.Ignored, A<double>.Ignored)).MustNotHaveHappened();
@@ -167,7 +167,7 @@ namespace SimpleInventory.Tests
             // Act
 
             // Assert
-            Assert.False(sut.EditEntryCommand.CanExecute(null));
+            Assert.False(sut.ReceiveItemCommand.CanExecute(null));
         }
     }
 }

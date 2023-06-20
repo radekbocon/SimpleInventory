@@ -121,12 +121,12 @@ namespace SimpleInventory.Wpf.ViewModels
             }
         }
 
-        public CustomerDetailsViewModel()
+        public CustomerDetailsViewModel(ICustomerService customerService, INavigationService navigationService, IMapper mapper, INotificationService notificationService)
         {
-            _customerService = App.Current.Services.GetRequiredService<ICustomerService>();
-            _navigationService = App.Current.Services.GetRequiredService<INavigationService>();
-            _mapper = App.Current.Services.GetRequiredService<IMapper>();
-            _notificationService = App.Current.Services.GetRequiredService<INotificationService>();
+            _customerService = customerService;
+            _navigationService = navigationService;
+            _mapper = mapper;
+            _notificationService = notificationService;
         }
 
         public CustomerDetailsViewModel Initialize(Action onCustomerSaved, string customerId = null)

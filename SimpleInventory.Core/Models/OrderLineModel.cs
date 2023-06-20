@@ -11,5 +11,6 @@ namespace SimpleInventory.Core.Models
         public uint Quantity { get; set; }
         public decimal Price { get; set; }
         public decimal Total { get; set; }
+        public string? PickLocation { get; set; }
     }
 }

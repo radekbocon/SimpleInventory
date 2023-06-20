@@ -2,6 +2,7 @@
 {
     public enum OrderStatus
     {
+        Draft,
         Received,
         Picked,
         Shipped,

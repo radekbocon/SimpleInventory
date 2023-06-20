@@ -31,8 +31,9 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         private ICommand _deleteItemCommand;
         private ICommand _addNewItemCommand;
         private ICommand _loadInventoryCommand;
-        private ICommand _editEntryCommand;
-        private ICommand _receiveCommand;
+        private ICommand _receiveItemCommand;
+        private ICommand _receiveNewItemCommand;
+        private ICommand _moveItemCommand;
         private bool _isBusy;
 
         public string Name { get; set; } = "Inventory";
@@ -127,33 +128,65 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             }
         }
 
-        public ICommand EditEntryCommand
+        public ICommand ReceiveItemCommand
         {
             get
             {
-                if (_editEntryCommand == null)
+                if (_receiveItemCommand == null)
                 {
-                    _editEntryCommand = new RelayCommand(
-                        p => EditEntry((InventoryEntryViewModel)p),
+                    _receiveItemCommand = new RelayCommand(
+                        p => ReceiveItem((InventoryEntryViewModel)p),
                         p => p is InventoryEntryViewModel);
                 }
 
-                return _editEntryCommand;
+                return _receiveItemCommand;
             }
         }
 
-        public ICommand ReceiveCommand
+        public ICommand ReceiveNewItemCommand
         {
             get
             {
-                if (_receiveCommand == null)
+                if (_receiveNewItemCommand == null)
                 {
-                    _receiveCommand = new RelayCommand(
+                    _receiveNewItemCommand = new RelayCommand(
                         p => ReceiveItem(),
                         p => true);
                 }
 
-                return _receiveCommand;
+                return _receiveNewItemCommand;
+            }
+        }
+
+        public ICommand MoveItemCommand
+        {
+            get
+            {
+                if (_moveItemCommand == null)
+                {
+                    _moveItemCommand = new RelayCommand(
+                        p => MoveItem((InventoryEntryViewModel)p),
+                        p => p is InventoryEntryViewModel);
+                }
+
+                return _moveItemCommand;
+            }
+        }
+
+        private ICommand _editItemCommand;
+
+        public ICommand EditItemCommand
+        {
+            get
+            {
+                if (_editItemCommand == null)
+                {
+                    _editItemCommand = new RelayCommand(
+                        p => EditItem((InventoryEntryViewModel)p),
+                        p => p is InventoryEntryViewModel);
+                }
+
+                return _editItemCommand;
             }
         }
 
@@ -174,11 +207,41 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             _navigationService.ShowModal(vm);
         }
 
-        private void EditEntry(InventoryEntryViewModel entry)
+        private void ReceiveItem(InventoryEntryViewModel entry)
         {
             if (entry?.Id == null) return;
 
-            var vm = _viewModelFactory.Create<ReceivingViewModel>().Initialize(entry.Id, async () => await GetInventory());
+            var vm = _viewModelFactory.
+                Create<ReceivingViewModel>()
+                .Initialize(entry.Id, async () => await GetInventory());
+            _navigationService.ShowModal(vm);
+        }
+
+        private void ReceiveItem()
+        {
+            var vm = _viewModelFactory
+                .Create<ReceivingViewModel>()
+                .Initialize(async () => await GetInventory());
+            _navigationService.ShowModal(vm);
+        }
+
+        private void MoveItem(InventoryEntryViewModel entry)
+        {
+            if (entry?.Id is null) return;
+
+            var vm = _viewModelFactory
+                .Create<MoveInventoryViewModel>()
+                .Initialize(entry.Id, async () => await GetInventory());
+            _navigationService.ShowModal(vm);
+        }
+
+        private void EditItem(InventoryEntryViewModel entry)
+        {
+            if (entry?.Id is null) return;
+
+            var vm = _viewModelFactory
+            .Create<InventoryEntryDetailsViewModel>()
+            .Initialize(entry.Id, async () => await GetInventory());
             _navigationService.ShowModal(vm);
         }
 
@@ -210,13 +273,7 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
             IsBusy = false;
         }
 
-        private void ReceiveItem()
-        {
-            var vm = _viewModelFactory
-                .Create<ReceivingViewModel>()
-                .Initialize(async () => await GetInventory());
-            _navigationService.ShowModal(vm);
-        }
+
 
         private void ShowBusyIndicator()
         {
