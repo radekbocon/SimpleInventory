@@ -229,7 +229,7 @@ namespace SimpleInventory.Wpf.ViewModels
             {
                 Order.BillingAddress = address;
                 NotifyPropertyChanged(nameof(Order));
-                NotifyPropertyChanged(nameof(CustomerButtonText));
+                NotifyPropertyChanged(nameof(BillingAddressButtonText));
             });
 
             _navigationService.ShowDialog(vm, callback: result => { });
@@ -241,7 +241,7 @@ namespace SimpleInventory.Wpf.ViewModels
             {
                 Order.DeliveryAddress = address;
                 NotifyPropertyChanged(nameof(Order));
-                NotifyPropertyChanged(nameof(CustomerButtonText));
+                NotifyPropertyChanged(nameof(DeliveryAddressButtonText));
             });
 
             _navigationService.ShowDialog(vm, callback: result => { });
@@ -262,7 +262,7 @@ namespace SimpleInventory.Wpf.ViewModels
 
         private void AddLine()
         {
-            Order.Lines = Order.Lines ?? new ObservableCollection<OrderLineViewModel>();
+            Order.Lines ??= new ObservableCollection<OrderLineViewModel>();
 
             var vm = new PickProductItemViewModel(_inventoryService, _navigationService, _mapper, inventory =>
             {
@@ -300,7 +300,7 @@ namespace SimpleInventory.Wpf.ViewModels
             }
             catch (Exception ex)
             {
-                _notificationService.Show("Error", "Not enough items in inventory.", NotificationType.Error, 6);
+                _notificationService.Show("Error", ex.Message, NotificationType.Error, 6);
             }
         }
     }

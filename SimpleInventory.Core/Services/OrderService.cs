@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using SimpleInventory.Core.Exceptions;
 using SimpleInventory.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -78,42 +79,41 @@ namespace SimpleInventory.Core.Services
                 return;
             }
 
-            try
+            
+            using (var session = _client.StartSession())
             {
-                using (var session = _client.StartSession())
+                session.StartTransaction();
+
+                OrderModel orderOriginal = GetById(orderNew.Id);
+                if (orderOriginal != null && orderOriginal.Lines != null && orderOriginal.Status != OrderStatus.Draft)
                 {
-                    session.StartTransaction();
-
-                    OrderModel orderOriginal = GetById(orderNew.Id);
-                    if (orderOriginal != null && orderOriginal.Lines != null && orderOriginal.Status != OrderStatus.Draft)
-                    {
-                        foreach (var line in orderOriginal.Lines)
-                        {
-                            var inventoryEntry = _inventoryService.GetByItemId(line.Item.Id, session);
-                            inventoryEntry.Quantity += line.Quantity;
-                            inventoryEntry.LockedQuantity -= line.Quantity;
-                            _inventoryService.UpsertOne(inventoryEntry, session);
-                        }
-                    }
-
-                    foreach (var line in orderNew.Lines)
+                    foreach (var line in orderOriginal.Lines)
                     {
                         var inventoryEntry = _inventoryService.GetByItemId(line.Item.Id, session);
-                        inventoryEntry.Quantity -= line.Quantity;
-                        inventoryEntry.LockedQuantity += line.Quantity;
+                        inventoryEntry.Quantity += line.Quantity;
+                        inventoryEntry.LockedQuantity -= line.Quantity;
                         _inventoryService.UpsertOne(inventoryEntry, session);
                     }
-
-                    var collection = _db.ConnectToMongo<OrderModel>("Orders");
-                    collection.ReplaceOne(session, x => x.Id == orderNew.Id, orderNew, new ReplaceOptions { IsUpsert = true });
-
-                    session.CommitTransaction();
                 }
+
+                foreach (var line in orderNew.Lines)
+                {
+                    var inventoryEntry = _inventoryService.GetByItemId(line.Item.Id, session);
+                    if (inventoryEntry.Quantity < line.Quantity)
+                    {
+                        throw new InvalidTransactionException($"Not enough {inventoryEntry.Item.Name} in inventory.");
+                    }
+                    inventoryEntry.Quantity -= line.Quantity;
+                    inventoryEntry.LockedQuantity += line.Quantity;
+                    _inventoryService.UpsertOne(inventoryEntry, session);
+                }
+
+                var collection = _db.ConnectToMongo<OrderModel>("Orders");
+                collection.ReplaceOne(session, x => x.Id == orderNew.Id, orderNew, new ReplaceOptions { IsUpsert = true });
+
+                session.CommitTransaction();
             }
-            catch (StackOverflowException)
-            {
-                throw;
-            }
+        
         }
     }
 }

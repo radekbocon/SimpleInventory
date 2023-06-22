@@ -62,9 +62,9 @@ namespace SimpleInventory.Wpf.ViewModels
                 _total = value;
             }
         }
-        public string PickLocation 
-        { 
-            get => _pickLocation; 
+        public string PickLocation
+        {
+            get => _pickLocation;
             set => SetProperty(ref _pickLocation, value);
         }
 

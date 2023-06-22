@@ -55,13 +55,13 @@ namespace SimpleInventory.Core.Services
         public InventoryEntryModel GetByItemId(string id)
         {
             var item = _inventoryCollection.Find(x => x.Item.Id == id);
-            return item.SingleOrDefault();
+            return item.SortByDescending(x => x.Quantity).FirstOrDefault();
         }
 
         public InventoryEntryModel GetByItemId(string id, IClientSessionHandle session)
         {
             var item = _inventoryCollection.Find(session, x => x.Item.Id == id);
-            return item.SingleOrDefault();
+            return item.SortByDescending(x => x.Quantity).FirstOrDefault();
         }
 
         public async Task<List<InventoryEntryModel>> Search(string key)

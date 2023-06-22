@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using SimpleInventory.Core.Exceptions;
 using SimpleInventory.Core.Models;
 using SimpleInventory.Core.Services;
 using SimpleInventory.Wpf.Commands;
+using SimpleInventory.Wpf.Controls;
 using SimpleInventory.Wpf.Factories;
 using SimpleInventory.Wpf.Services;
 using System;
@@ -185,10 +187,19 @@ namespace SimpleInventory.Wpf.ViewModels.PageViewModes
         {
             if (order?.Id == null) return;
 
-            var orderModel = _orderService.GetById(order.Id);
-            orderModel.Status = OrderStatus.Received;
-            await _orderService.UpsertOneAsync(orderModel);
-            await GetOrders();
+            try
+            {
+                var orderModel = _orderService.GetById(order.Id);
+                orderModel.Status = OrderStatus.Received;
+                await _orderService.UpsertOneAsync(orderModel);
+                await GetOrders();
+                _notificationService.Show("Received", "Order succesfully received.", NotificationType.Info);
+            }
+            catch (InvalidTransactionException ex)
+            {
+                _notificationService.Show("Error", ex.Message, NotificationType.Error, 6);
+            }
+
         }
 
         private bool CanReceiveOrder(OrderSummaryViewModel order)
